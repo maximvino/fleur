@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Verbena</title>
+<title>Fleur · Wisteria</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -220,6 +220,17 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .dock-panel.open{max-height:500px}
 .dock-pane{display:none;padding:20px;flex-direction:column;gap:12px}
 .dock-pane.active{display:flex}
+/* Preset row */
+.preset-row{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 4px;align-items:center;border-bottom:1px solid rgba(220,190,255,.06)}
+.preset-btn{width:44px;height:44px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;flex-shrink:0;position:relative}
+.preset-btn:hover{transform:scale(1.14);box-shadow:0 4px 16px rgba(0,0,0,.35);border-color:rgba(220,190,255,.45)}
+.preset-btn:active{transform:scale(.94)}
+.preset-btn-badge{position:absolute;bottom:-3px;right:-3px;width:15px;height:15px;border-radius:50%;background:rgba(201,143,212,.75);font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-b)}
+.preset-group-gap{width:10px;height:44px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
+.preset-group-gap::after{content:'';width:1px;height:26px;background:rgba(255,255,255,.12);display:block}
+/* Preset task row in editor */
+.pre-task-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:5px}
+.pre-task-row input,.pre-task-row select{font-size:12px;padding:4px 7px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--ink)}
 
 /* Add task pane */
 .add-name{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(220,190,255,.18);border-radius:10px;padding:12px 16px;font-size:18px;font-family:var(--font-b);color:var(--ink);outline:none;transition:border-color .15s}
@@ -374,8 +385,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       <div class="dock-icon" id="di-ai"  onclick="switchPane('ai')"  title="AI" style="background:rgba(212,165,116,.15);border-color:rgba(212,165,116,.35)">🌼</div>
       <div class="dock-icon" id="di-pile" onclick="switchPane('pile')" title="Completed today" style="background:rgba(180,180,220,.15);border-color:rgba(180,180,220,.35)">🍃</div>
       <div class="dock-icon" id="di-rep" onclick="switchPane('rep')" title="Repeating tasks" style="background:rgba(200,185,140,.15);border-color:rgba(200,185,140,.35)">🌾</div>
+      <div class="dock-icon" id="di-pre" onclick="switchPane('pre')" title="Presets" style="background:rgba(160,200,190,.15);border-color:rgba(160,200,190,.35)">🪴</div>
       <label class="dock-icon" title="Import / Export" style="background:rgba(220,180,180,.15);border-color:rgba(220,180,180,.35);cursor:pointer" onclick="showTransferMenu()">🌱</label>
     </div>
+    <div class="preset-row" id="preset-row"></div>
     <div class="dock-panel" id="dock-panel">
       <div class="dock-pane" id="pane-add">
         <div style="display:flex;gap:8px;align-items:center">
@@ -491,6 +504,15 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
           </div>
         </div>
       </div>
+      <!-- Presets pane -->
+      <div class="dock-pane" id="pane-pre">
+        <div style="font-family:var(--font-h);font-size:.85rem;color:var(--ink2);font-style:italic;margin-bottom:8px">Preset tasks</div>
+        <div id="pre-list" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
+        <div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;display:flex;gap:6px;flex-wrap:wrap">
+          <button class="add-submit" onclick="openPresetEditor(null)" style="flex:1">＋ New preset</button>
+          <button class="add-submit" onclick="addPresetGroupBreak()" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--ink2)">— Group gap</button>
+        </div>
+      </div>
       <!-- Pile pane -->
       <div class="dock-pane" id="pane-pile">
         <div id="pile-fan-inline" style="display:flex;flex-wrap:wrap;gap:10px;padding:4px 0"></div>
@@ -499,6 +521,32 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     </div>
   </div>
 
+  <!-- Preset editor modal -->
+  <div class="mo hidden" id="preset-mo">
+    <div class="md" style="max-width:440px">
+      <h2 id="preset-mo-title">New preset</h2>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button id="pre-emoji-btn" onclick="openEmojiPick()" style="font-size:28px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:10px;padding:6px 10px;cursor:pointer;flex-shrink:0">🎯</button>
+        <input class="fi" id="pre-label" type="text" placeholder="Internal label (optional)" style="flex:1">
+      </div>
+      <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin:6px 0 4px">Tasks created when fired</div>
+      <div id="pre-tasks-list" style="display:flex;flex-direction:column;gap:6px;max-height:280px;overflow-y:auto"></div>
+      <button onclick="addPresetTaskRow()" style="margin-top:6px;width:100%;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.15);border-radius:8px;padding:7px;color:var(--ink3);cursor:pointer;font-size:13px">＋ Add task</button>
+      <div class="mf" style="display:flex;gap:8px;margin-top:4px">
+        <button class="mcan" onclick="closeM('preset-mo')" style="flex:1">Cancel</button>
+        <button class="add-submit" onclick="savePreset()" style="flex:1">Save preset</button>
+      </div>
+    </div>
+  </div>
+  <!-- Emoji picker popover -->
+  <div class="mo hidden" id="emoji-mo">
+    <div class="md" style="max-width:320px">
+      <h2>Pick an emoji</h2>
+      <input class="fi" id="emoji-search" type="text" placeholder="Search…" oninput="filterEmoji(this.value)" style="margin-bottom:8px">
+      <div id="emoji-grid" style="display:flex;flex-wrap:wrap;gap:4px;max-height:260px;overflow-y:auto"></div>
+      <button class="mcan" onclick="closeM('emoji-mo')" style="margin-top:8px;width:100%">Cancel</button>
+    </div>
+  </div>
   <!-- Transfer menu -->
   <div class="mo hidden" id="transfer-mo">
     <div class="md" style="max-width:280px">
@@ -600,7 +648,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_verbena_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_wisteria_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -613,12 +661,12 @@ const PASTELS=['#f5e8d3','#e8d5e8','#d3e8d5','#d3dde8','#e8e0d3','#e8d3d3','#d3e
 const DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
 let _pi=0;function nxtP(){return PASTELS[_pi++%PASTELS.length];}
 
-let tasks=[],cats=[],colStyles={},colMin={},gTheme={},tid=100,cid=10;
+let tasks=[],cats=[],colStyles={},colMin={},gTheme={},tid=100,cid=10,pid=1,presets=[];
 let undos=[],uTimer=null,editTid=null,editCid=null,dragTid=null,catDragId=null,pendingDrop=null,_day='';
 let completedToday=[];  // {id,name,color} — tasks completed this session
 
 // ── Persist ──────────────────────────────────────────────────────
-function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gTheme,tid,cid,completedToday}));}
+function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gTheme,tid,cid,pid,presets,completedToday}));}
 function ap(s){
   tasks=s.tasks||[];
   cats=(s.cats||s.categories||[]).map(c=>({showBox:1,minimized:false,colGroup:1,...c}));
@@ -627,6 +675,7 @@ function ap(s){
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
   tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;});
+  presets=s.presets||[];pid=s.pid||1;
 }
 function save(){
   const d=sn();localStorage.setItem(KEY,JSON.stringify(d));
@@ -822,6 +871,7 @@ function switchPane(name){
   document.getElementById('di-'+name)?.classList.add('active');
   if(name==='pile')renderPilePane();
   if(name==='rep'){renderRepPane();syncSelects();document.getElementById('new-rep-cat').innerHTML='<option value="">No category</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');}
+  if(name==='pre'){renderPresetPane();}
 }
 function showTransferMenu(){document.getElementById('transfer-mo').classList.remove('hidden');}
 
@@ -861,7 +911,7 @@ function ra(){
   document.getElementById('hdr-weekday').textContent=_wd;
   document.getElementById('hdr-daynum').textContent=_d.getDate();
   document.getElementById('hdr-month').textContent=_mo;
-  renderBoard();renderFull('wait');renderFull('casual');renderCatSection();renderCatChips();syncSelects();renderPile();
+  renderBoard();renderFull('wait');renderFull('casual');renderCatSection();renderCatChips();syncSelects();renderPile();renderPresetRow();
 }
 
 function repLabel(r){return{daily:'↻',weekly:'↻W',biweekly:'↻2W',MWF:'MWF',TTS:'TTS',weekdays:'M–F',custom:'↻?','monthly-start':'↻M1','monthly-mid':'↻M15','monthly-end':'↻M▸','monthly-day':'↻M#'}[r]||r||'';}
@@ -991,6 +1041,170 @@ function corkHTML(col){
 }
 
 function renderBoard(){document.getElementById('board').innerHTML=['today','tomorrow','upcoming'].map(corkHTML).join('');}
+
+// ── Preset row ──────────────────────────────────────────────────────
+function renderPresetRow(){
+  const row=document.getElementById('preset-row');if(!row)return;
+  if(!presets.length){row.innerHTML='';return;}
+  row.innerHTML=presets.map(p=>{
+    if(p.groupBreak)return`<div class="preset-group-gap"></div>`;
+    const badge=p.tasks.length>1?`<span class="preset-btn-badge">${p.tasks.length}</span>`:'';
+    return`<div class="preset-btn" onclick="firePreset(${p.id})" title="${esc(p.label||p.emoji)}">${p.emoji}${badge}</div>`;
+  }).join('');
+}
+
+// ── Fire a preset ────────────────────────────────────────────────────
+function firePreset(pid){
+  const p=presets.find(x=>x.id===pid);if(!p)return;
+  pu('preset');
+  const createdIds=[];
+  // First pass: create all tasks, collect their IDs
+  p.tasks.forEach((tmpl,i)=>{
+    const id=tid++;
+    createdIds.push(id);
+    const waitUntil=tmpl.waitUntilTime?(today()+'T'+tmpl.waitUntilTime):null;
+    tasks.push({
+      id,name:tmpl.name,
+      col:tmpl.col||'today',
+      deadlineDate:tmpl.deadlineDate||null,
+      deadlineTime:tmpl.deadlineTime||null,
+      waitingFor:tmpl.waitingFor||'',
+      waitTaskId:null,// resolved in second pass
+      waitUntil,
+      done:false,
+      repeat:tmpl.repeat||'',
+      repeatDays:tmpl.repeatDays||[],
+      repeatStart:null,
+      repeatMonthDay:tmpl.repeatMonthDay||null,
+      categoryId:tmpl.categoryId||null,
+      stickyColor:'',
+      link:tmpl.link||null,
+      casuPin:false,
+      paletteColor:nxtP()
+    });
+  });
+  // Second pass: resolve waitTaskIndex → real waitTaskId
+  p.tasks.forEach((tmpl,i)=>{
+    if(tmpl.waitTaskIndex!=null&&tmpl.waitTaskIndex>=0&&tmpl.waitTaskIndex<createdIds.length){
+      tasks.find(t=>t.id===createdIds[i]).waitTaskId=createdIds[tmpl.waitTaskIndex];
+    }
+  });
+  save();ra();showU(`${p.emoji} added`);
+}
+
+// ── Preset pane render ────────────────────────────────────────────────
+function renderPresetPane(){
+  const el=document.getElementById('pre-list');if(!el)return;
+  if(!presets.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);font-style:italic">No presets yet. Create one below.</div>';return;}
+  el.innerHTML=presets.map((p,idx)=>{
+    if(p.groupBreak)return`<div style="display:flex;align-items:center;gap:8px;color:var(--ink3);font-size:11px">
+      <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
+      <span style="cursor:pointer;opacity:.5" onclick="removePreset(${idx})">✕</span>
+    </div>`;
+    return`<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:7px 10px">
+      <span style="font-size:22px">${p.emoji}</span>
+      <span style="flex:1;font-size:13px;color:var(--ink)">${esc(p.label||p.tasks.map(t=>t.name).join(', '))}</span>
+      <span style="font-size:11px;color:var(--ink3)">${p.tasks.length} task${p.tasks.length!==1?'s':''}</span>
+      <button onclick="openPresetEditor(${idx})" style="background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px">✎</button>
+      <button onclick="removePreset(${idx})" style="background:none;border:none;cursor:pointer;color:rgba(255,100,100,.5);font-size:14px">✕</button>
+    </div>`;
+  }).join('');
+}
+function removePreset(idx){pu('pre');presets.splice(idx,1);save();renderPresetPane();renderPresetRow();}
+function addPresetGroupBreak(){pu('pre');presets.push({groupBreak:true});save();renderPresetPane();renderPresetRow();}
+
+// ── Preset editor ────────────────────────────────────────────────────
+let _editPresetIdx=null;
+function openPresetEditor(idx){
+  _ptRows=[];_editPresetIdx=idx;
+  const p=idx!=null?presets[idx]:null;
+  document.getElementById('preset-mo-title').textContent=p?'Edit preset':'New preset';
+  document.getElementById('pre-emoji-btn').textContent=p?.emoji||'🎯';
+  document.getElementById('pre-label').value=p?.label||'';
+  _ptRows=(p?.tasks||[{name:'',col:'today'}]).map(t=>({...t}));
+  renderPresetTaskRows(_ptRows);
+  document.getElementById('preset-mo').classList.remove('hidden');
+}
+function renderPresetTaskRows(taskTmpls){
+  const el=document.getElementById('pre-tasks-list');
+  const catOpts='<option value="">No category</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  el.innerHTML=taskTmpls.map((t,i)=>`
+    <div class="pre-task-row" data-i="${i}">
+      <div style="display:flex;gap:5px;align-items:center">
+        <input type="text" placeholder="Task name…" value="${esc(t.name||'')}" oninput="updPTF(${i},'name',this.value)" style="flex:1">
+        <select onchange="updPTF(${i},'col',this.value)">
+          <option value="today"${t.col==='today'?' selected':''}>Today</option>
+          <option value="tomorrow"${t.col==='tomorrow'?' selected':''}>Tomorrow</option>
+          <option value="casual"${t.col==='casual'?' selected':''}>Casual</option>
+        </select>
+        <button onclick="removePTRow(${i})" style="background:none;border:none;cursor:pointer;color:rgba(255,100,100,.5);font-size:14px;padding:0 2px">✕</button>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap">
+        <select onchange="updPTF(${i},'categoryId',this.value?parseInt(this.value):null)" style="flex:1">${catOpts.replace(`value="${t.categoryId||''}"`,`value="${t.categoryId||''}" selected`)}</select>
+        <select onchange="updPTF(${i},'repeat',this.value)" style="flex:1">
+          <option value=""${!t.repeat?' selected':''}>No repeat</option>
+          <option value="daily"${t.repeat==='daily'?' selected':''}>Daily</option>
+          <option value="MWF"${t.repeat==='MWF'?' selected':''}>M·W·F</option>
+          <option value="TTS"${t.repeat==='TTS'?' selected':''}>T·T·S</option>
+          <option value="weekdays"${t.repeat==='weekdays'?' selected':''}>Weekdays</option>
+          <option value="weekly"${t.repeat==='weekly'?' selected':''}>Weekly</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:5px;flex-wrap:wrap;align-items:center">
+        <input type="text" placeholder="Wait text…" value="${esc(t.waitingFor||'')}" oninput="updPTF(${i},'waitingFor',this.value)" style="flex:1;min-width:80px">
+        <input type="time" title="Wait until this time today" value="${t.waitUntilTime||''}" oninput="updPTF(${i},'waitUntilTime',this.value)" style="flex:1;min-width:80px">
+      </div>
+      <div style="display:flex;gap:5px;align-items:center">
+        <label style="font-size:11px;color:var(--ink3);white-space:nowrap">Wait for task #:</label>
+        <select onchange="updPTF(${i},'waitTaskIndex',this.value===''?null:parseInt(this.value))" style="flex:1">
+          <option value="">None</option>
+          ${taskTmpls.map((tt,j)=>j!==i?`<option value="${j}"${t.waitTaskIndex===j?' selected':''}>${j+1}. ${esc(tt.name||'(unnamed)')}</option>`:'').filter(Boolean).join('')}
+        </select>
+      </div>
+    </div>`).join('');
+}
+let _ptRows=[];
+function updPTF(i,field,val){_ptRows[i]=_ptRows[i]||{};_ptRows[i][field]=val;}
+function removePTRow(i){_ptRows.splice(i,1);renderPresetTaskRows(_ptRows);}
+function addPresetTaskRow(){_ptRows.push({name:'',col:'today'});renderPresetTaskRows(_ptRows);}
+function savePreset(){
+  const emoji=document.getElementById('pre-emoji-btn').textContent.trim();
+  const label=document.getElementById('pre-label').value.trim();
+  // Collect current row values from DOM
+  document.querySelectorAll('#pre-tasks-list .pre-task-row').forEach((row,i)=>{
+    const inputs=row.querySelectorAll('input,select');
+    _ptRows[i]=_ptRows[i]||{};
+    _ptRows[i].name=row.querySelector('input[type=text]')?.value||'';
+    const sels=[...row.querySelectorAll('select')];
+    _ptRows[i].col=sels[0]?.value||'today';
+    _ptRows[i].categoryId=sels[1]?.value?parseInt(sels[1].value):null;
+    _ptRows[i].repeat=sels[2]?.value||'';
+    _ptRows[i].waitingFor=row.querySelectorAll('input[type=text]')[1]?.value||'';
+    _ptRows[i].waitUntilTime=row.querySelector('input[type=time]')?.value||'';
+    _ptRows[i].waitTaskIndex=sels[3]?.value===''?null:parseInt(sels[3]?.value);
+  });
+  const tasks2=_ptRows.filter(r=>r.name?.trim());
+  if(!tasks2.length){showU('Add at least one task');return;}
+  pu('pre');
+  const preset={id:pid++,emoji:emoji||'🎯',label,tasks:tasks2};
+  if(_editPresetIdx!=null)presets[_editPresetIdx]=preset;
+  else presets.push(preset);
+  save();renderPresetPane();renderPresetRow();
+  closeM('preset-mo');showU(`${emoji} preset saved`);
+}
+
+// ── Emoji picker ─────────────────────────────────────────────────────
+const EMOJIS=['🍳','🍽️','🥗','🍜','🥘','🫕','🧁','☕','🧺','👕','🏋️','🚴','🧘','🛒','📚','✏️','💻','📞','🏥','💊','🐕','🌿','🌸','🌱','🎵','🎬','🎮','🏠','🔧','🚗','✈️','🎯','⭐','💡','📝','🗓️','💰','🧹','🛁','😴','🌙','🌅','📧','📱','🤝','🎁','🏋️','⚽','🎾','🎸','🎨','🧪','🔬','📊','🗂️','📌','🔑','🧲','💪','🫀','🦷','👓','🎒','🛍️'];
+function openEmojiPick(){
+  buildEmojiGrid(EMOJIS);
+  document.getElementById('emoji-search').value='';
+  document.getElementById('emoji-mo').classList.remove('hidden');
+}
+function buildEmojiGrid(list){
+  document.getElementById('emoji-grid').innerHTML=list.map(e=>`<div onclick="pickEmoji('${e}')" style="font-size:24px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;transition:background .1s" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background=''">${e}</div>`).join('');
+}
+function filterEmoji(q){buildEmojiGrid(q?EMOJIS.filter(e=>e.includes(q)):EMOJIS);}
+function pickEmoji(e){document.getElementById('pre-emoji-btn').textContent=e;closeM('emoji-mo');}
 
 function renderRepPane(){
   const el=document.getElementById('rep-task-list');if(!el)return;
@@ -1405,7 +1619,7 @@ function cboxDrop(e,targetId){
 }
 
 // ── Export / Import ───────────────────────────────────────────────
-function exportData(){const d={version:'verbena',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'wisteria',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
