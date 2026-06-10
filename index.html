@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Xeranthemum</title>
+<title>Fleur · Yarrow</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -645,7 +645,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_xeranthemum_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_yarrow_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -685,33 +685,37 @@ async function load(){
     const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'load'})});
     if(r.ok){
       const d=await r.json();
-      if(d&&d.state&&(Array.isArray(d.state.tasks)||typeof d.state==='object')){
-        ap(d.state);localStorage.setItem(KEY,JSON.stringify(d.state));ok=true;
+      // d.state may be a parsed object OR a JSON string (double-encoded by some Supabase configs)
+      let state=d?.state;
+      if(typeof state==='string'){try{state=JSON.parse(state);}catch(e){state=null;}}
+      if(state&&typeof state==='object'){
+        ap(state);localStorage.setItem(KEY,JSON.stringify(state));ok=true;
       }
+    } else {
+      console.warn('Fleur sync load failed:',r.status,await r.text().catch(()=>''));
     }
-  }catch(e){}
+  }catch(e){console.warn('Fleur sync error:',e);}
   // Fallback: try current KEY, then any previous fleur_ key in localStorage
   if(!ok){
     const raw=localStorage.getItem(KEY);
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    // Try all known previous keys
-    const oldKeys=['fleur_wisteria_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
     }
   }
   if(!ok){
-    // Last resort: scan all localStorage keys for anything that looks like fleur state
     for(let i=0;i<localStorage.length;i++){
       const k=localStorage.key(i);
       if(k&&k.startsWith('fleur_')){
-        try{const d=JSON.parse(localStorage.getItem(k));if(d&&d.tasks){ap(d);ok=true;break;}}catch(e){}
+        try{const s=JSON.parse(localStorage.getItem(k));if(s&&s.tasks&&s.tasks.length){ap(s);ok=true;break;}}catch(e){}
       }
     }
   }
+  console.log('Fleur load:',ok?'ok':'empty',tasks.length,'tasks');
   dayTrans();applyTheme();
 }
 
@@ -1655,7 +1659,7 @@ function cboxDrop(e,targetId){
 }
 
 // ── Export / Import ───────────────────────────────────────────────
-function exportData(){const d={version:'xeranthemum',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'yarrow',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
