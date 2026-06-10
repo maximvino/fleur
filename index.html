@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Wisteria</title>
+<title>Fleur · Xeranthemum</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -221,13 +221,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .dock-pane{display:none;padding:20px;flex-direction:column;gap:12px}
 .dock-pane.active{display:flex}
 /* Preset row */
-.preset-row{display:flex;flex-wrap:wrap;gap:6px;padding:8px 0 4px;align-items:center;border-bottom:1px solid rgba(220,190,255,.06)}
-.preset-btn{width:44px;height:44px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;flex-shrink:0;position:relative}
-.preset-btn:hover{transform:scale(1.14);box-shadow:0 4px 16px rgba(0,0,0,.35);border-color:rgba(220,190,255,.45)}
-.preset-btn:active{transform:scale(.94)}
-.preset-btn-badge{position:absolute;bottom:-3px;right:-3px;width:15px;height:15px;border-radius:50%;background:rgba(201,143,212,.75);font-size:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-family:var(--font-b)}
-.preset-group-gap{width:10px;height:44px;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0}
-.preset-group-gap::after{content:'';width:1px;height:26px;background:rgba(255,255,255,.12);display:block}
+.preset-row{display:flex;flex-wrap:wrap;gap:10px;padding:10px 0 6px;justify-content:center;border-bottom:1px solid rgba(220,190,255,.06)}
+.preset-btn{width:56px;height:56px;border-radius:50%;border:1px solid rgba(220,190,255,.18);background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;flex-shrink:0}
+.preset-btn:hover{transform:scale(1.12);box-shadow:0 4px 18px rgba(0,0,0,.4);border-color:rgba(220,190,255,.5)}
+.preset-btn:active{transform:scale(.93)}
 /* Preset task row in editor */
 .pre-task-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:5px}
 .pre-task-row input,.pre-task-row select{font-size:12px;padding:4px 7px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--ink)}
@@ -510,7 +507,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <div id="pre-list" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
         <div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;display:flex;gap:6px;flex-wrap:wrap">
           <button class="add-submit" onclick="openPresetEditor(null)" style="flex:1">＋ New preset</button>
-          <button class="add-submit" onclick="addPresetGroupBreak()" style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);color:var(--ink2)">— Group gap</button>
+
         </div>
       </div>
       <!-- Pile pane -->
@@ -648,7 +645,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_wisteria_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_xeranthemum_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -675,7 +672,7 @@ function ap(s){
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
   tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;});
-  presets=s.presets||[];pid=s.pid||1;
+  presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
 }
 function save(){
   const d=sn();localStorage.setItem(KEY,JSON.stringify(d));
@@ -683,9 +680,38 @@ function save(){
 }
 async function load(){
   let ok=false;
-  try{const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'load'})});
-    if(r.ok){const d=await r.json();if(d&&d.state&&Array.isArray(d.state.tasks)){ap(d.state);localStorage.setItem(KEY,JSON.stringify(d.state));ok=true;}}}catch(e){}
-  if(!ok){const raw=localStorage.getItem(KEY);if(raw)try{ap(JSON.parse(raw));}catch(e){}}
+  // Try Supabase first — shared across all devices
+  try{
+    const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'load'})});
+    if(r.ok){
+      const d=await r.json();
+      if(d&&d.state&&(Array.isArray(d.state.tasks)||typeof d.state==='object')){
+        ap(d.state);localStorage.setItem(KEY,JSON.stringify(d.state));ok=true;
+      }
+    }
+  }catch(e){}
+  // Fallback: try current KEY, then any previous fleur_ key in localStorage
+  if(!ok){
+    const raw=localStorage.getItem(KEY);
+    if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
+  }
+  if(!ok){
+    // Try all known previous keys
+    const oldKeys=['fleur_wisteria_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    for(const k of oldKeys){
+      const raw=localStorage.getItem(k);
+      if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
+    }
+  }
+  if(!ok){
+    // Last resort: scan all localStorage keys for anything that looks like fleur state
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('fleur_')){
+        try{const d=JSON.parse(localStorage.getItem(k));if(d&&d.tasks){ap(d);ok=true;break;}}catch(e){}
+      }
+    }
+  }
   dayTrans();applyTheme();
 }
 
@@ -1045,12 +1071,9 @@ function renderBoard(){document.getElementById('board').innerHTML=['today','tomo
 // ── Preset row ──────────────────────────────────────────────────────
 function renderPresetRow(){
   const row=document.getElementById('preset-row');if(!row)return;
-  if(!presets.length){row.innerHTML='';return;}
-  row.innerHTML=presets.map(p=>{
-    if(p.groupBreak)return`<div class="preset-group-gap"></div>`;
-    const badge=p.tasks.length>1?`<span class="preset-btn-badge">${p.tasks.length}</span>`:'';
-    return`<div class="preset-btn" onclick="firePreset(${p.id})" title="${esc(p.label||p.emoji)}">${p.emoji}${badge}</div>`;
-  }).join('');
+  const vis=presets.filter(p=>!p.groupBreak);
+  if(!vis.length){row.innerHTML='';return;}
+  row.innerHTML=vis.map(p=>`<div class="preset-btn" onclick="firePreset(${p.id})" title="${esc(p.label||p.tasks.map(t=>t.name).join(', '))}">${p.emoji}</div>`).join('');
 }
 
 // ── Fire a preset ────────────────────────────────────────────────────
@@ -1093,22 +1116,35 @@ function firePreset(pid){
 }
 
 // ── Preset pane render ────────────────────────────────────────────────
+let _preDragIdx=null;
 function renderPresetPane(){
   const el=document.getElementById('pre-list');if(!el)return;
-  if(!presets.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);font-style:italic">No presets yet. Create one below.</div>';return;}
-  el.innerHTML=presets.map((p,idx)=>{
-    if(p.groupBreak)return`<div style="display:flex;align-items:center;gap:8px;color:var(--ink3);font-size:11px">
-      <div style="flex:1;height:1px;background:rgba(255,255,255,.1)"></div>
-      <span style="cursor:pointer;opacity:.5" onclick="removePreset(${idx})">✕</span>
-    </div>`;
-    return`<div style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:7px 10px">
+  const vis=presets.filter(p=>!p.groupBreak);
+  if(!vis.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);font-style:italic">No presets yet. Create one below.</div>';return;}
+  el.innerHTML=vis.map((p,visIdx)=>{
+    const realIdx=presets.indexOf(p);
+    return`<div draggable="true" data-ridx="${realIdx}"
+      ondragstart="preDragStart(event,${realIdx})"
+      ondragover="preDragOver(event,${realIdx})"
+      ondrop="preDrop(event,${realIdx})"
+      style="display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.09);border-radius:10px;padding:7px 10px;cursor:grab">
+      <span style="color:var(--ink3);font-size:14px;cursor:grab">⠿</span>
       <span style="font-size:22px">${p.emoji}</span>
       <span style="flex:1;font-size:13px;color:var(--ink)">${esc(p.label||p.tasks.map(t=>t.name).join(', '))}</span>
-      <span style="font-size:11px;color:var(--ink3)">${p.tasks.length} task${p.tasks.length!==1?'s':''}</span>
-      <button onclick="openPresetEditor(${idx})" style="background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px">✎</button>
-      <button onclick="removePreset(${idx})" style="background:none;border:none;cursor:pointer;color:rgba(255,100,100,.5);font-size:14px">✕</button>
+      <button onclick="openPresetEditor(${realIdx})" style="background:none;border:none;cursor:pointer;color:var(--ink3);font-size:14px">✎</button>
+      <button onclick="removePreset(${realIdx})" style="background:none;border:none;cursor:pointer;color:rgba(255,100,100,.5);font-size:14px">✕</button>
     </div>`;
   }).join('');
+}
+function preDragStart(e,idx){_preDragIdx=idx;e.dataTransfer.effectAllowed='move';}
+function preDragOver(e,idx){if(_preDragIdx===null||_preDragIdx===idx)return;e.preventDefault();}
+function preDrop(e,idx){
+  if(_preDragIdx===null||_preDragIdx===idx)return;
+  e.preventDefault();
+  const moved=presets.splice(_preDragIdx,1)[0];
+  const newIdx=_preDragIdx<idx?idx-1:idx;
+  presets.splice(newIdx,0,moved);
+  _preDragIdx=null;save();renderPresetPane();renderPresetRow();
 }
 function removePreset(idx){pu('pre');presets.splice(idx,1);save();renderPresetPane();renderPresetRow();}
 function addPresetGroupBreak(){pu('pre');presets.push({groupBreak:true});save();renderPresetPane();renderPresetRow();}
@@ -1619,7 +1655,7 @@ function cboxDrop(e,targetId){
 }
 
 // ── Export / Import ───────────────────────────────────────────────
-function exportData(){const d={version:'wisteria',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'xeranthemum',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
