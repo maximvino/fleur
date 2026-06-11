@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Amaranth</title>
+<title>Fleur · Bellflower</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -91,7 +91,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   cursor:pointer;
   transition:transform .18s ease,box-shadow .18s ease;
   white-space:nowrap;
-  clip-path:polygon(0% 8%,1% 0%,2.5% 6%,4% 1%,96% 0%,97.5% 7%,99% 2%,100% 10%,100% 88%,99% 96%,97% 91%,95.5% 100%,3% 99%,1.5% 93%,0.5% 98%,0% 90%);
+  clip-path:polygon(0% 6%,0.8% 0%,1.8% 4.5%,3% 1%,4.2% 5.5%,5.5% 0.5%,7% 4%,9% 0%,11% 3.5%,13.5% 0.8%,16% 4%,19% 0.5%,22% 3%,26% 0%,30% 2.5%,35% 0.5%,40% 3%,46% 0%,52% 2.5%,58% 0.5%,64% 3%,70% 0.5%,76% 2%,82% 0%,87% 3%,91% 0.5%,94% 2.5%,96.5% 0%,98% 3%,99.2% 0.5%,100% 5%,99.5% 9%,100% 88%,99.2% 91%,99.8% 94%,98.5% 97%,97% 93%,95.8% 99%,94% 95%,92% 100%,89.5% 95.5%,87% 100%,83% 96%,79% 100%,74% 95.5%,69% 99.5%,63% 96%,57% 100%,50% 96%,43% 100%,36% 95.5%,29% 99%,22% 95%,15% 100%,9% 96%,5% 100%,2.5% 95.5%,0.8% 99%,0% 94%,0.5% 89%,0% 85%,0.4% 10%);
   box-shadow:1px 3px 8px rgba(0,0,0,.4),0 1px 0 rgba(255,248,220,.6) inset;
   letter-spacing:.01em;
 }
@@ -372,8 +372,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   </div>
 
   <div class="board" id="board"></div>
-  <div class="full-row" id="wait-row"></div>
   <div class="full-row" id="casu-row"></div>
+  <div class="full-row" id="wait-row"></div>
   <!-- Control dock (between time boxes and categories) -->
   <div class="dock" id="dock-static">
     <div class="dock-icons" id="dock-icons">
@@ -493,6 +493,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <div class="cl" id="chat-log">
           <div class="bl ai">Bonjour. Every change needs approval. Be specific — no memory between messages.</div>
         </div>
+        <div style="padding:4px 0 8px"><button onclick="dlContextDoc()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 10px;color:var(--ink2);font-size:12px;cursor:pointer;font-family:var(--font-b)">⬇ Download context doc</button></div>
         <div class="ai-row">
           <textarea id="ci" rows="1"></textarea>
           <div class="ai-btns">
@@ -608,6 +609,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     <div id="edc" style="display:none"><div class="day-checks" id="edit-days"></div><div id="emonthday-wrap" style="display:none;margin-top:6px"><input class="fi" id="emonthday" type="number" min="1" max="31" placeholder="Day of month (1–31)"></div></div>
     <div class="fg"><input class="fi" id="erep-start" type="date"></div>
     <div class="fg"><div class="fl">🎨</div><div class="cdots" id="edit-cr"></div></div>
+    <div class="fg"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink2);font-size:13px"><input type="checkbox" id="eurgent" style="accent-color:#ff4444;width:15px;height:15px"> <span>🚨 Urgent</span></label></div>
     <div class="mf">
       <button class="mdel" onclick="delTask()">Delete</button>
       <button class="mcan" onclick="closeM('tm')">Cancel</button>
@@ -645,7 +647,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_amaranth_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_bellflower_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -671,7 +673,7 @@ function ap(s){
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
-  tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;});
+  tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;});
   presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
 }
 function save(){
@@ -951,7 +953,7 @@ function snHTML(task,inCat){
   const cat=getCat(task.categoryId);
   // streak color = time box bg; tack color = time box txt (light, visible on dark tab)
   const streakBg=TBOX[task.col]?.bg||'rgba(0,0,0,.12)';
-  const tackColor=inCat?(TBOX[task.col]?.txt||tx):tx;
+  const tackColor=task.urgent?'#ff4444':inCat?(TBOX[task.col]?.txt||tx):tx;
   // Date/repeat badges go on the TAB (header area)
   const dateStr=fmtDate(task.deadlineDate);
   let dateCls='badge';
@@ -964,7 +966,7 @@ function snHTML(task,inCat){
   const wn=task.waitingFor||(task.waitTaskId?('until '+getDepName(task)+' done'):'')
           ||(task.waitUntil?waitUntilLabel(task):'');
   const blocked=isBlocked(task);
-  const waitIcon=wn?`<button class="sn-wait-btn" onclick="event.stopPropagation();this.closest('.sn').classList.toggle('wait-open')" title="Toggle wait">⏳</button>`:'';
+  const waitIcon=wn?`<button class="sn-wait-btn" onclick="event.stopPropagation();this.closest('.sn').classList.toggle('wait-open')" title="${wn}">⏳</button>`:'';
   const linkIcon=task.link?`<a class="sn-link-btn" href="${esc(task.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Open link">🔗</a>`:'';
   const tabLeft=dateStr?`<span class="${dateCls}" style="font-size:9px;padding:1px 5px">${esc(dateStr)}</span>`:'';
   const tabRight=[
@@ -994,11 +996,11 @@ function snHTML(task,inCat){
 
 // ── Cork grain ──────────────────────────────────────────────────────
 const CORK_GFX={
-  today:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Ctext%20x%3D%229%22%20y%3D%2212%22%20font-size%3D%2214%22%20fill%3D%22rgba%28218%2C172%2C80%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%80%3C%2Ftext%3E%3Ctext%20x%3D%2227%22%20y%3D%2230%22%20font-size%3D%2214%22%20fill%3D%22rgba%28218%2C172%2C80%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%80%3C%2Ftext%3E%3C%2Fsvg%3E)',
-  tomorrow:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Ctext%20x%3D%229%22%20y%3D%2212%22%20font-size%3D%2214%22%20fill%3D%22rgba%28195%2C130%2C155%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BE%3C%2Ftext%3E%3Ctext%20x%3D%2227%22%20y%3D%2230%22%20font-size%3D%2214%22%20fill%3D%22rgba%28195%2C130%2C155%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BE%3C%2Ftext%3E%3C%2Fsvg%3E)',
-  upcoming:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Ctext%20x%3D%229%22%20y%3D%2212%22%20font-size%3D%2214%22%20fill%3D%22rgba%28130%2C148%2C210%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BD%3C%2Ftext%3E%3Ctext%20x%3D%2227%22%20y%3D%2230%22%20font-size%3D%2214%22%20fill%3D%22rgba%28130%2C148%2C210%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BD%3C%2Ftext%3E%3C%2Fsvg%3E)',
-  wait:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Ctext%20x%3D%229%22%20y%3D%2212%22%20font-size%3D%2214%22%20fill%3D%22rgba%28130%2C175%2C120%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%83%3C%2Ftext%3E%3Ctext%20x%3D%2227%22%20y%3D%2230%22%20font-size%3D%2214%22%20fill%3D%22rgba%28130%2C175%2C120%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%83%3C%2Ftext%3E%3C%2Fsvg%3E)',
-  casual:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2236%22%20height%3D%2236%22%3E%3Ctext%20x%3D%229%22%20y%3D%2212%22%20font-size%3D%2214%22%20fill%3D%22rgba%28210%2C120%2C90%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%A4%3C%2Ftext%3E%3Ctext%20x%3D%2227%22%20y%3D%2230%22%20font-size%3D%2214%22%20fill%3D%22rgba%28210%2C120%2C90%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%A4%3C%2Ftext%3E%3C%2Fsvg%3E)',
+  today:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28218%2C172%2C80%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%80%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28218%2C172%2C80%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%80%3C%2Ftext%3E%3C%2Fsvg%3E)',
+  tomorrow:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28195%2C130%2C155%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BE%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28195%2C130%2C155%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BE%3C%2Ftext%3E%3C%2Fsvg%3E)',
+  upcoming:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28130%2C148%2C210%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BD%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28130%2C148%2C210%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BD%3C%2Ftext%3E%3C%2Fsvg%3E)',
+  wait:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28130%2C175%2C120%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%83%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28130%2C175%2C120%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%83%3C%2Ftext%3E%3C%2Fsvg%3E)',
+  casual:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28210%2C120%2C90%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%A4%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28210%2C120%2C90%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%A4%3C%2Ftext%3E%3C%2Fsvg%3E)',
 };
 function corkHTML(col){
   const cs=colStyles[col]||TBOX[col];const isMin=colMin[col]||false;
@@ -1538,7 +1540,7 @@ function openTask(id){
   const isC=t.repeat==='custom';document.getElementById('edc').style.display=isC?'block':'none';
   if(isC)buildDays('edit-days',t.repeatDays||[]);
   syncSelects();document.getElementById('ec').value=t.categoryId||'';
-  mkDots('edit-cr',t.stickyColor||'');document.getElementById('tm').classList.remove('hidden');
+  mkDots('edit-cr',t.stickyColor||'');document.getElementById('eurgent').checked=!!t.urgent;document.getElementById('tm').classList.remove('hidden');
 }
 // ewg always visible — no listener needed
 function saveTask(){
@@ -1558,7 +1560,7 @@ function saveTask(){
   t.repeatDays=t.repeat==='custom'?getDays('edit-days'):[];
   t.repeatMonthDay=t.repeat==='monthly-day'?parseInt(document.getElementById('emonthday')?.value||1):null;
   const cv=document.getElementById('ec').value;t.categoryId=cv?parseInt(cv):null;
-  t.stickyColor=getDot('edit-cr');
+  t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;
   // Auto-route based on date/wait (unless user explicitly chose a col)
   const chosenCol=document.getElementById('eco').value;
   if(t.waitingFor||t.waitTaskId){t.col='wait';}
@@ -1678,7 +1680,286 @@ function cboxDrop(e,targetId){
 }
 
 // ── Export / Import ───────────────────────────────────────────────
-function exportData(){const d={version:'amaranth',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+
+function dlContextDoc(){
+  const md=`# Fleur — Full Project Context
+## Current version: Bellflower
+
+Paste this at the start of a new Claude conversation, then upload the current HTML file.
+
+---
+
+## Infrastructure
+
+- **Frontend**: single \`index.html\` file hosted on GitHub Pages at \`https://maximvino.github.io/fleur\`. Updated by replacing the file in the GitHub repo — no build step, no CLI needed.
+- **Backend**: Netlify at \`https://fleurplanner.netlify.app\` — deployed once, rarely changed. Two serverless functions:
+  - \`/api/chat\` → proxies Anthropic API (key in Netlify env var \`ANTHROPIC_API_KEY\`)
+  - \`/api/sync\` → Supabase upsert/load (env vars \`SUPABASE_URL\`, \`SUPABASE_APIKEY\`)
+- **Database**: Supabase, table \`planner_state\`, single row \`id=1\`, column \`state\` (JSON)
+- **Model**: \`claude-haiku-4-5\` (1500 tokens). Sonnet toggle: \`claude-sonnet-4-5\` (2500 tokens)
+- **Storage key**: \`fleur_bellflower_v1\` (localStorage + Supabase reference). \`load()\` falls back through all prior version keys if current is empty.
+- **Backend files** (\`netlify.toml\`, \`chat.js\`, \`sync.js\`): essentially permanent. \`sync.js\` has \`Access-Control-Allow-Origin: *\` CORS headers — required because frontend is on a different origin from the API.
+- **Output files**: always named \`[VersionName].html\` (e.g. \`Bellflower.html\`). User renames to \`index.html\` when uploading to GitHub.
+
+---
+
+## Naming convention
+
+Every update is named after the next letter of the alphabet using a flower/plant name.
+
+Full history: Aster → Bellflower → Cornflower → Dahlia → Eglantine → Foxglove → Gentian → Hyacinth → Iris → Jasmine → Lavender → Marigold → Narcissus → Orchid → Peony → Quince → Rose → Sunflower → Tulip → Verbena → Wisteria → Xeranthemum → Yarrow → Zinnia → Amaranth → Bellflower
+
+**On every new version sent**, update: \`<title>Fleur · [Name]</title>\`, \`const KEY='fleur_[name]_v1'\`, \`version:'[name]'\` in exportData, and add the new key to the \`oldKeys\` fallback array in \`load()\`.
+
+---
+
+## Design language
+
+**Theme**: deep purple floral dark (\`--page: #130e1c\`), dusty rose accent (\`#c98fd4\`)
+
+**CSS variables**:
+\`\`\`css
+--page: #130e1c       /* page background */
+--surface: #1c1528    /* card/modal surface */
+--ink: #f0e8f5        /* primary text */
+--ink2: #c0b4d0       /* secondary text */
+--ink3: #7a6e8a       /* muted text */
+--accent: #c98fd4     /* dusty rose */
+--font-h: 'Lora'      /* headings */
+--font-b: 'DM Sans'   /* UI/body */
+--font-note: 'Spectral' /* sticky note text */
+--ts: 15px            /* sticky font size */
+\`\`\`
+
+**Fonts**: Lora (headings/UI labels), DM Sans (UI/body), Spectral (sticky note text, serif). Loaded from Google Fonts.
+
+---
+
+## Sticky notes
+
+- Fixed \`width:140px\`, \`aspect-ratio:1/1\` → always square by default
+- Grows taller (not wider) when \`data-haswait\` attr is present: \`aspect-ratio:unset; min-height:140px\`
+- \`overflow:hidden\` on \`.sn\` — never change this
+- Background: \`ensureColor(task)\` — task's \`stickyColor\`, or \`paletteColor\`, or category color
+- Text color: \`con(bg)\` — auto dark/light contrast
+- **Urgent flag**: \`task.urgent\` (bool). When true, the thumbtack SVG renders in \`#ff4444\` (red) instead of the normal \`tackColor\`. Toggle via the edit modal (🚨 Urgent checkbox).
+
+**Structure TOP→BOTTOM**:
+1. \`.sn-tab\` — 3-col CSS grid (\`1fr auto 1fr\`):
+   - Left cell: date badge (\`.badge\` with col-specific class)
+   - Center: thumbtack button (\`.cbtn\`) — always centered regardless of badges. Color is red if \`task.urgent\`, else normal \`tackColor\`.
+   - Right cell: \`.sn-tab-badges\` — repeat badge + ⏳ wait icon + 🔗 link icon
+2. \`.sn-body\` — ruled lines via \`repeating-linear-gradient(24px)\`:
+   - \`.sn-name\` — task name in Spectral
+   - \`.sn-wait-reveal\` — wait text, hidden by default, shown when \`.sn\` has \`.wait-open\` class
+3. \`.sn-streak\` (cat box stickies only) — thin colored bar at bottom, color = \`TBOX[task.col].bg\`
+
+**Tab styling in category boxes**: tab bg = \`TBOX[task.col].bg\` (streakBg); tack color = \`TBOX[task.col].txt\` (ensures visibility on dark tab). Urgent overrides tack color to \`#ff4444\`.
+
+**Completion animation**: \`.completing\` class → \`sn-done\` keyframe (scale+rotate+fade, 450ms), then state commits
+
+**Blocked stickies**: \`.sn-blocked\` — \`opacity:.38; filter:saturate(.5)\` — used in time boxes only, not category boxes
+
+---
+
+## Cork boards (time boxes, Wait, Casual)
+
+**Background**: \`background:\${CORK_GFX[col]},\${cs.bg}\` — per-box Unicode floral glyph tile layered over the solid time-box color. \`CORK_GFX\` is a JS object keyed by col name, each value a URL-encoded SVG data URI with a half-drop repeat pattern. Never regenerate unless explicitly asked.
+
+**Glyphs per box**: today \`❀\`, tomorrow \`✾\`, upcoming \`✽\`, wait \`❃\`, casual \`✤\`. Each in a complementary color to that box's background (amber on green, mauve on amber, periwinkle on orange, sage on red, coral on purple).
+
+**Half-drop tile geometry**: SVG is \`2s × 2s\` pixels (where \`s = fontSize + 4\`). Glyph 1 at \`(s/2, s*0.72)\`, glyph 2 at \`(3s/2, s*0.72 + s)\`. When tiled this produces a brick/half-drop stagger with no dead space.
+
+**Metal frame**: \`border:3px solid #5a4a2e\` + directional inset box-shadows (highlight top, shadow bottom)
+
+**TBOX colors**:
+| Col | bg | txt |
+|-----|----|-----|
+| today | \`#1e3d2a\` | \`#c8e6d0\` |
+| tomorrow | \`#3a2c06\` | \`#f0e0a0\` |
+| upcoming | \`#3a1d00\` | \`#f5d4a8\` |
+| wait | \`#3a0f0f\` | \`#f5c8c8\` |
+| casual | \`#1e1040\` | \`#d4c8f5\` |
+
+**Cork body grid**: \`display:grid; grid-template-columns:repeat(auto-fill,140px); gap:8px; justify-content:center\`
+
+**Category box bg**: \`color-mix(in srgb, cat.color 45%, #0d0a14 55%)\`
+
+---
+
+## Header
+
+Single flex row, \`position:relative; justify-content:space-between\`:
+- Left: \`.hdr-left\` → weekday italic (Lora)
+- Center: \`.hdr-flower\` → \`position:absolute; left:50%; transform:translateX(-50%)\` — 8-petal SVG flower, always truly centered
+- Right: \`.hdr-right\` → day number (large) + month name italic
+
+Mobile (<480px): smaller font sizes, flower shrinks to 44px. All stays on one line.
+
+---
+
+## Page layout (top to bottom)
+
+1. Header
+2. Board: Today / Tomorrow / Upcoming (\`align-items:stretch\` for uniform heights)
+3. Casual (full-width cork)
+4. Wait (full-width cork)
+5. **Dock**:
+   - Row 1 — 7 master icons (44×44px circles): 🌸 Add, 🌿 Categories, 🌼 AI, 🍃 Pile, 🌾 Repeating, 🪴 Presets, 🌱 Import/Export
+   - Row 2 — Preset buttons (same 44×44px size, grid layout computed by JS)
+   - Pane opens downward below dock
+6. Category boxes
+
+**Note**: Casual appears above Wait in the layout (changed from original order).
+
+---
+
+## Dock panes
+
+| Icon | Pane ID | Purpose |
+|------|---------|---------|
+| 🌸 | pane-add | Add task |
+| 🌿 | pane-cat | Manage categories |
+| 🌼 | pane-ai | AI assistant + context doc download |
+| 🍃 | pane-pile | Completed today / pile |
+| 🌾 | pane-rep | Repeating tasks manager |
+| 🪴 | pane-pre | Preset tasks manager |
+| 🌱 | transfer-mo modal | Import / Export |
+
+**AI pane extras**: Contains a "Download context doc" button that generates and downloads the current project context as a \`.md\` file.
+
+---
+
+## State shape
+
+\`\`\`js
+// Task
+{
+  id,                   // int
+  name,                 // string
+  col,                  // 'today'|'tomorrow'|'upcoming'|'wait'|'casual'
+  deadlineDate,         // 'YYYY-MM-DD' or null
+  deadlineTime,         // 'HH:MM' or null
+  waitingFor,           // string label
+  waitTaskId,           // int or null
+  waitUntil,            // ISO datetime string or null
+  done,                 // bool
+  urgent,               // bool — red thumbtack signifier
+  repeat,               // ''|'daily'|'weekly'|'biweekly'|'MWF'|'TTS'|'weekdays'|'custom'|'monthly-start'|'monthly-mid'|'monthly-end'|'monthly-day'
+  repeatDays,           // [0-6] for 'custom'
+  repeatStart,          // 'YYYY-MM-DD' or null
+  repeatMonthDay,       // 1-31 for 'monthly-day', else null
+  categoryId,           // int or null
+  stickyColor,          // hex string or ''
+  paletteColor,         // hex string (auto-assigned from PASTELS cycle)
+  link,                 // URL string or null
+  casuPin,              // bool — pinned to top section of Casual
+}
+
+// Category
+{ id, name, color, defaultDate, defaultWait, showBox, minimized, colGroup }
+
+// Preset
+{
+  id, emoji, label,
+  tasks: [{ name, col, deadlineDate, waitingFor, waitUntilTime, waitTaskIndex, categoryId, repeat, repeatDays, repeatMonthDay, link }]
+}
+
+// Top-level state
+{ tasks, cats, presets, completedToday, colStyles, colMin, gTheme, tid, cid, pid }
+\`\`\`
+
+---
+
+## Key functions
+
+### State / persistence
+- \`sn()\` — serializes full state
+- \`ap(s)\` — loads state; migrates missing fields including \`urgent\`
+- \`save()\` — localStorage + Supabase
+- \`load()\` — Supabase → current key → old keys → any \`fleur_*\` key
+
+### Rendering
+- \`ra()\` — re-renders everything
+- \`snHTML(task, inCat)\` — builds sticky HTML. Tack color: \`task.urgent ? '#ff4444' : tackColor\`
+- \`corkHTML(col)\` — builds cork board. Background: \`CORK_GFX[col]\` (per-box glyph)
+- \`renderCatSection()\`, \`renderPresetRow()\`, \`renderRepPane()\`, \`renderPresetPane()\`
+
+### Task actions
+- \`chk(id)\` — marks done with animation; advances repeating tasks
+- \`liberateDeps(id)\` — clears waitTaskId on dependent tasks
+- \`isBlocked(task)\` — waitTaskId → incomplete OR waitUntil in future
+- \`openTask(id)\` — opens edit modal; populates \`urgent\` checkbox
+- \`saveTask()\` — reads \`urgent\` checkbox from \`#eurgent\`
+
+---
+
+## Wait system
+
+A task is **blocked** when:
+1. \`waitTaskId\` exists and that task is not done, OR
+2. \`waitUntil\` exists and is in the future
+
+**Wait ribbons** (torn paper scraps above Wait stickies): only for text \`waitingFor\` groups. Style: \`background:#dfc99a; color:#2a1f0e\`, Spectral italic, irregular torn \`clip-path\` polygon edges (~50 points, heavily jagged top and bottom). Hidden when Wait is minimized.
+
+**⏳ icon tooltip**: shows the actual wait text (\`task.waitingFor\`) on hover, not a generic label.
+
+---
+
+## Casual double-minimize
+
+\`colMin['casual']\` has three levels: \`0\` (full), \`1\` (semi — pinned only), \`2\` (all hidden).
+
+---
+
+## Export / Import
+
+\`exportData()\` → JSON with \`sn()\` + \`{version:'bellflower', exported: ISO string}\`
+\`importData(event)\` → parses JSON, calls \`ap()\`
+
+**Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
+
+### ap() migration:
+\`\`\`js
+tasks.forEach(t => {
+  if(t.waitUntil === undefined)     t.waitUntil = null;
+  if(t.link === undefined)          t.link = null;
+  if(t.repeatMonthDay === undefined) t.repeatMonthDay = null;
+  if(t.casuPin === undefined)       t.casuPin = false;
+  if(t.urgent === undefined)        t.urgent = false;
+});
+\`\`\`
+
+---
+
+## CSS rules — never violate
+
+- \`.sn\`: \`width:140px; aspect-ratio:1/1; overflow:hidden\`
+- \`.sn[data-haswait]\`: \`aspect-ratio:unset; min-height:140px\`
+- \`.sn-tab\`: \`display:grid; grid-template-columns:1fr auto 1fr\`
+- \`.cork-body\`, \`.cbox-body\`: \`display:grid; grid-template-columns:repeat(auto-fill,140px); justify-content:center\`
+- \`.sn-blocked\`: \`opacity:.38; filter:saturate(.5)\` — time boxes only
+- \`textarea\`, date/time inputs: \`font-size:16px\` minimum
+- Never use \`overflow:visible\` on \`.sn\`
+
+---
+
+## Working method (critical)
+
+- **Read before editing**: always \`view\` the exact lines before any \`str_replace\` or Python replace
+- **Use Python string replace** via bash for edits — exact string matching, verify after
+- **Run a verification pass** after every batch of changes
+- **Never send test files** — final output only, named \`[VersionName].html\`
+- **Always rename** to the next flower/plant letter on every version sent — update \`<title>\`, \`KEY\`, \`version:\`, and add new key to \`oldKeys\` in \`load()\`
+- **Never add busy UI text** — no counts, no labels, no extra tooltips unless explicitly requested
+- **Preserve \`CORK_GFX\`** — it is a pre-computed constant object; never regenerate unless asked
+- The user has **limited 5-hour message credits** — no test files, no unnecessary clarifying questions
+- User's GitHub: \`maximvino\`, repo: \`fleur\`
+`;
+  const b=new Blob([md],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='fleur-context.md';a.click();
+}
+function exportData(){const d={version:'bellflower',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
