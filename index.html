@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Bellflower Petal</title>
+<title>Fleur · Dahlia</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -37,17 +37,17 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* ── Header ── */
 .hdr{position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding:0 2px;min-height:60px}
 .hdr-left{display:flex;align-items:baseline;gap:6px}
-.hdr-weekday{font-family:var(--font-h);font-size:1.4rem;font-weight:400;color:var(--ink);font-style:italic;opacity:.6;letter-spacing:-.01em;white-space:nowrap}
+.hdr-weekday{font-family:var(--font-h);font-size:1.4rem;font-weight:400;color:var(--ink);opacity:.6;letter-spacing:-.01em;white-space:nowrap}
 .hdr-flower{position:absolute;left:50%;transform:translateX(-50%);flex-shrink:0;pointer-events:none}
-.hdr-right{display:flex;align-items:baseline;gap:6px}
-.hdr-daynum{font-family:var(--font-h);font-size:2.4rem;font-weight:400;color:var(--ink);line-height:1}
-.hdr-month{font-family:var(--font-h);font-size:1.1rem;color:var(--ink2);font-style:italic;white-space:nowrap}
+.hdr-right{display:flex;align-items:baseline;gap:0}
+.hdr-daynum{display:none}
+.hdr-month{font-family:var(--font-h);font-size:1.5rem;color:var(--ink);white-space:nowrap}
 @media(max-width:480px){
-  .hdr-daynum{font-size:1.8rem}
+  .hdr-daynum{font-size:1.15rem}
   .hdr-weekday{font-size:1.05rem}
   .hdr-flower svg{width:44px;height:44px}
 }
-.dateline{font-size:13px;color:var(--ink2);font-style:italic;font-family:var(--font-h);margin-top:1px;letter-spacing:.01em}
+.dateline{font-size:13px;color:var(--ink2);font-family:var(--font-h);margin-top:1px;letter-spacing:.01em}
 .hbtns{display:flex;gap:6px}
 .hbtn{background:rgba(220,190,255,.05);border:1px solid rgba(220,190,255,.1);border-radius:18px;padding:5px 11px;font-size:11px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .15s;font-family:var(--font-b)}
 .hbtn:hover{background:rgba(220,190,255,.1);color:var(--ink)}
@@ -61,7 +61,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* ── Corkboard (time box) ── */
 .cork{border-radius:12px;overflow:hidden;display:flex;flex-direction:column;position:relative;
   /* steel/metal frame */
-  border:3px solid #5a4a2e;
+  border:3px solid transparent; /* set per-box via inline style */
   box-shadow:
     inset 0 1px 0 rgba(255,235,180,.18),
     inset 0 -2px 0 rgba(0,0,0,.4),
@@ -69,7 +69,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     inset -2px 0 0 rgba(0,0,0,.25),
     0 6px 20px rgba(0,0,0,.5),
     0 2px 4px rgba(0,0,0,.35)}
-.cork.minimized>.cork-body,.cork.minimized>.cork-add{display:none}
+.cork.minimized>.cork-body{display:none}
 .cork.minimized{min-height:0!important}
 .cork-hdr{padding:9px 12px 8px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);backdrop-filter:blur(4px);flex-wrap:wrap}
 .cork-title{font-family:var(--font-h);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;flex:1}
@@ -85,7 +85,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   padding:4px 16px 5px;
   font-family:var(--font-note);
   font-size:12.5px;
-  font-style:italic;
+  
   color:#2a1f0e;
   background:#dfc99a;
   cursor:pointer;
@@ -174,13 +174,13 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .sn-wait-btn:hover,.sn-wait-btn.open{opacity:1}
 /* Wait text reveal — shown below task name when ⏳ tapped */
 .sn-wait-reveal{display:none;font-family:var(--font-note);font-size:var(--ts);line-height:24px;
-  color:inherit;opacity:.55;font-style:italic;margin-top:0;word-break:break-word;
+  color:inherit;opacity:.55;margin-top:0;word-break:break-word;
   border-top:1px solid rgba(0,0,0,.08);padding-top:2px;margin-top:4px}
 .sn.wait-open .sn-wait-reveal{display:block}
 .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
 
 /* ── Empty ── */
-.empty{width:100%;text-align:center;padding:.8rem .4rem;font-size:11px;font-style:italic;font-family:var(--font-h);opacity:.3}
+.empty{width:100%;text-align:center;padding:.8rem .4rem;font-size:11px;font-family:var(--font-h);opacity:.3}
 
 /* ── Cat section ── */
 .cat-section{margin-bottom:12px}
@@ -263,10 +263,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cl::-webkit-scrollbar{width:3px}
 .cl::-webkit-scrollbar-thumb{background:rgba(220,190,255,.1);border-radius:99px}
 .bl{max-width:90%;padding:7px 11px;border-radius:10px;font-size:13px;line-height:1.5}
-.bl.ai{background:rgba(220,190,255,.07);color:var(--ink);align-self:flex-start;font-family:var(--font-h);font-style:italic;border:1px solid rgba(220,190,255,.1)}
+.bl.ai{background:rgba(220,190,255,.07);color:var(--ink);align-self:flex-start;font-family:var(--font-h);border:1px solid rgba(220,190,255,.1)}
 .bl.user{background:rgba(220,190,255,.1);color:var(--ink);align-self:flex-end}
-.bl.thinking{background:rgba(255,255,255,.03);color:var(--ink3);align-self:flex-start;font-family:var(--font-h);font-style:italic;border:1px solid rgba(220,190,255,.08)}
-.bl.err{background:rgba(140,20,20,.2);color:#f5c8c8;align-self:flex-start;border:1px solid rgba(140,20,20,.3);font-family:var(--font-h);font-style:italic}
+.bl.thinking{background:rgba(255,255,255,.03);color:var(--ink3);align-self:flex-start;font-family:var(--font-h);border:1px solid rgba(220,190,255,.08)}
+.bl.err{background:rgba(140,20,20,.2);color:#f5c8c8;align-self:flex-start;border:1px solid rgba(140,20,20,.3);font-family:var(--font-h);}
 .ai-row{display:flex;gap:6px;align-items:flex-end}
 .ai-row textarea{flex:1;font-size:16px;font-family:var(--font-b);padding:9px 12px;background:rgba(255,255,255,.06);border:1px solid rgba(220,190,255,.15);border-radius:10px;color:var(--ink);outline:none;resize:none;line-height:1.5;min-height:40px;max-height:90px}
 .ai-row textarea::placeholder{color:var(--ink3)}
@@ -279,7 +279,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .ar{background:rgba(220,190,255,.04);border:1px solid rgba(220,190,255,.1);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:5px}
 .ai-item{display:flex;align-items:flex-start;justify-content:space-between;gap:7px;padding:4px 0;border-bottom:1px solid rgba(220,190,255,.06)}
 .ai-item:last-of-type{border-bottom:none}
-.ai-desc{font-size:12px;font-family:var(--font-h);font-style:italic;color:var(--ink2);flex:1;line-height:1.35}
+.ai-desc{font-size:12px;font-family:var(--font-h);color:var(--ink2);flex:1;line-height:1.35}
 .ai-desc.fg2{color:#f5c8c8;text-decoration:line-through}
 .ai-bts{display:flex;gap:4px;flex-shrink:0}
 .ayes{font-size:10px;padding:2px 8px;border-radius:5px;border:1px solid rgba(220,190,255,.18);background:rgba(220,190,255,.07);color:var(--ink);cursor:pointer}
@@ -298,7 +298,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .pile-drawer{position:fixed;bottom:0;left:0;right:0;background:rgba(18,13,26,.97);border-top:1px solid rgba(220,190,255,.13);backdrop-filter:blur(14px);z-index:500;transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);padding:16px 20px 24px;max-height:60vh;overflow-y:auto}
 .pile-drawer.open{transform:translateY(0)}
 .pile-drawer-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.pile-drawer-title{font-family:var(--font-h);font-size:.95rem;color:var(--ink);font-style:italic}
+.pile-drawer-title{font-family:var(--font-h);font-size:.95rem;color:var(--ink);}
 .pile-close{background:none;border:none;color:var(--ink3);font-size:22px;cursor:pointer;line-height:1;padding:0}
 .pile-fan{display:flex;flex-wrap:wrap;gap:10px}
 .pile-note{width:120px;min-height:80px;border-radius:3px;padding:10px;
@@ -309,7 +309,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .pile-note:nth-child(even){transform:rotate(2deg)}
 .pile-note:nth-child(3n){transform:rotate(-1.5deg)}
 .pile-note:hover{filter:none;transform:scale(1.05) rotate(0deg)!important}
-.pile-empty{font-size:13px;color:var(--ink3);font-style:italic;font-family:var(--font-h)}
+.pile-empty{font-size:13px;color:var(--ink3);font-family:var(--font-h)}
 
 /* ── Modals ── */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:18px}
@@ -366,8 +366,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       </svg>
     </div>
     <div class="hdr-right">
-      <span class="hdr-daynum" id="hdr-daynum"></span>
-      <span class="hdr-month" id="hdr-month"></span>
+      <span class="hdr-month" id="hdr-month"></span><span class="hdr-daynum" id="hdr-daynum"></span>
     </div>
   </div>
 
@@ -464,7 +463,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         </div>
       </div>
       <div class="dock-pane" id="pane-rep">
-        <div style="font-family:var(--font-h);font-size:.85rem;color:var(--ink2);font-style:italic;margin-bottom:8px">Repeating tasks</div>
+        <div style="font-family:var(--font-h);font-size:.85rem;color:var(--ink2);margin-bottom:8px">Repeating tasks</div>
         <div id="rep-task-list" style="display:flex;flex-direction:column;gap:6px;max-height:360px;overflow-y:auto"></div>
         <div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px">
           <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px">Add repeating task</div>
@@ -504,7 +503,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       </div>
       <!-- Presets pane -->
       <div class="dock-pane" id="pane-pre">
-        <div style="font-family:var(--font-h);font-size:.85rem;color:var(--ink2);font-style:italic;margin-bottom:8px">Preset tasks</div>
+        <div style="font-family:var(--font-h);font-size:.85rem;color:var(--ink2);margin-bottom:8px">Preset tasks</div>
         <div id="pre-list" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
         <div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;display:flex;gap:6px;flex-wrap:wrap">
           <button class="add-submit" onclick="openPresetEditor(null)" style="flex:1">＋ New preset</button>
@@ -514,7 +513,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       <!-- Pile pane -->
       <div class="dock-pane" id="pane-pile">
         <div id="pile-fan-inline" style="display:flex;flex-wrap:wrap;gap:10px;padding:4px 0"></div>
-        <p id="pile-empty-msg" style="font-size:13px;color:var(--ink3);font-style:italic;font-family:var(--font-h)">Nothing completed yet today.</p>
+        <p id="pile-empty-msg" style="font-size:13px;color:var(--ink3);font-family:var(--font-h)">Nothing completed yet today.</p>
       </div>
     </div>
   </div>
@@ -647,7 +646,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_bellflower_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_dahlia_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -656,6 +655,7 @@ const TBOX={
   wait:    {label:'Wait',     bg:'#3a0f0f',txt:'#f5c8c8',shape:'sticky'},
   casual:  {label:'Casual',   bg:'#1e1040',txt:'#d4c8f5',shape:'sticky'},
 };
+const CORK_FRAME={today:'#5a4a1a',tomorrow:'#4a2a38',upcoming:'#22304a',wait:'#1e3a1e',casual:'#2e1a3a'};
 const PASTELS=['#f5e8d3','#e8d5e8','#d3e8d5','#d3dde8','#e8e0d3','#e8d3d3','#d3e8e8','#e8dcd3','#ddd3e8','#d3e8dd'];
 const DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
 let _pi=0;function nxtP(){return PASTELS[_pi++%PASTELS.length];}
@@ -935,14 +935,19 @@ function updatePills(){
   if(wv){const wt=document.getElementById('aw')?.value||'';wv.textContent=wt;}
 }
 
+const DOW_CLR=['#e08060','#d4a840','#7ab870','#60a8d4','#9878d0','#c068a8','#d06878'];
 // ── Render ────────────────────────────────────────────────────────
 function ra(){
   const _d=new Date();
   const _wd=_d.toLocaleDateString('en-CA',{weekday:'long'});
   const _mo=_d.toLocaleDateString('en-CA',{month:'long'});
+  const _dow=_d.getDay();const _dc=DOW_CLR[_dow];
   document.getElementById('hdr-weekday').textContent=_wd;
-  document.getElementById('hdr-daynum').textContent=_d.getDate();
-  document.getElementById('hdr-month').textContent=_mo;
+  document.getElementById('hdr-weekday').style.color=_dc;
+  const _dn=_d.getDate();const _sfx=['th','st','nd','rd'];const _v=_dn%100;
+  const _ord=_dn+(_sfx[(_v-20)%10]||_sfx[_v]||_sfx[0]);
+  document.getElementById('hdr-month').textContent=_mo+' '+_ord;
+  document.getElementById('hdr-month').style.color=_dc;
   renderBoard();renderFull('wait');renderFull('casual');renderCatSection();renderCatChips();syncSelects();renderPile();renderPresetRow();
 }
 
@@ -1009,8 +1014,10 @@ function corkHTML(col){
   const blockedHere=tasks.filter(t=>t.col!==col&&t.deadlineDate&&d2col(t.deadlineDate,t.repeat)===col&&isBlocked(t)&&t.col!=='wait'||
     (t.col!==col&&!t.deadlineDate&&col==='today'&&isBlocked(t)&&t.col!=='wait'));
   function sortTasks(arr){return arr.slice().sort((a,b)=>{const da=a.deadlineDate||'',db=b.deadlineDate||'';if(da&&db)return da<db?-1:da>db?1:0;if(da)return -1;if(db)return 1;return a.name.localeCompare(b.name);});}
-  const activeItems=sortTasks(ct.filter(t=>!isBlocked(t))).map(t=>snHTML(t,false));
-  const blockedItems=sortTasks([...ct.filter(t=>isBlocked(t)),...blockedHere]).map(t=>snHTML(t,false));
+  const oneWeekOut=(()=>{const d=new Date();d.setDate(d.getDate()+7);return d.toISOString().slice(0,10);})();
+  const withinWeek=t=>col!=='upcoming'||!t.deadlineDate||t.deadlineDate<=oneWeekOut;
+  const activeItems=sortTasks(ct.filter(t=>!isBlocked(t)&&withinWeek(t))).map(t=>snHTML(t,false));
+  const blockedItems=sortTasks([...ct.filter(t=>isBlocked(t)&&withinWeek(t)),...blockedHere.filter(withinWeek)]).map(t=>snHTML(t,false));
   const divider=blockedItems.length?`<div class="cork-blocked-divider" style="color:${cs.txt}"></div>`:'';
   const allItems=[...activeItems,divider,...blockedItems];
   const content=allItems.length&&(activeItems.length||blockedItems.length)?allItems.join(''):`<div class="empty" style="color:${cs.txt}">—</div>`;
@@ -1055,24 +1062,27 @@ function corkHTML(col){
   } else {
     bodyHTML=content;
   }
+    const isUpcoming=col==='upcoming';
+  const calBtn=isUpcoming?`<button class="corkbtn" style="color:\${cs.txt}" title="Calendar" onclick="openCalendar()">📅</button>`:'';
   const casuBtns=isCasu?`
     <button class="corkbtn" style="color:${cs.txt}" title="Minimize to pinned" onclick="toggleMin('${col}',1)">${minLevel===1?'◂':'◁'}</button>
     <button class="corkbtn" style="color:${cs.txt}" title="Minimize all" onclick="toggleMin('${col}',2)">${minLevel===2?'▸':'▾'}</button>`
     :`<button class="corkbtn" style="color:${cs.txt}" onclick="toggleMin('${col}')">${minLevel?'▸':'▾'}</button>`;
   const bodyHidden=isCasu?minLevel===2:minLevel;
     return`<div class="cork${bodyHidden?' minimized':''}" data-col="${col}"
-    style="background:${CORK_GFX[col]},${cs.bg}"
+    style="background:${CORK_GFX[col]},${cs.bg};border-color:${CORK_FRAME[col]||'#5a4a2e'}"
     ondragover="dover(event,'${col}')" ondrop="drop(event,'${col}')" ondragleave="dleave(event)">
     <div class="cork-hdr">
       <span class="cork-title" style="color:${cs.txt}">${TBOX[col].label}</span>
       <div class="cork-btns">
+        ${calBtn}
         <button class="corkbtn" style="color:${cs.txt}" onclick="toggleCorkAdd('${col}')">＋</button>
         ${casuBtns}
       </div>
     </div>
     ${wchipsHTML?`<div class="wait-groups">${wchipsHTML}</div>`:''}
     ${bodyHidden?'':`<div class="cork-body">${bodyHTML||`<div class="empty" style="color:${cs.txt}">—</div>`}</div>`}
-    <div class="cork-add" id="${addId}" style="${bodyHidden?'display:none':''}">
+    <div class="cork-add" id="${addId}">
       <input id="${addId}-i" placeholder="" onkeydown="corkAddKey(event,'${col}')">
     </div>
   </div>`;
@@ -1145,7 +1155,7 @@ let _preDragIdx=null;
 function renderPresetPane(){
   const el=document.getElementById('pre-list');if(!el)return;
   const vis=presets.filter(p=>!p.groupBreak);
-  if(!vis.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);font-style:italic">No presets yet. Create one below.</div>';return;}
+  if(!vis.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);">No presets yet. Create one below.</div>';return;}
   el.innerHTML=vis.map((p,visIdx)=>{
     const realIdx=presets.indexOf(p);
     return`<div draggable="true" data-ridx="${realIdx}"
@@ -1270,7 +1280,7 @@ function pickEmoji(e){document.getElementById('pre-emoji-btn').textContent=e;clo
 function renderRepPane(){
   const el=document.getElementById('rep-task-list');if(!el)return;
   const reps=tasks.filter(t=>t.repeat);
-  if(!reps.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);font-style:italic">No repeating tasks yet.</div>';return;}
+  if(!reps.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);">No repeating tasks yet.</div>';return;}
   const catOpts='<option value="">—</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
   el.innerHTML=reps.map(t=>{
     const bg=ensureColor(t);const tx=con(bg);
@@ -1343,7 +1353,7 @@ function renderCatSection(){
 
 function renderCatChips(){
   const el=document.getElementById('cat-chips');
-  el.innerHTML=cats.length?cats.map(c=>`<div class="cchip" style="background:${c.color}20;color:${c.color};border-color:${c.color}40" onclick="openCat(${c.id})"><div style="width:7px;height:7px;border-radius:50%;background:${c.color}"></div>${esc(c.name)}</div>`).join(''):'<span style="font-size:11px;color:var(--ink3);font-style:italic">No categories yet</span>';
+  el.innerHTML=cats.length?cats.map(c=>`<div class="cchip" style="background:${c.color}20;color:${c.color};border-color:${c.color}40" onclick="openCat(${c.id})"><div style="width:7px;height:7px;border-radius:50%;background:${c.color}"></div>${esc(c.name)}</div>`).join(''):'<span style="font-size:11px;color:var(--ink3);">No categories yet</span>';
 }
 function syncSelects(){
   ['ac','ec'].forEach(sid=>{const s=document.getElementById(sid);if(!s)return;const cur=s.value;s.innerHTML='<option value="">—</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=cur;});
@@ -1914,7 +1924,7 @@ A task is **blocked** when:
 
 ## Export / Import
 
-\`exportData()\` → JSON with \`sn()\` + \`{version:'bellflower-petal', exported: ISO string}\`
+\`exportData()\` → JSON with \`sn()\` + \`{version:'dahlia', exported: ISO string}\`
 \`importData(event)\` → parses JSON, calls \`ap()\`
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
@@ -1959,7 +1969,31 @@ tasks.forEach(t => {
   const b=new Blob([md],{type:'text/markdown'});
   const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='fleur-context.md';a.click();
 }
-function exportData(){const d={version:'bellflower-petal',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function openCalendar(){
+  const dated=tasks.filter(t=>t.deadlineDate&&!t.done)
+    .sort((a,b)=>a.deadlineDate<b.deadlineDate?-1:a.deadlineDate>b.deadlineDate?1:0);
+  let html='';let lastDate='';
+  dated.forEach(t=>{
+    const d=new Date(t.deadlineDate+'T12:00:00');
+    const _calMo=d.toLocaleDateString('en-CA',{month:'long',day:'numeric'});
+    const _calWd=d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);
+    const _calDow=d.getDay();const _calClr=DOW_CLR[_calDow];
+    const dateStr=_calMo;
+    if(dateStr!==lastDate){
+      if(lastDate)html+=`</div>`;
+      html+=`<div style="display:flex;align-items:baseline;gap:.4em;padding:${lastDate?'10px':'2px'} 0 6px;${lastDate?'border-top:1px solid rgba(220,190,255,.1);margin-top:6px;':''}line-height:1"><span style="font-size:1.2rem;font-family:var(--font-h);font-weight:500;color:${_calClr}">${dateStr}</span><span style="font-size:.72rem;font-family:var(--font-h);color:${_calClr};opacity:.7">${_calWd}</span></div>`;
+      html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start">`;
+      lastDate=dateStr;
+    }
+    html+=snHTML(t,false);
+  });
+  if(lastDate)html+=`</div>`;
+  if(!dated.length)html=`<div style="color:var(--ink3);font-size:13px;text-align:center;padding:20px">No dated tasks</div>`;
+  document.getElementById('cal-list').innerHTML=html;
+  document.getElementById('cal-mo').classList.remove('hidden');
+}
+
+function exportData(){const d={version:'dahlia',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
@@ -2035,5 +2069,14 @@ ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefa
 setInterval(chkTimeWaits,60000);
 load().then(()=>{ra();mkDots('add-cr','');syncSelects();chkTimeWaits();});
 </script>
+
+<!-- Calendar modal -->
+<div class="mo hidden" id="cal-mo">
+  <div class="md" style="max-width:92vw;width:860px">
+    <h2 style="text-align:center;font-size:1.4rem">📅</h2>
+    <div id="cal-list" style="display:flex;flex-direction:column;gap:12px;max-height:70vh;overflow-y:auto;padding-right:4px"></div>
+    <div class="mf"><button class="mcan" onclick="document.getElementById('cal-mo').classList.add('hidden')">Close</button></div>
+  </div>
+</div>
 </body>
 </html>
