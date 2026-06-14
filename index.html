@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Dahlia Stem</title>
+<title>Fleur · Dahlia Leaf</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -272,6 +272,9 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .ai-row textarea::placeholder{color:var(--ink3)}
 .ai-btns{display:flex;flex-direction:column;gap:4px}
 .sb{padding:7px 12px;border:none;border-radius:8px;background:linear-gradient(135deg,#6b3d7a,#4a2d5e);color:#f0e8f5;font-size:12px;font-weight:500;cursor:pointer;white-space:nowrap}
+.code-block{position:relative;background:rgba(0,0,0,.35);border:1px solid rgba(220,190,255,.12);border-radius:10px;padding:10px 12px;margin:4px 0;font-size:11px;font-family:monospace;color:var(--ink2);white-space:pre-wrap;word-break:break-all;max-height:200px;overflow-y:auto;line-height:1.5}
+.copy-btn{position:sticky;top:0;float:right;background:rgba(107,61,122,.7);border:none;border-radius:6px;padding:3px 8px;color:#f0e8f5;font-size:10px;cursor:pointer;font-family:var(--font-b);backdrop-filter:blur(4px)}
+.copy-btn:active{background:rgba(107,61,122,1)}
 .sb:disabled{opacity:.3;cursor:default}
 .sb.sonnet{background:linear-gradient(135deg,#2d4d3a,#1e3528);font-size:11px}
 
@@ -489,15 +492,23 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         </div>
       </div>
       <div class="dock-pane" id="pane-ai">
-        <div class="cl" id="chat-log">
-          <div class="bl ai">Bonjour. Every change needs approval. Be specific — no memory between messages.</div>
+        <!-- Notes area -->
+        <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">Notes</div>
+        <textarea id="ai-notes" rows="4" placeholder="Jot down ideas for changes…" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;color:var(--ink);font-size:12px;font-family:var(--font-b);resize:vertical;min-height:72px;line-height:1.5"></textarea>
+        <div style="display:flex;gap:6px;margin-bottom:10px;margin-top:4px">
+          <button onclick="saveAiNotes()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">Save notes</button>
+          <a href="https://github.com/maximvino/fleur/edit/main/index.html" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;text-decoration:none;font-family:var(--font-b)">Edit on GitHub ↗</a>
         </div>
-        <div style="padding:4px 0 8px"><button onclick="dlContextDoc()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:6px 10px;color:var(--ink2);font-size:12px;cursor:pointer;font-family:var(--font-b)">⬇ Download context doc</button></div>
+        <!-- Chat -->
+        <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">AI</div>
+        <div class="cl" id="chat-log">
+          <div class="bl ai" id="ai-status">Send a message to fetch the current code and request a change.</div>
+        </div>
+        <div style="padding:4px 0 6px"><button onclick="dlContextDoc()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">⬇ Download context doc</button></div>
         <div class="ai-row">
-          <textarea id="ci" rows="1"></textarea>
+          <textarea id="ci" rows="1" placeholder="Describe a change…"></textarea>
           <div class="ai-btns">
-            <button class="sb" id="sb" onclick="send(false)">Send</button>
-            <button class="sb sonnet" onclick="send(true)">✨</button>
+            <button class="sb" id="sb" onclick="sendCode()">Send</button>
           </div>
         </div>
       </div>
@@ -904,6 +915,7 @@ function switchPane(name){
   if(name==='pile')renderPilePane();
   if(name==='rep'){renderRepPane();syncSelects();document.getElementById('new-rep-cat').innerHTML='<option value="">No category</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');}
   if(name==='pre'){renderPresetPane();}
+  if(name==='ai')loadAiNotes();
 }
 function showTransferMenu(){document.getElementById('transfer-mo').classList.remove('hidden');}
 
@@ -1924,7 +1936,7 @@ A task is **blocked** when:
 
 ## Export / Import
 
-\`exportData()\` → JSON with \`sn()\` + \`{version:'dahlia-stem', exported: ISO string}\`
+\`exportData()\` → JSON with \`sn()\` + \`{version:'dahlia-leaf', exported: ISO string}\`
 \`importData(event)\` → parses JSON, calls \`ap()\`
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
@@ -1993,7 +2005,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'dahlia-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'dahlia-leaf',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
@@ -2001,71 +2013,103 @@ function closeM(id){const mo=document.getElementById(id);mo.classList.add('hidde
 document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeM(o.id);}));
 
 // ── AI ────────────────────────────────────────────────────────────
-function addB(text,role){const l=document.getElementById('chat-log');const d=document.createElement('div');d.className='bl '+role;d.textContent=text;l.appendChild(d);l.scrollTop=l.scrollHeight;return d;}
-function descA(a){
-  if(a.type==='add_task')return`Add "${a.name}"→${a.col||'today'}${a.deadlineDate?' by '+fmtDate(a.deadlineDate):''}${a.repeat?' ('+a.repeat+')':''}`;
-  if(a.type==='update_task'){const t=tasks.find(t=>t.id==a.id);const ch=[];if(a.col)ch.push('→'+a.col);if(a.name)ch.push('rename "'+a.name+'"');if(a.deadlineDate)ch.push(fmtDate(a.deadlineDate));if(a.done!==undefined)ch.push(a.done?'done':'undone');if(a.repeat)ch.push(a.repeat);return`"${t?t.name:a.id}": ${ch.join(', ')||'edit'}`;}
-  if(a.type==='remove_task'){const t=tasks.find(t=>t.id==a.id);return`Delete "${t?t.name:a.id}"`;}
-  if(a.type==='clear_all_tasks')return`Delete all ${tasks.length} tasks`;
-  if(a.type==='add_category')return`Add category "${a.name}"`;
-  if(a.type==='update_col')return`${a.col} style`;
-  if(a.type==='set_global_theme')return`Theme: ${Object.keys(a.vars||{}).join(', ')}`;
-  return a.type;
-}
-function showReview(actions,clarifyFn){
-  const log=document.getElementById('chat-log');const wrap=document.createElement('div');wrap.className='ar';
-  const st=actions.map(a=>({a,approved:false,flagged:false,clarify:''}));
-  function build(){wrap.innerHTML='';st.forEach(s=>{const item=document.createElement('div');item.className='ai-item';const desc=document.createElement('div');desc.className='ai-desc'+(s.flagged?' fg2':'');desc.textContent=descA(s.a);const bts=document.createElement('div');bts.className='ai-bts';if(!s.flagged){const y=document.createElement('button');y.className='ayes'+(s.approved?' ok':'');y.textContent=s.approved?'✓':'Approve';y.onclick=()=>{s.approved=!s.approved;build();};bts.appendChild(y);}const fl=document.createElement('button');fl.className='aflag';fl.textContent=s.flagged?'Unflag':'Flag';fl.onclick=()=>{s.flagged=!s.flagged;if(!s.flagged)s.approved=false;build();};bts.appendChild(fl);item.appendChild(desc);item.appendChild(bts);wrap.appendChild(item);if(s.flagged){const ci=document.createElement('input');ci.className='clin';ci.placeholder='What instead?';ci.value=s.clarify;ci.oninput=()=>s.clarify=ci.value;item.appendChild(ci);}});
-    const foot=document.createElement('div');foot.className='ar-foot';const aa=document.createElement('button');aa.className='aab';aa.textContent='Approve all';aa.onclick=()=>{st.forEach(s=>{if(!s.flagged)s.approved=true;});build();};const go=document.createElement('button');go.className='aab go';go.textContent='Apply';go.onclick=()=>{const ok=st.filter(s=>s.approved).map(s=>s.a);const fl2=st.filter(s=>s.flagged);wrap.remove();if(ok.length){pu('ai');applyAct(ok);save();ra();showU('AI applied');}if(fl2.length){const msg=fl2.map(s=>`"${descA(s.a)}" — ${s.clarify||'not right'}`).join('; ');clarifyFn(msg);}if(!ok.length&&!fl2.length)addB('Nothing applied.','ai');};foot.appendChild(aa);foot.appendChild(go);wrap.appendChild(foot);log.scrollTop=log.scrollHeight;}
-  build();log.appendChild(wrap);log.scrollTop=log.scrollHeight;
+function addB(text,role){
+  const l=document.getElementById('chat-log');
+  const d=document.createElement('div');
+  d.className='bl '+role;
+  d.textContent=text;
+  l.appendChild(d);
+  l.scrollTop=l.scrollHeight;
+  return d;
 }
 
-async function send(useSonnet){
-  chkDay();const inp=document.getElementById('ci');const text=inp.value.trim();if(!text)return;
-  inp.value='';inp.style.height='auto';addB((useSonnet?'[✦] ':'')+text,'user');
-  const thinking=addB('…','thinking');document.getElementById('sb').disabled=true;
-  const t2=today(),tm2=tomorrow();
-  const tSum=tasks.map(t=>`${t.id}:"${esc(t.name)}",col:${t.col}${t.done?',done':''}${t.repeat?',rep:'+t.repeat:''}${t.deadlineDate?',d:'+t.deadlineDate:''}${t.categoryId?',cat:'+t.categoryId:''}${t.waitingFor?',wait:"'+t.waitingFor+'"':''}${t.waitTaskId?',wt:'+t.waitTaskId:''}`).join(' | ');
-  const cSum=cats.map(c=>`${c.id}:"${esc(c.name)}"`).join(', ');
-  const model=useSonnet?'claude-sonnet-4-5':'claude-haiku-4-5';
-  const sys=`Fleur planner. Today:${t2} Tomorrow:${tm2}
-TASKS: ${tSum||'none'}
-CATS: ${cSum||'none'}
-nextTid:${tid} nextCid:${cid}
-COLS: today,tomorrow,upcoming(needs date),wait(needs waitingFor or waitTaskId),casual(no deadline). Repeating tasks with no fixed date → col:today.
-REPEAT: daily,weekly,biweekly,MWF,TTS,weekdays,custom(repeatDays:[0-6])
-"delete all tasks"→clear_all_tasks. "undo"→{type:"undo"}.
-All changes need per-item approval. Each change = separate action.
-JSON only: {"reply":"","actions":[],"nextTid":N,"nextCid":N}
-ACTIONS: add_task{name,col,deadlineDate,deadlineTime,waitingFor,waitTaskId,waitUntil(ISO datetime),link,repeat,repeatDays,repeatStart,repeatMonthDay,casuPin,categoryId,stickyColor} update_task{id,...} remove_task{id} clear_all_tasks{type} add_category{name,color,defaultDate,defaultWait} update_col{col,bg?,txt?,shape?} set_global_theme{vars:{ts?,font-h?,font-b?,page?,ink?,accent?,bg-style?},reset?}
-COLORS: light→#1a1a1a, dark→#f5f0e8.`;
+function addCodeBlock(code){
+  const l=document.getElementById('chat-log');
+  const wrap=document.createElement('div');
+  wrap.className='bl ai';
+  wrap.style.padding='0';
+  wrap.style.background='none';
+  wrap.style.border='none';
+  const btn=document.createElement('button');
+  btn.className='copy-btn';
+  btn.textContent='Copy';
+  btn.onclick=()=>{navigator.clipboard.writeText(code).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});};
+  const pre=document.createElement('div');
+  pre.className='code-block';
+  pre.appendChild(btn);
+  pre.appendChild(document.createTextNode(code));
+  wrap.appendChild(pre);
+  l.appendChild(wrap);
+  l.scrollTop=l.scrollHeight;
+}
+
+
+const AI_NOTES_KEY='fleur_ai_notes';
+function saveAiNotes(){
+  const v=document.getElementById('ai-notes').value;
+  localStorage.setItem(AI_NOTES_KEY,v);
+  const btn=document.querySelector('#pane-ai button');
+  const orig=btn.textContent;btn.textContent='Saved!';
+  setTimeout(()=>btn.textContent=orig,1500);
+}
+function loadAiNotes(){
+  const el=document.getElementById('ai-notes');
+  if(el)el.value=localStorage.getItem(AI_NOTES_KEY)||'';
+}
+let _fleurCode='';
+async function sendCode(){
+  const inp=document.getElementById('ci');
+  const text=inp.value.trim();
+  if(!text)return;
+  if(!_fleurCode){
+    const status=document.getElementById('ai-status');
+    status.textContent='Fetching current code…';
+    try{
+      const r=await fetch('https://maximvino.github.io/fleur/index.html?cb='+Date.now());
+      if(!r.ok)throw new Error('HTTP '+r.status);
+      _fleurCode=await r.text();
+      status.textContent='Send a message to request a change.';
+    }catch(e){
+      _fleurCode='';
+      status.textContent='Could not fetch from GitHub — proceeding without current code.';
+    }
+  }
+  const sys='You are a coding assistant for Fleur, a single-file HTML task planner. Return the COMPLETE updated HTML file inside a single ```html code block. Brief summary after the block. Never partial code. Never explain before the block.\n'
+    +(_fleurCode?'CURRENT FILE:\n'+_fleurCode:'No file loaded.');
+  const estTokens=Math.ceil((sys.length+text.length)/4);
+  if(estTokens>8000){
+    addB('Prompt too large for inline AI (~'+estTokens+' tokens). Opening Claude.ai…','ai');
+    window.open('https://claude.ai/new?q='+encodeURIComponent(sys+'\n\nUSER REQUEST: '+text),'_blank');
+    return;
+  }
+  inp.value='';inp.style.height='auto';
+  addB(text,'user');
+  const thinking=addB('Thinking…','thinking');
+  document.getElementById('sb').disabled=true;
   try{
-    const res=await fetch('https://fleurplanner.netlify.app/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model,max_tokens:useSonnet?2500:1500,system:sys,messages:[{role:'user',content:text}]})});
-    const data=await res.json();if(data.error)throw new Error(data.error.message);
+    const res=await fetch('https://fleurplanner.netlify.app/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,system:sys,messages:[{role:'user',content:text}]})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
     const raw=data.content.map(c=>c.text||'').join('').trim();
-    let p;try{p=JSON.parse(raw.replace(/```json|```/g,'').trim());}catch(e){p={reply:raw,actions:[]};}
-    thinking.remove();if(p.nextTid)tid=p.nextTid;if(p.nextCid)cid=p.nextCid;
-    if(p.actions?.some(a=>a.type==='undo')){undo();addB('Undone.','ai');document.getElementById('sb').disabled=false;return;}
-    addB(p.reply||'Proposed:','ai');const acts=(p.actions||[]).filter(a=>a.type!=='undo');
-    if(acts.length)showReview(acts,msg=>{document.getElementById('ci').value='Revise: '+msg;send(useSonnet);});
+    thinking.remove();
+    const codeMatch=raw.match(/```(?:html)?\n?([\s\S]*?)```/);
+    if(codeMatch){
+      addCodeBlock(codeMatch[1].trim());
+      const summary=raw.slice(raw.lastIndexOf('```')+3).trim();
+      if(summary)addB(summary,'ai');
+    }else{addB(raw,'ai');}
   }catch(err){thinking.remove();addB('Error: '+err.message,'err');}
   document.getElementById('sb').disabled=false;
 }
-function applyAct(actions){
-  for(const a of actions){
-    if(a.type==='clear_all_tasks'){tasks=[];continue;}
-    if(a.type==='add_task'){const col=a.deadlineDate?d2col(a.deadlineDate,a.repeat):a.repeat?'today':'casual';tasks.push({id:tid++,name:a.name,col:a.col||col,deadlineDate:a.deadlineDate||null,deadlineTime:a.deadlineTime||null,waitingFor:a.waitingFor||'',waitTaskId:a.waitTaskId||null,waitUntil:a.waitUntil||null,done:false,repeat:a.repeat||'',repeatDays:a.repeatDays||[],repeatStart:a.repeatStart||null,categoryId:a.categoryId||null,stickyColor:a.stickyColor||'',link:a.link||null,paletteColor:nxtP()});}
-    else if(a.type==='update_task'){const t=tasks.find(t=>t.id==a.id);if(t)['name','col','deadlineDate','deadlineTime','waitingFor','waitTaskId','waitUntil','done','repeat','repeatDays','repeatStart','stickyColor','categoryId','link'].forEach(k=>{if(a[k]!==undefined)t[k]=a[k];});}
-    else if(a.type==='remove_task'){tasks=tasks.filter(t=>t.id!=a.id);}
-    else if(a.type==='add_category'){cats.push({id:cid++,name:a.name,color:a.color||'#c98fd4',defaultDate:a.defaultDate||null,defaultWait:a.defaultWait||null,showBox:1,minimized:false,colGroup:cid});}
-    else if(a.type==='update_col'){const cs=colStyles[a.col];if(cs){if(a.bg)cs.bg=a.bg;if(a.txt)cs.txt=a.txt;if(a.shape)cs.shape=a.shape;}}
-    else if(a.type==='set_global_theme'){if(a.reset)gTheme={};if(a.vars)Object.assign(gTheme,a.vars);applyTheme();}
-  }
-}
+
 
 const ta=document.getElementById('ci');
 ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,90)+'px';});
-ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send(false);}});
+ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendCode();}});
 setInterval(chkTimeWaits,60000);
 load().then(()=>{ra();mkDots('add-cr','');syncSelects();chkTimeWaits();});
 </script>
