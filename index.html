@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Dahlia Leaf</title>
+<title>Fleur · Eglantine Stem</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -252,6 +252,25 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cchip{padding:3px 9px;border-radius:99px;font-size:11px;cursor:pointer;border:1px solid transparent;display:flex;align-items:center;gap:3px;transition:opacity .13s}
 .cchip:hover{opacity:.75}
 .new-cat-row{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end}
+
+/* ── Task edit modal redesign ── */
+.em-grid{display:grid;grid-template-columns:repeat(3,52px);gap:10px;padding:4px 0 8px;justify-content:center}
+.em-pill{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.05);font-size:1.4rem;cursor:pointer;transition:background .15s,border-color .15s;position:relative;flex-shrink:0}
+.em-pill:hover{background:rgba(255,255,255,.09);border-color:rgba(220,190,255,.28)}
+.em-pill.active{border-color:rgba(220,190,255,.4);background:rgba(220,190,255,.12)}
+.em-pill.lit{border-color:rgba(255,68,68,.5);background:rgba(255,68,68,.18)}
+.em-sub{display:none;flex-direction:column;gap:8px;padding:10px;background:rgba(0,0,0,.25);border-radius:12px;border:1px solid rgba(220,190,255,.1);margin-bottom:4px}
+.em-sub.open{display:flex}
+.em-sub-title{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);font-family:var(--font-b)}
+.em-col-opts{display:flex;flex-wrap:wrap;gap:6px}
+.em-col-opt{padding:5px 10px;border-radius:8px;border:2px solid transparent;cursor:pointer;font-size:12px;font-family:var(--font-b);transition:border-color .12s}
+.em-col-opt.sel{border-color:rgba(255,255,255,.5)}
+.em-cat-opts{display:flex;flex-wrap:wrap;gap:6px}
+.em-cat-opt{padding:5px 10px;border-radius:8px;border:2px solid transparent;cursor:pointer;font-size:12px;font-family:var(--font-b);transition:border-color .12s}
+.em-cat-opt.sel{border-color:rgba(255,255,255,.6)}
+.em-rep-opts{display:flex;flex-wrap:wrap;gap:6px}
+.em-rep-opt{padding:5px 10px;border-radius:8px;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.05);cursor:pointer;font-size:11px;font-family:var(--font-b);color:var(--ink2);transition:background .12s}
+.em-rep-opt.sel{background:rgba(220,190,255,.18);border-color:rgba(220,190,255,.4);color:var(--ink)}
 .fi{background:rgba(255,255,255,.06);border:1px solid rgba(220,190,255,.14);border-radius:8px;padding:6px 10px;font-size:15px;font-family:var(--font-b);color:var(--ink);outline:none;width:100%;transition:border-color .13s}
 .fi:focus{border-color:rgba(220,190,255,.3)}
 .fi option{background:#1c1528}
@@ -582,48 +601,95 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 
 <!-- Task edit modal -->
 <div class="mo hidden" id="tm">
-  <div class="md">
-    <h2>Edit task</h2>
-    <div class="fg"><div class="fl">✏️ Name</div><input class="fi" id="en" type="text"></div>
-    <div class="fg"><div class="fl">🏷️</div><select class="fi" id="ec"></select></div>
-    <div class="fg"><div class="fl">📌</div>
-      <select class="fi" id="eco">
-        <option value="today">Today</option><option value="tomorrow">Tomorrow</option>
-        <option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option>
-      </select>
+  <div class="md" style="max-width:360px">
+    <!-- Name field — always visible -->
+    <input class="fi" id="en" type="text" placeholder="Task name" style="font-size:15px">
+
+    <!-- Emoji pill grid -->
+    <div class="em-grid">
+      <!-- 📌 Box -->
+      <div class="em-pill" id="ep-col" title="Time box" onclick="emToggle('col')">📌</div>
+      <!-- 🏷️ Category -->
+      <div class="em-pill" id="ep-cat" title="Category" onclick="emToggle('cat')">🏷️</div>
+      <!-- 📅 Date -->
+      <div class="em-pill" id="ep-date" title="Due date" onclick="emToggle('date')">📅</div>
+      <!-- 🕐 Time -->
+      <div class="em-pill" id="ep-time" title="Due time" onclick="emToggle('time')">🕐</div>
+      <!-- ⏳ Wait -->
+      <div class="em-pill" id="ep-wait" title="Wait" onclick="emToggle('wait')">⏳</div>
+      <!-- 🔗 Link -->
+      <div class="em-pill" id="ep-link" title="Link" onclick="emToggle('link')">🔗</div>
+      <!-- 🔁 Repeat -->
+      <div class="em-pill" id="ep-rep" title="Repeat" onclick="emToggle('rep')">🔁</div>
+      <!-- 🎨 Color -->
+      <div class="em-pill" id="ep-color" title="Color" onclick="emToggle('color')">🎨</div>
+      <!-- 🚨 Urgent toggle -->
+      <div class="em-pill" id="ep-urgent" title="Urgent" onclick="emToggleUrgent()">🚨</div>
     </div>
-    <div class="pr">
-      <div class="fg"><div class="fl">📅</div><input class="fi" id="ed" type="date"></div>
-      <div class="fg"><div class="fl">🕐</div><input class="fi" id="etime" type="time"></div>
+
+    <!-- Sub-panels (one open at a time) -->
+
+    <!-- Box sub -->
+    <div class="em-sub" id="es-col">
+      <div class="em-col-opts" id="es-col-opts"></div>
     </div>
-    <div class="fg" id="ewg">
-      <div class="fl">⏳ Wait</div>
-      <div style="display:flex;flex-direction:column;gap:6px;flex:1">
-        <input class="fi" id="ew" type="text" placeholder="Text label (e.g. 'client reply')">
-        <select class="fi" id="ewt" style="font-size:13px"><option value="">After task: (none)</option></select>
-        <input class="fi" id="ewu" type="datetime-local" style="font-size:13px" title="Wait until date/time">
-      </div>
+
+    <!-- Category sub -->
+    <div class="em-sub" id="es-cat">
+      <div class="em-cat-opts" id="es-cat-opts"></div>
     </div>
-    <div class="fg"><div class="fl">🔗 Link</div><input class="fi" id="elink" type="url" placeholder="https://…"></div>
-    <div class="fg"><div class="fl">🔁</div>
-      <select class="fi" id="erep" onchange="onRepCh('erep','edc')">
+
+    <!-- Date sub -->
+    <div class="em-sub" id="es-date">
+      <input class="fi" id="ed" type="date" style="font-size:15px">
+    </div>
+
+    <!-- Time sub -->
+    <div class="em-sub" id="es-time">
+      <input class="fi" id="etime" type="time" style="font-size:15px">
+    </div>
+
+    <!-- Wait sub -->
+    <div class="em-sub" id="es-wait">
+      <input class="fi" id="ew" type="text" placeholder="Waiting for… (text)">
+      <select class="fi" id="ewt" style="font-size:13px"><option value="">After task: (none)</option></select>
+      <input class="fi" id="ewu" type="datetime-local" style="font-size:13px">
+    </div>
+
+    <!-- Link sub -->
+    <div class="em-sub" id="es-link">
+      <input class="fi" id="elink" type="url" placeholder="https://…">
+    </div>
+
+    <!-- Repeat sub -->
+    <div class="em-sub" id="es-rep">
+      <div class="em-rep-opts" id="es-rep-opts"></div>
+      <div id="edc" style="display:none;margin-top:4px"><div class="day-checks" id="edit-days"></div><div id="emonthday-wrap" style="display:none;margin-top:6px"><input class="fi" id="emonthday" type="number" min="1" max="31" placeholder="Day 1–31"></div></div>
+      <input class="fi" id="erep-start" type="date" style="display:none;margin-top:4px" placeholder="Start date">
+      <!-- hidden selects kept for saveTask compat -->
+      <select id="erep" style="display:none" onchange="onRepCh('erep','edc')">
         <option value="">None</option><option value="daily">Daily</option><option value="weekly">Weekly</option>
         <option value="biweekly">Every 2 weeks</option><option value="MWF">M·W·F</option>
         <option value="TTS">T·T·S</option><option value="weekdays">Weekdays</option><option value="custom">Custom…</option>
-        <option value="monthly-start">Monthly — 1st</option>
-        <option value="monthly-mid">Monthly — 15th</option>
-        <option value="monthly-end">Monthly — last day</option>
-        <option value="monthly-day">Monthly — specific day…</option>
+        <option value="monthly-start">Monthly — 1st</option><option value="monthly-mid">Monthly — 15th</option>
+        <option value="monthly-end">Monthly — last day</option><option value="monthly-day">Monthly — specific day…</option>
       </select>
     </div>
-    <div id="edc" style="display:none"><div class="day-checks" id="edit-days"></div><div id="emonthday-wrap" style="display:none;margin-top:6px"><input class="fi" id="emonthday" type="number" min="1" max="31" placeholder="Day of month (1–31)"></div></div>
-    <div class="fg"><input class="fi" id="erep-start" type="date"></div>
-    <div class="fg"><div class="fl">🎨</div><div class="cdots" id="edit-cr"></div></div>
-    <div class="fg"><label style="display:flex;align-items:center;gap:8px;cursor:pointer;color:var(--ink2);font-size:13px"><input type="checkbox" id="eurgent" style="accent-color:#ff4444;width:15px;height:15px"> <span>🚨 Urgent</span></label></div>
-    <div class="mf">
-      <button class="mdel" onclick="delTask()">Delete</button>
-      <button class="mcan" onclick="closeM('tm')">Cancel</button>
-      <button class="msave" onclick="saveTask()">Save</button>
+
+    <!-- Color sub -->
+    <div class="em-sub" id="es-color">
+      <div class="cdots" id="edit-cr"></div>
+    </div>
+
+    <!-- hidden inputs kept for saveTask compat -->
+    <select id="eco" style="display:none"><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option></select>
+    <select id="ec" style="display:none"></select>
+    <input type="checkbox" id="eurgent" style="display:none">
+
+    <div class="mf" style="margin-top:8px">
+      <button class="mdel" onclick="delTask()">🗑</button>
+      <button class="mcan" onclick="closeM('tm')">✕</button>
+      <button class="msave" onclick="saveTask()">✓</button>
     </div>
   </div>
 </div>
@@ -657,7 +723,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_dahlia_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_eglantine_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -1543,6 +1609,139 @@ function unhlWait(){document.querySelectorAll('.wait-highlight').forEach(el=>el.
 function clrWait(id){pu('clr');const t=tasks.find(t=>t.id==id);if(!t)return;t.waitingFor='';t.waitTaskId=null;t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';save();ra();showU('Freed');}
 function clrWaitGroup(ids){pu('clrG');ids.forEach(id=>{const t=tasks.find(t=>t.id==id);if(t){t.waitingFor='';t.waitTaskId=null;t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}});save();ra();showU(`Freed ${ids.length}`);}
 
+
+// ── Emoji pill modal logic ─────────────────────────────────────────
+const TBOX_UI={
+  today:  {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0'},
+  tomorrow:{label:'Tomorrow',bg:'#3a2c06',txt:'#f0e0a0'},
+  upcoming:{label:'Upcoming',bg:'#3a1d00',txt:'#f5d4a8'},
+  wait:   {label:'Wait',     bg:'#3a0f0f',txt:'#f5c8c8'},
+  casual: {label:'Casual',   bg:'#1e1040',txt:'#d4c8f5'},
+};
+const REP_LABELS=[
+  ['','–'],['daily','Every day'],['weekly','Every week'],['biweekly','Every 2 wks'],
+  ['MWF','M·W·F'],['TTS','T·T·S'],['weekdays','Weekdays'],['custom','Custom'],
+  ['monthly-start','1st'],['monthly-mid','15th'],['monthly-end','Last day'],['monthly-day','Specific day'],
+];
+let _emOpen=null;
+
+function emClose(){
+  if(_emOpen){document.getElementById('es-'+_emOpen)?.classList.remove('open');document.getElementById('ep-'+_emOpen)?.classList.remove('active');_emOpen=null;}
+}
+function emToggle(key){
+  if(_emOpen===key){emClose();return;}
+  emClose();
+  _emOpen=key;
+  document.getElementById('es-'+key).classList.add('open');
+  document.getElementById('ep-'+key).classList.add('active');
+  // Build dynamic content
+  if(key==='col') buildEmCol();
+  if(key==='cat') buildEmCat();
+  if(key==='rep') buildEmRep();
+}
+function emToggleUrgent(){
+  const cb=document.getElementById('eurgent');
+  cb.checked=!cb.checked;
+  document.getElementById('ep-urgent').classList.toggle('lit',cb.checked);
+}
+
+function buildEmCol(){
+  const cur=document.getElementById('eco').value;
+  const wrap=document.getElementById('es-col-opts');
+  wrap.innerHTML=Object.entries(TBOX_UI).map(([k,v])=>
+    `<div class="em-col-opt${cur===k?' sel':''}" style="background:${v.bg};color:${v.txt}" onclick="emSetCol('${k}')">${v.label}</div>`
+  ).join('');
+}
+function emSetCol(col){
+  document.getElementById('eco').value=col;
+  const v=TBOX_UI[col];
+  const pill=document.getElementById('ep-col');
+  pill.style.background=v.bg;pill.style.borderColor=v.txt;pill.style.color=v.txt;
+  buildEmCol();
+}
+
+function buildEmCat(){
+  const cur=document.getElementById('ec').value;
+  const wrap=document.getElementById('es-cat-opts');
+  const opts=[{id:'',name:'None',color:'rgba(255,255,255,.08)'},...cats];
+  wrap.innerHTML=opts.map(c=>{
+    const bg=c.id?c.color:'rgba(255,255,255,.06)';
+    const txt=c.id?con(c.color):'var(--ink2)';
+    return `<div class="em-cat-opt${String(cur)===String(c.id)?' sel':''}" style="background:${bg};color:${txt}" onclick="emSetCat('${c.id}','${bg}')">${esc(c.name)}</div>`;
+  }).join('');
+}
+function emSetCat(id,bg){
+  document.getElementById('ec').value=id;
+  const pill=document.getElementById('ep-cat');
+  if(id){pill.style.background=bg;pill.style.borderColor='rgba(255,255,255,.3)';}
+  else{pill.style.background='';pill.style.borderColor='';}
+  buildEmCat();
+}
+
+function buildEmRep(){
+  const cur=document.getElementById('erep').value;
+  const wrap=document.getElementById('es-rep-opts');
+  wrap.innerHTML=REP_LABELS.map(([v,l])=>
+    `<div class="em-rep-opt${cur===v?' sel':''}" onclick="emSetRep('${v}')">${l}</div>`
+  ).join('');
+  const needCustom=cur==='custom';
+  document.getElementById('edc').style.display=needCustom?'block':'none';
+  const needMonthDay=cur==='monthly-day';
+  const mw=document.getElementById('emonthday-wrap');if(mw)mw.style.display=needMonthDay?'block':'none';
+  const rs=document.getElementById('erep-start');
+  if(rs)rs.style.display=cur&&cur!==''?'block':'none';
+}
+function emSetRep(val){
+  document.getElementById('erep').value=val;
+  onRepCh('erep','edc');
+  buildEmRep();
+  // Update pill indicator
+  const pill=document.getElementById('ep-rep');
+  if(val){pill.style.background='rgba(220,190,255,.15)';pill.style.borderColor='rgba(220,190,255,.35)';}
+  else{pill.style.background='';pill.style.borderColor='';}
+}
+
+function emSyncPills(t){
+  // Box pill
+  const cv=TBOX_UI[t.col];
+  const cp=document.getElementById('ep-col');
+  if(cv){cp.style.background=cv.bg;cp.style.borderColor=cv.txt;cp.style.color=cv.txt;}
+  // Category pill
+  const cat=cats.find(c=>c.id==t.categoryId);
+  const kp=document.getElementById('ep-cat');
+  if(cat){kp.style.background=cat.color;kp.style.borderColor='rgba(255,255,255,.3)';}
+  else{kp.style.background='';kp.style.borderColor='';}
+  // Date pill
+  const dp=document.getElementById('ep-date');
+  if(t.deadlineDate){dp.style.background='rgba(220,190,255,.15)';dp.style.borderColor='rgba(220,190,255,.35)';}
+  else{dp.style.background='';dp.style.borderColor='';}
+  // Time pill
+  const tp=document.getElementById('ep-time');
+  if(t.deadlineTime){tp.style.background='rgba(220,190,255,.15)';tp.style.borderColor='rgba(220,190,255,.35)';}
+  else{tp.style.background='';tp.style.borderColor='';}
+  // Wait pill
+  const wp=document.getElementById('ep-wait');
+  if(t.waitingFor||t.waitTaskId||t.waitUntil){wp.style.background='rgba(220,190,255,.15)';wp.style.borderColor='rgba(220,190,255,.35)';}
+  else{wp.style.background='';wp.style.borderColor='';}
+  // Link pill
+  const lp=document.getElementById('ep-link');
+  if(t.link){lp.style.background='rgba(220,190,255,.15)';lp.style.borderColor='rgba(220,190,255,.35)';}
+  else{lp.style.background='';lp.style.borderColor='';}
+  // Repeat pill
+  const rp=document.getElementById('ep-rep');
+  if(t.repeat){rp.style.background='rgba(220,190,255,.15)';rp.style.borderColor='rgba(220,190,255,.35)';}
+  else{rp.style.background='';rp.style.borderColor='';}
+  // Color pill — reflects stickyColor
+  const clp=document.getElementById('ep-color');
+  if(t.stickyColor){clp.style.background=t.stickyColor;clp.style.borderColor=t.stickyColor;}
+  else{clp.style.background='';clp.style.borderColor='';}
+  // Urgent pill
+  document.getElementById('ep-urgent').classList.toggle('lit',!!t.urgent);
+  document.getElementById('eurgent').checked=!!t.urgent;
+}
+
+// Wire color dots change → update pill live
+const _origMkDots=mkDots;
 // ── Task edit modal ───────────────────────────────────────────────
 function openTask(id){
   const t=tasks.find(t=>t.id==id);if(!t)return;editTid=id;
@@ -1562,7 +1761,22 @@ function openTask(id){
   const isC=t.repeat==='custom';document.getElementById('edc').style.display=isC?'block':'none';
   if(isC)buildDays('edit-days',t.repeatDays||[]);
   syncSelects();document.getElementById('ec').value=t.categoryId||'';
-  mkDots('edit-cr',t.stickyColor||'');document.getElementById('eurgent').checked=!!t.urgent;document.getElementById('tm').classList.remove('hidden');
+  mkDots('edit-cr',t.stickyColor||'');
+  emClose();
+  // Reset pill styles before sync
+  ['ep-col','ep-cat','ep-date','ep-time','ep-wait','ep-link','ep-rep','ep-color'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';}
+  });
+  emSyncPills(t);
+  // Wire color pill: update when dot changes
+  document.querySelectorAll('#edit-cr .cdot').forEach(d=>{
+    d.addEventListener('click',()=>{
+      const clp=document.getElementById('ep-color');
+      const sc=getDot('edit-cr');
+      clp.style.background=sc||'';clp.style.borderColor=sc||'';
+    });
+  });
+  document.getElementById('tm').classList.remove('hidden');
 }
 // ewg always visible — no listener needed
 function saveTask(){
@@ -1936,7 +2150,7 @@ A task is **blocked** when:
 
 ## Export / Import
 
-\`exportData()\` → JSON with \`sn()\` + \`{version:'dahlia-leaf', exported: ISO string}\`
+\`exportData()\` → JSON with \`sn()\` + \`{version:'eglantine-stem', exported: ISO string}\`
 \`importData(event)\` → parses JSON, calls \`ap()\`
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
@@ -2005,7 +2219,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'dahlia-leaf',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'eglantine-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
@@ -2078,8 +2292,13 @@ async function sendCode(){
     +(_fleurCode?'CURRENT FILE:\n'+_fleurCode:'No file loaded.');
   const estTokens=Math.ceil((sys.length+text.length)/4);
   if(estTokens>8000){
-    addB('Prompt too large for inline AI (~'+estTokens+' tokens). Opening Claude.ai…','ai');
-    window.open('https://claude.ai/new?q='+encodeURIComponent(sys+'\n\nUSER REQUEST: '+text),'_blank');
+    const fullPrompt=sys+'\n\nUSER REQUEST: '+text;
+    navigator.clipboard.writeText(fullPrompt).then(()=>{
+      addB('Prompt too large (~'+estTokens+' tokens). Copied to clipboard — opening Claude.ai now, just paste.','ai');
+    }).catch(()=>{
+      addB('Prompt too large (~'+estTokens+' tokens). Could not copy automatically — please copy your request manually and paste it into Claude.ai.','ai');
+    });
+    window.open('https://claude.ai/new','_blank');
     return;
   }
   inp.value='';inp.style.height='auto';
