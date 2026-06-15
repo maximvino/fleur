@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Eglantine Stem</title>
+<title>Fleur · Foxglove Petal</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -71,7 +71,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     0 2px 4px rgba(0,0,0,.35)}
 .cork.minimized>.cork-body{display:none}
 .cork.minimized{min-height:0!important}
-.cork-hdr{padding:9px 12px 8px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);backdrop-filter:blur(4px);flex-wrap:wrap}
+.cork-hdr{padding:9px 12px 8px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);flex-wrap:wrap}
 .cork-title{font-family:var(--font-h);font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;flex:1}
 .cork-count{font-size:10px;opacity:.4}
 .cork-btns{display:flex;gap:3px}
@@ -255,10 +255,12 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 
 /* ── Task edit modal redesign ── */
 .em-grid{display:grid;grid-template-columns:repeat(3,52px);gap:10px;padding:4px 0 8px;justify-content:center}
+.ap-pill{width:40px!important;height:40px!important;font-size:1.1rem!important}
 .em-pill{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.05);font-size:1.4rem;cursor:pointer;transition:background .15s,border-color .15s;position:relative;flex-shrink:0}
 .em-pill:hover{background:rgba(255,255,255,.09);border-color:rgba(220,190,255,.28)}
-.em-pill.active{border-color:rgba(220,190,255,.4);background:rgba(220,190,255,.12)}
-.em-pill.lit{border-color:rgba(255,68,68,.5);background:rgba(255,68,68,.18)}
+.em-pill.active{border-color:rgba(220,190,255,.7);background:rgba(220,190,255,.22);box-shadow:0 0 8px rgba(220,190,255,.2)}
+.em-pill.lit{border-color:rgba(255,68,68,.8);background:rgba(255,68,68,.28);box-shadow:0 0 8px rgba(255,68,68,.2)}
+.em-pill.has-val{border-color:rgba(220,190,255,.55);background:rgba(220,190,255,.16);box-shadow:0 0 6px rgba(220,190,255,.15)}
 .em-sub{display:none;flex-direction:column;gap:8px;padding:10px;background:rgba(0,0,0,.25);border-radius:12px;border:1px solid rgba(220,190,255,.1);margin-bottom:4px}
 .em-sub.open{display:flex}
 .em-sub-title{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);font-family:var(--font-b)}
@@ -409,65 +411,57 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     <div class="preset-row" id="preset-row"></div>
     <div class="dock-panel" id="dock-panel">
       <div class="dock-pane" id="pane-add">
-        <div style="display:flex;gap:8px;align-items:center">
-          <input class="add-name" id="an" type="text" style="flex:1">
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:4px">
+          <input class="add-name" id="an" type="text" style="flex:1" placeholder="Task name">
           <button class="add-submit" onclick="addManual()" style="flex-shrink:0">Add</button>
         </div>
-        <div class="add-pills" id="add-pills">
-          <div class="pill" id="pill-cat" style="position:relative;overflow:visible">
-            <span>🏷️</span>
-            <select id="ac" onchange="updatePills()" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer"></select>
-            <span class="pill-val" id="pill-cat-val"></span>
-          </div>
-          <div class="pill" id="pill-date" onclick="document.getElementById('ad').showPicker?document.getElementById('ad').showPicker():document.getElementById('ad').click()">
-            <span>📅</span>
-            <input type="date" id="ad" onchange="updatePills()" style="opacity:.0;width:0;position:absolute">
-            <span class="pill-val" id="pill-date-val"></span>
-          </div>
-          <div class="pill" id="pill-time" onclick="document.getElementById('at').showPicker?document.getElementById('at').showPicker():document.getElementById('at').click()">
-            <span>🕐</span>
-            <input type="time" id="at" onchange="updatePills()" style="opacity:0;width:0;position:absolute">
-            <span class="pill-val" id="pill-time-val"></span>
-          </div>
-          <div class="pill" id="pill-rep" onclick="togglePillExtra('rep-extra','pill-rep')">
-            <span>🔁</span><span class="pill-val" id="pill-rep-lbl"></span>
-          </div>
-          <div class="pill" id="pill-wait" onclick="togglePillExtra('wait-extra','pill-wait')">
-            <span>⏳</span><span class="pill-val" id="pill-wait-val"></span>
-          </div>
+        <!-- Single-row pill grid for add pane -->
+        <div class="em-grid" style="margin-bottom:4px;grid-template-columns:repeat(9,40px);gap:6px">
+          <div class="em-pill ap-pill" id="ap-col" title="Time box" onclick="aemToggle('col')">📌</div>
+          <div class="em-pill ap-pill" id="ap-cat" title="Category" onclick="aemToggle('cat')">🏷️</div>
+          <div class="em-pill ap-pill" id="ap-date" title="Due date" onclick="aemToggle('date')">📅</div>
+          <div class="em-pill ap-pill" id="ap-time" title="Due time" onclick="aemToggle('time')">🕐</div>
+          <div class="em-pill ap-pill" id="ap-wait" title="Wait" onclick="aemToggle('wait')">⏳</div>
+          <div class="em-pill ap-pill" id="ap-link" title="Link" onclick="aemToggle('link')">🔗</div>
+          <div class="em-pill ap-pill" id="ap-rep" title="Repeat" onclick="aemToggle('rep')">🔁</div>
+          <div class="em-pill ap-pill" id="ap-color" title="Color" onclick="aemToggle('color')">🎨</div>
+          <div class="em-pill ap-pill" id="ap-urgent" title="Urgent" onclick="aemToggleUrgent()">🚨</div>
         </div>
-        <div class="pill-extra" id="rep-extra">
-          <select class="fi" id="arep" onchange="onRepCh('arep','adc')">
-            <option value="">No repeat</option>
-            <option value="daily">Daily</option>
-            <option value="weekly">Weekly</option>
-            <option value="biweekly">Every 2 weeks</option>
-            <option value="MWF">Mon · Wed · Fri</option>
-            <option value="TTS">Tue · Thu · Sat</option>
-            <option value="weekdays">Weekdays</option>
-            <option value="custom">Custom…</option>
-            <option value="monthly-start">Monthly — 1st</option>
-            <option value="monthly-mid">Monthly — 15th</option>
-            <option value="monthly-end">Monthly — last day</option>
-            <option value="monthly-day">Monthly — specific day…</option>
-          </select>
-          <div id="adc" style="display:none"><div class="day-checks" id="add-days"></div><div id="amonthday-wrap" style="display:none;margin-top:6px"><input class="fi" id="amonthday" type="number" min="1" max="31" placeholder="Day of month (1–31)"></div></div>
-          <input class="fi" id="arep-start" type="date" placeholder="Start date">
+        <!-- Add sub-panels -->
+        <div class="em-sub" id="as-col"><div class="em-col-opts" id="as-col-opts"></div></div>
+        <div class="em-sub" id="as-cat"><div class="em-cat-opts" id="as-cat-opts"></div></div>
+        <div class="em-sub" id="as-date">
+          <input class="fi" id="ad" type="date" style="font-size:15px" onchange="aemUpdateDatePill()">
+          <button onclick="document.getElementById('ad').value='';aemUpdateDatePill()" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear</button>
         </div>
-        <div class="pill-extra" id="wait-extra">
-          <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:4px">Wait for text</div>
-          <input class="fi" id="aw" type="text" oninput="updatePills()" placeholder="e.g. client reply, package…">
-          <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin:8px 0 4px">Wait for task</div>
-          <select class="fi" id="awt" style="font-size:13px">
-            <option value="">(none)</option>
-          </select>
-          <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin:8px 0 4px">Wait until time</div>
-          <div style="display:flex;gap:6px;align-items:center">
+        <div class="em-sub" id="as-time"><input class="fi" id="at" type="time" style="font-size:15px"></div>
+        <div class="em-sub" id="as-wait">
+          <input class="fi" id="aw" type="text" placeholder="Waiting for… (text)">
+          <select class="fi" id="awt" style="font-size:13px"><option value="">(none)</option></select>
+          <div style="display:flex;gap:6px">
             <input class="fi" id="awu-date" type="date" style="flex:1;font-size:13px" oninput="syncWaitUntil()">
             <input class="fi" id="awu-time" type="time" style="flex:1;font-size:13px" oninput="syncWaitUntil()">
           </div>
           <input type="hidden" id="awu">
         </div>
+        <div class="em-sub" id="as-link"><input class="fi" id="alink" type="url" placeholder="https://…"></div>
+        <div class="em-sub" id="as-rep">
+          <div class="em-rep-opts" id="as-rep-opts"></div>
+          <div id="adc" style="display:none;margin-top:4px"><div class="day-checks" id="add-days"></div><div id="amonthday-wrap" style="display:none;margin-top:6px"><input class="fi" id="amonthday" type="number" min="1" max="31" placeholder="Day 1–31"></div></div>
+          <input class="fi" id="arep-start" type="date" style="display:none;margin-top:4px">
+          <select id="arep" style="display:none" onchange="onRepCh('arep','adc')">
+            <option value="">None</option><option value="daily">Daily</option><option value="weekly">Weekly</option>
+            <option value="biweekly">Every 2 weeks</option><option value="MWF">M·W·F</option>
+            <option value="TTS">T·T·S</option><option value="weekdays">Weekdays</option><option value="custom">Custom…</option>
+            <option value="monthly-start">Monthly — 1st</option><option value="monthly-mid">Monthly — 15th</option>
+            <option value="monthly-end">Monthly — last day</option><option value="monthly-day">Monthly — specific day…</option>
+          </select>
+        </div>
+        <div class="em-sub" id="as-color"><div class="cdots" id="add-cr"></div></div>
+        <!-- hidden compat -->
+        <select id="ac" style="display:none"></select>
+        <input type="checkbox" id="aurgent" style="display:none">
+        <select id="aco" style="display:none"><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option></select>
       </div>
       <div class="dock-pane" id="pane-cat">
         <div class="cat-chip-row" id="cat-chips"></div>
@@ -515,7 +509,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">Notes</div>
         <textarea id="ai-notes" rows="4" placeholder="Jot down ideas for changes…" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;color:var(--ink);font-size:12px;font-family:var(--font-b);resize:vertical;min-height:72px;line-height:1.5"></textarea>
         <div style="display:flex;gap:6px;margin-bottom:10px;margin-top:4px">
-          <button onclick="saveAiNotes()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">Save notes</button>
+          <button id="ai-notes-save-btn" onclick="saveAiNotes()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">Save notes</button>
           <a href="https://github.com/maximvino/fleur/edit/main/index.html" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;text-decoration:none;font-family:var(--font-b)">Edit on GitHub ↗</a>
         </div>
         <!-- Chat -->
@@ -523,7 +517,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <div class="cl" id="chat-log">
           <div class="bl ai" id="ai-status">Send a message to fetch the current code and request a change.</div>
         </div>
-        <div style="padding:4px 0 6px"><button onclick="dlContextDoc()" style="width:100%;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">⬇ Download context doc</button></div>
+        <div style="padding:4px 0 6px;display:flex;gap:6px"><button onclick="dlContextDoc()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">⬇ Context doc</button><button id="load-code-btn" onclick="loadFleurCode()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">⬆ Load code</button></div>
         <div class="ai-row">
           <textarea id="ci" rows="1" placeholder="Describe a change…"></textarea>
           <div class="ai-btns">
@@ -642,6 +636,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     <!-- Date sub -->
     <div class="em-sub" id="es-date">
       <input class="fi" id="ed" type="date" style="font-size:15px">
+      <button onclick="document.getElementById('ed').value='';document.getElementById('ep-date').classList.remove('has-val');document.getElementById('ep-date').style.background='';document.getElementById('ep-date').style.borderColor='';" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear date</button>
     </div>
 
     <!-- Time sub -->
@@ -723,7 +718,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_eglantine_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_foxglove_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -752,6 +747,15 @@ function ap(s){
   // Ensure new fields exist on all tasks
   tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;});
   presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
+  // If no presets in loaded state, try to recover from any other local key
+  if(!presets.length){
+    for(let i=0;i<localStorage.length;i++){
+      const k=localStorage.key(i);
+      if(k&&k.startsWith('fleur_')&&k!==KEY){
+        try{const os=JSON.parse(localStorage.getItem(k));if(os?.presets?.length){presets=os.presets.filter(p=>!p.groupBreak);pid=Math.max(pid,os.pid||1);break;}}catch(e){}
+      }
+    }
+  }
 }
 function save(){
   const d=sn();localStorage.setItem(KEY,JSON.stringify(d));
@@ -1520,6 +1524,92 @@ function cboxKey(e,catId){
 }
 
 // ── Manual add ────────────────────────────────────────────────────
+
+// ── Add pane emoji pill logic (mirrors edit modal) ─────────────────
+let _aemOpen=null;
+let _aurgent=false;
+
+function aemClose(){
+  if(_aemOpen){document.getElementById('as-'+_aemOpen)?.classList.remove('open');document.getElementById('ap-'+_aemOpen)?.classList.remove('active');_aemOpen=null;}
+}
+function aemToggle(key){
+  if(_aemOpen===key){aemClose();return;}
+  aemClose();_aemOpen=key;
+  document.getElementById('as-'+key).classList.add('open');
+  document.getElementById('ap-'+key).classList.add('active');
+  if(key==='col') aemBuildCol();
+  if(key==='cat') aemBuildCat();
+  if(key==='rep') aemBuildRep();
+}
+function aemToggleUrgent(){
+  _aurgent=!_aurgent;
+  document.getElementById('ap-urgent').classList.toggle('lit',_aurgent);
+  document.getElementById('aurgent').checked=_aurgent;
+}
+function aemBuildCol(){
+  const cur=document.getElementById('aco').value||'today';
+  document.getElementById('as-col-opts').innerHTML=Object.entries(TBOX_UI).map(([k,v])=>
+    `<div class="em-col-opt${cur===k?' sel':''}" style="background:${v.bg};color:${v.txt}" onclick="aemSetCol('${k}')">${v.label}</div>`
+  ).join('');
+}
+function aemSetCol(col){
+  document.getElementById('aco').value=col;
+  const v=TBOX_UI[col];
+  const pill=document.getElementById('ap-col');
+  pill.style.background=v.bg;pill.style.borderColor=v.txt;pill.style.color=v.txt;
+  aemBuildCol();
+}
+function aemBuildCat(){
+  const cur=document.getElementById('ac').value;
+  const opts=[{id:'',name:'None',color:'rgba(255,255,255,.08)'},...cats];
+  document.getElementById('as-cat-opts').innerHTML=opts.map(c=>{
+    const bg=c.id?c.color:'rgba(255,255,255,.06)';
+    const txt=c.id?con(c.color):'var(--ink2)';
+    return `<div class="em-cat-opt${String(cur)===String(c.id)?' sel':''}" style="background:${bg};color:${txt}" onclick="aemSetCat('${c.id}','${bg}')">${esc(c.name)}</div>`;
+  }).join('');
+}
+function aemSetCat(id,bg){
+  document.getElementById('ac').value=id;
+  const pill=document.getElementById('ap-cat');
+  if(id){pill.style.background=bg;pill.style.borderColor='rgba(255,255,255,.3)';}
+  else{pill.style.background='';pill.style.borderColor='';}
+  aemBuildCat();
+}
+function aemBuildRep(){
+  const cur=document.getElementById('arep').value;
+  document.getElementById('as-rep-opts').innerHTML=REP_LABELS.map(([v,l])=>
+    `<div class="em-rep-opt${cur===v?' sel':''}" onclick="aemSetRep('${v}')">${l}</div>`
+  ).join('');
+  document.getElementById('adc').style.display=cur==='custom'?'block':'none';
+  const mw=document.getElementById('amonthday-wrap');if(mw)mw.style.display=cur==='monthly-day'?'block':'none';
+  const rs=document.getElementById('arep-start');if(rs)rs.style.display=cur&&cur!==''?'block':'none';
+}
+function aemSetRep(val){
+  document.getElementById('arep').value=val;
+  onRepCh('arep','adc');
+  aemBuildRep();
+  const pill=document.getElementById('ap-rep');
+  if(val){pill.classList.add('has-val');}else{pill.classList.remove('has-val');pill.style.background='';pill.style.borderColor='';}
+}
+function aemUpdateDatePill(){
+  const val=document.getElementById('ad').value;
+  const pill=document.getElementById('ap-date');
+  pill.classList.toggle('has-val',!!val);
+  if(!val){pill.style.background='';pill.style.borderColor='';}
+}
+function aemReset(){
+  _aurgent=false;_aemOpen=null;
+  ['ap-col','ap-cat','ap-date','ap-time','ap-wait','ap-link','ap-rep','ap-color'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';el.classList.remove('has-val','active');}
+  });
+  document.getElementById('ap-urgent').classList.remove('lit');
+  document.getElementById('aurgent').checked=false;
+  document.getElementById('aco').value='today';
+  document.getElementById('ac').value='';
+  document.getElementById('arep').value='';
+  document.getElementById('adc').style.display='none';
+  document.querySelectorAll('[id^="as-"]').forEach(el=>el.classList.remove('open'));
+}
 function addManual(){
   const rawName=document.getElementById('an').value.trim();if(!rawName)return;
   const p=parseNL(rawName);const name=p?(p.name||rawName):rawName;
@@ -1533,21 +1623,20 @@ function addManual(){
   const waitTaskIdRaw=document.getElementById('awt')?.value;
   const waitTaskId=waitTaskIdRaw?parseInt(waitTaskIdRaw):null;
   const waitUntil=document.getElementById('awu')?.value||null;
-  const hasWait=wait||waitTaskId||waitUntil;
-  let col=date?d2col(date,rep):rep?'today':'casual';
-  const waitOpen=document.getElementById('wait-extra').classList.contains('open');
-  // If wait is purely text with no date, route to wait col
-  // If has date + (waitTaskId or waitUntil), stays in date col but shows as blocked
-  if(waitOpen&&wait&&!date&&!waitTaskId&&!waitUntil)col='wait';
+  const chosenCol=document.getElementById('aco').value||'';
+  const link=document.getElementById('alink')?.value.trim()||null;
+  const urgent=document.getElementById('aurgent')?.checked||false;
+  let col=chosenCol||'today';
+  // Route: if wait with no date, go to wait col; if date given, route by date
+  if((wait||waitTaskId||waitUntil)&&!date)col='wait';
+  else if(date)col=d2col(date,rep);
+  else if(!chosenCol)col=rep?'today':'casual';
   const color=getDot('add-cr');
   pu('add');
-  tasks.push({id:tid++,name,col,deadlineDate:date,deadlineTime:time,waitingFor:col==='wait'?wait:'',waitTaskId:waitTaskId||null,waitUntil:waitUntil||null,done:false,repeat:rep,repeatDays:repDays,repeatStart:repStart,repeatMonthDay:repMonthDay,categoryId:catId?parseInt(catId):null,stickyColor:color,link:null,paletteColor:color?'':nxtP()});
+  tasks.push({id:tid++,name,col,deadlineDate:date,deadlineTime:time,waitingFor:(col==='wait'&&!waitTaskId&&!waitUntil)?wait:'',waitTaskId:waitTaskId||null,waitUntil:waitUntil||null,done:false,urgent,repeat:rep,repeatDays:repDays,repeatStart:repStart,repeatMonthDay:repMonthDay,categoryId:catId?parseInt(catId):null,stickyColor:color,link,paletteColor:color?'':nxtP()});
   // Reset
-  document.getElementById('an').value='';document.getElementById('ad').value='';document.getElementById('at').value='';document.getElementById('aw').value='';if(document.getElementById('awt'))document.getElementById('awt').value='';if(document.getElementById('awu'))document.getElementById('awu').value='';if(document.getElementById('awu-date'))document.getElementById('awu-date').value='';if(document.getElementById('awu-time'))document.getElementById('awu-time').value='';
-  document.getElementById('arep').value='';document.getElementById('adc').style.display='none';
-  document.getElementById('rep-extra').classList.remove('open');document.getElementById('wait-extra').classList.remove('open');
-  document.getElementById('pill-rep').classList.remove('on');document.getElementById('pill-wait').classList.remove('on');
-  document.getElementById('pill-rep-lbl').textContent='—';updatePills();mkDots('add-cr','');save();ra();showU('Added');
+  document.getElementById('an').value='';document.getElementById('ad').value='';document.getElementById('at').value='';document.getElementById('aw').value='';if(document.getElementById('awt'))document.getElementById('awt').value='';if(document.getElementById('awu'))document.getElementById('awu').value='';if(document.getElementById('awu-date'))document.getElementById('awu-date').value='';if(document.getElementById('awu-time'))document.getElementById('awu-time').value='';if(document.getElementById('alink'))document.getElementById('alink').value='';
+  mkDots('add-cr','');aemReset();aemClose();save();ra();showU('Added');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement.id==='an'&&!(e.ctrlKey||e.metaKey)){e.preventDefault();addManual();}});
 document.getElementById('arep').addEventListener('change',function(){document.getElementById('pill-rep-lbl').textContent=this.value?repLabel(this.value):'—';});
@@ -1713,28 +1802,23 @@ function emSyncPills(t){
   else{kp.style.background='';kp.style.borderColor='';}
   // Date pill
   const dp=document.getElementById('ep-date');
-  if(t.deadlineDate){dp.style.background='rgba(220,190,255,.15)';dp.style.borderColor='rgba(220,190,255,.35)';}
-  else{dp.style.background='';dp.style.borderColor='';}
-  // Time pill
+  dp.classList.toggle('has-val',!!t.deadlineDate);
+  if(!t.deadlineDate){dp.style.background='';dp.style.borderColor='';}
   const tp=document.getElementById('ep-time');
-  if(t.deadlineTime){tp.style.background='rgba(220,190,255,.15)';tp.style.borderColor='rgba(220,190,255,.35)';}
-  else{tp.style.background='';tp.style.borderColor='';}
-  // Wait pill
+  tp.classList.toggle('has-val',!!t.deadlineTime);
+  if(!t.deadlineTime){tp.style.background='';tp.style.borderColor='';}
   const wp=document.getElementById('ep-wait');
-  if(t.waitingFor||t.waitTaskId||t.waitUntil){wp.style.background='rgba(220,190,255,.15)';wp.style.borderColor='rgba(220,190,255,.35)';}
-  else{wp.style.background='';wp.style.borderColor='';}
-  // Link pill
+  wp.classList.toggle('has-val',!!(t.waitingFor||t.waitTaskId||t.waitUntil));
+  if(!(t.waitingFor||t.waitTaskId||t.waitUntil)){wp.style.background='';wp.style.borderColor='';}
   const lp=document.getElementById('ep-link');
-  if(t.link){lp.style.background='rgba(220,190,255,.15)';lp.style.borderColor='rgba(220,190,255,.35)';}
-  else{lp.style.background='';lp.style.borderColor='';}
-  // Repeat pill
+  lp.classList.toggle('has-val',!!t.link);
+  if(!t.link){lp.style.background='';lp.style.borderColor='';}
   const rp=document.getElementById('ep-rep');
-  if(t.repeat){rp.style.background='rgba(220,190,255,.15)';rp.style.borderColor='rgba(220,190,255,.35)';}
-  else{rp.style.background='';rp.style.borderColor='';}
-  // Color pill — reflects stickyColor
+  rp.classList.toggle('has-val',!!t.repeat);
+  if(!t.repeat){rp.style.background='';rp.style.borderColor='';}
   const clp=document.getElementById('ep-color');
   if(t.stickyColor){clp.style.background=t.stickyColor;clp.style.borderColor=t.stickyColor;}
-  else{clp.style.background='';clp.style.borderColor='';}
+  else{clp.style.background='';clp.style.borderColor='';clp.classList.remove('has-val');}
   // Urgent pill
   document.getElementById('ep-urgent').classList.toggle('lit',!!t.urgent);
   document.getElementById('eurgent').checked=!!t.urgent;
@@ -1797,11 +1881,13 @@ function saveTask(){
   t.repeatMonthDay=t.repeat==='monthly-day'?parseInt(document.getElementById('emonthday')?.value||1):null;
   const cv=document.getElementById('ec').value;t.categoryId=cv?parseInt(cv):null;
   t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;
-  // Auto-route based on date/wait (unless user explicitly chose a col)
+  // Auto-route: if task has a deadline, keep it in its date col even with a wait
+  // (it'll show as blocked/faded below the divider in that col)
+  // Only pure wait (no deadline) routes to the Wait box
   const chosenCol=document.getElementById('eco').value;
-  if(t.waitingFor||t.waitTaskId){t.col='wait';}
-  else if(chosenCol==='wait'&&!t.waitingFor&&!t.waitTaskId){t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}
-  else if(t.deadlineDate&&chosenCol!=='casual'&&chosenCol!=='wait'){t.col=d2col(t.deadlineDate,t.repeat);}
+  if((t.waitingFor||t.waitTaskId||t.waitUntil)&&!t.deadlineDate){t.col='wait';}
+  else if(chosenCol==='wait'&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}
+  else if(t.deadlineDate&&chosenCol!=='casual'){t.col=d2col(t.deadlineDate,t.repeat);}
   closeM('tm');save();ra();showU('Updated');
 }
 function delTask(){pu('del');tasks=tasks.filter(t=>t.id!==editTid);closeM('tm');save();ra();showU('Deleted');}
@@ -2150,7 +2236,7 @@ A task is **blocked** when:
 
 ## Export / Import
 
-\`exportData()\` → JSON with \`sn()\` + \`{version:'eglantine-stem', exported: ISO string}\`
+\`exportData()\` → JSON with \`sn()\` + \`{version:'foxglove-petal', exported: ISO string}\`
 \`importData(event)\` → parses JSON, calls \`ap()\`
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
@@ -2219,7 +2305,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'eglantine-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'foxglove-petal',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
@@ -2259,37 +2345,63 @@ function addCodeBlock(code){
 
 
 const AI_NOTES_KEY='fleur_ai_notes';
-function saveAiNotes(){
+async function saveAiNotes(){
   const v=document.getElementById('ai-notes').value;
   localStorage.setItem(AI_NOTES_KEY,v);
-  const btn=document.querySelector('#pane-ai button');
-  const orig=btn.textContent;btn.textContent='Saved!';
-  setTimeout(()=>btn.textContent=orig,1500);
+  const btn=document.getElementById('ai-notes-save-btn');
+  const orig=btn.textContent;btn.textContent='Saving…';
+  try{
+    await fetch('https://fleurplanner.netlify.app/api/sync',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'save',key:'fleur_ai_notes',state:v})
+    });
+    btn.textContent='Saved!';
+  }catch(e){btn.textContent='Saved locally';}
+  setTimeout(()=>btn.textContent=orig,1800);
 }
-function loadAiNotes(){
-  const el=document.getElementById('ai-notes');
-  if(el)el.value=localStorage.getItem(AI_NOTES_KEY)||'';
+async function loadAiNotes(){
+  const el=document.getElementById('ai-notes');if(!el)return;
+  // Try Supabase first
+  try{
+    const r=await fetch('https://fleurplanner.netlify.app/api/sync',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({action:'load',key:'fleur_ai_notes'})
+    });
+    if(r.ok){
+      const d=await r.json();
+      let v=d?.state;
+      if(typeof v==='string'&&v){el.value=v;localStorage.setItem(AI_NOTES_KEY,v);return;}
+    }
+  }catch(e){}
+  // Fallback to localStorage
+  el.value=localStorage.getItem(AI_NOTES_KEY)||'';
 }
 let _fleurCode='';
+async function loadFleurCode(){
+  const btn=document.getElementById('load-code-btn');
+  const status=document.getElementById('ai-status');
+  if(btn)btn.textContent='Loading…';
+  status.textContent='Fetching current code…';
+  try{
+    const r=await fetch('https://maximvino.github.io/fleur/index.html?cb='+Date.now());
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    _fleurCode=await r.text();
+    status.textContent='Code loaded. Now describe your change.';
+    if(btn){btn.textContent='✓ Code loaded';btn.style.color='#7ab870';}
+  }catch(e){
+    _fleurCode='';
+    status.textContent='Could not fetch from GitHub.';
+    if(btn)btn.textContent='⬆ Load code';
+  }
+}
 async function sendCode(){
   const inp=document.getElementById('ci');
   const text=inp.value.trim();
   if(!text)return;
-  if(!_fleurCode){
-    const status=document.getElementById('ai-status');
-    status.textContent='Fetching current code…';
-    try{
-      const r=await fetch('https://maximvino.github.io/fleur/index.html?cb='+Date.now());
-      if(!r.ok)throw new Error('HTTP '+r.status);
-      _fleurCode=await r.text();
-      status.textContent='Send a message to request a change.';
-    }catch(e){
-      _fleurCode='';
-      status.textContent='Could not fetch from GitHub — proceeding without current code.';
-    }
-  }
-  const sys='You are a coding assistant for Fleur, a single-file HTML task planner. Return the COMPLETE updated HTML file inside a single ```html code block. Brief summary after the block. Never partial code. Never explain before the block.\n'
-    +(_fleurCode?'CURRENT FILE:\n'+_fleurCode:'No file loaded.');
+
+  const codeLoaded=!!_fleurCode;
+  const sys='You are a coding assistant for Fleur, a single-file HTML task planner.'
+    +(codeLoaded?' Return the COMPLETE updated HTML file inside a single ```html code block. Brief summary after the block. Never partial code. Never explain before the block.\nCURRENT FILE:\n'+_fleurCode:' Answer questions about Fleur helpfully and concisely. If asked to make a code change, tell the user to click "Load code" first.');
   const estTokens=Math.ceil((sys.length+text.length)/4);
   if(estTokens>8000){
     const fullPrompt=sys+'\n\nUSER REQUEST: '+text;
