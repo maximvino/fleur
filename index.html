@@ -70,7 +70,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     0 6px 20px rgba(0,0,0,.5),
     0 2px 4px rgba(0,0,0,.35)}
 .cork.minimized>.cork-body{display:none}
-.cork.minimized{min-height:0!important}
+.cork.minimized{min-height:36px!important}
 .cork-hdr{display:none}
 .cork-title{display:none}
 .cork-count{display:none}
@@ -745,7 +745,7 @@ function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gThe
 function ap(s){
   tasks=s.tasks||[];
   cats=(s.cats||s.categories||[]).map(c=>({showBox:1,minimized:false,colGroup:1,...c}));
-  colMin=s.colMin||{};gTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
+  colMin=s.colMin||{};colMin['wait']=0;// always expand wait on loadgTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
