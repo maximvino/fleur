@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Foxglove Stem</title>
+<title>Fleur · Foxglove Seed</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -151,7 +151,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .sn-body{padding:8px 10px 6px;flex:1;line-height:24px;background-image:repeating-linear-gradient(to bottom,transparent,transparent 23px,rgba(0,0,0,.08) 23px,rgba(0,0,0,.08) 24px);background-position:0 0}
 .sn-name{font-size:var(--ts);line-height:24px;font-family:var(--font-note);color:inherit;word-break:break-word}
 .sn-badges{margin-top:4px;display:flex;flex-wrap:wrap;gap:3px;align-items:center}
-.sn-link-btn{font-size:11px;text-decoration:none;opacity:.65;line-height:1;padding:1px 2px;flex-shrink:0}
+.sn-link-btn{font-size:12px;text-decoration:none;opacity:.55;line-height:1;padding:1px 2px;flex-shrink:0;font-weight:500}
 .sn-link-btn:hover{opacity:1}
 .sn-tab{padding:4px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.12);flex-shrink:0}
 .sn-tab-badges{display:flex;flex-wrap:wrap;gap:2px;justify-content:flex-end;align-items:center}
@@ -173,7 +173,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cbtn svg.pin{width:20px;height:20px}
 
 /* ── Wait icon (tab) + inline reveal ── */
-.sn-wait-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:1px 2px;opacity:.65;line-height:1;color:inherit;flex-shrink:0;display:inline-flex;align-items:center}
+.sn-wait-btn{background:none;border:none;cursor:pointer;font-size:13px;padding:1px 2px;opacity:.55;line-height:1;color:inherit;flex-shrink:0;display:inline-flex;align-items:center;font-family:serif}
 .sn-wait-btn:hover,.sn-wait-btn.open{opacity:1}
 /* Wait text reveal — shown below task name when ⏳ tapped */
 .sn-wait-reveal{display:none;font-family:var(--font-note);font-size:var(--ts);line-height:24px;
@@ -1058,8 +1058,8 @@ function snHTML(task,inCat){
   const wn=task.waitingFor||(task.waitTaskId?('until '+getDepName(task)+' done'):'')
           ||(task.waitUntil?waitUntilLabel(task):'');
   const blocked=isBlocked(task);
-  const waitIcon=wn?`<button class="sn-wait-btn" onclick="event.stopPropagation();this.closest('.sn').classList.toggle('wait-open')" title="${wn}">⏳</button>`:'';
-  const linkIcon=task.link?`<a class="sn-link-btn" href="${esc(task.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Open link">🔗</a>`:'';
+  const waitIcon=wn?`<button class="sn-wait-btn" onclick="event.stopPropagation();this.closest('.sn').classList.toggle('wait-open')" title="${wn}">◷</button>`:'';
+  const linkIcon=task.link?`<a class="sn-link-btn" href="${esc(task.link)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="Open link">↗</a>`:'';
   const tabLeft=dateStr?`<span class="${dateCls}" style="font-size:9px;padding:1px 5px">${esc(dateStr)}</span>`:'';
   const tabRight=[
     task.repeat?`<span class="badge badge-rep" style="font-size:9px;padding:1px 4px">${repLabel(task.repeat)}</span>`:'',
@@ -1150,7 +1150,7 @@ function corkHTML(col){
     bodyHTML=content;
   }
     const isUpcoming=col==='upcoming';
-  const calBtn=isUpcoming?`<button class="corkbtn" style="color:\${cs.txt}" title="Calendar" onclick="openCalendar()">📅</button>`:'';
+  const calBtn=isUpcoming?`<button class="corkbtn" style="color:${cs.txt}" title="Calendar" onclick="openCalendar()">📅</button>`:'';
   const casuBtns=isCasu?`
     <button class="corkbtn" style="color:${cs.txt}" title="Minimize to pinned" onclick="toggleMin('${col}',1)">${minLevel===1?'◂':'◁'}</button>
     <button class="corkbtn" style="color:${cs.txt}" title="Minimize all" onclick="toggleMin('${col}',2)">${minLevel===2?'▸':'▾'}</button>`
@@ -2249,7 +2249,7 @@ A task is **blocked** when:
 
 ## Export / Import
 
-\`exportData()\` → JSON with \`sn()\` + \`{version:'foxglove-stem', exported: ISO string}\`
+\`exportData()\` → JSON with \`sn()\` + \`{version:'foxglove-seed', exported: ISO string}\`
 \`importData(event)\` → parses JSON, calls \`ap()\`
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
@@ -2318,7 +2318,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'foxglove-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'foxglove-seed',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
