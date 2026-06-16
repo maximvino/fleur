@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Foxglove Petallite</title>
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Pacifico&display=swap" rel="stylesheet">
+<title>Fleur · Foxglove Stem</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -23,48 +23,35 @@
   --font-t:'DM Sans',sans-serif;
   --font-hand:'DM Sans',sans-serif;
   --ts:15px;
+  /* time box raw colors */
   --today:#1e3d2a;    --today-t:#c8e6d0;
   --tmrw:#3a2c06;     --tmrw-t:#f0e0a0;
   --upco:#2a1200;     --upco-t:#f5d4a8;
   --wait:#3a0f0f;     --wait-t:#f5c8c8;
   --casu:#1e1040;     --casu-t:#d4c8f5;
+  /* day abbrevs */
 }
 body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weight:300;min-height:100vh}
 .page{max-width:1160px;margin:0 auto;padding:1.8rem 1.4rem 8rem}
 
 /* ── Header ── */
-.hdr{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:2rem;padding:0 2px;min-height:40px}
-.hdr-flower{flex-shrink:0;pointer-events:none}
+.hdr{position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding:0 2px;min-height:60px}
+.hdr-left{display:none}
+.hdr-weekday{font-family:var(--font-h);font-size:1.4rem;font-weight:400;color:var(--ink);opacity:.6;letter-spacing:-.01em;white-space:nowrap}
+.hdr-flower{position:absolute;left:50%;transform:translateX(-50%);flex-shrink:0;pointer-events:none}
+.hdr-right{display:none}
+.hdr-daynum{display:none}
+.hdr-month{font-family:var(--font-h);font-size:1.5rem;color:var(--ink);white-space:nowrap}
 @media(max-width:480px){
+  .hdr-daynum{font-size:1.15rem}
+  .hdr-weekday{font-size:1.05rem}
   .hdr-flower svg{width:44px;height:44px}
 }
+.dateline{font-size:13px;color:var(--ink2);font-family:var(--font-h);margin-top:1px;letter-spacing:.01em}
 .hbtns{display:flex;gap:6px}
 .hbtn{background:rgba(220,190,255,.05);border:1px solid rgba(220,190,255,.1);border-radius:18px;padding:5px 11px;font-size:11px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .15s;font-family:var(--font-b)}
 .hbtn:hover{background:rgba(220,190,255,.1);color:var(--ink)}
 .hbtn svg{width:10px;height:10px}
-
-/* ── Date bubble in Today box ── */
-.today-date-bubble{
-  display:flex;align-items:baseline;gap:3px;
-  padding:10px 12px 8px;
-  pointer-events:none;
-  line-height:1;
-}
-.today-date-day{
-  font-family:'Pacifico',cursive;
-  font-size:2.6rem;
-  color:#c8e6d0;
-  line-height:1;
-  text-shadow:0 2px 8px rgba(0,0,0,.3);
-}
-.today-date-dow{
-  font-family:'Pacifico',cursive;
-  font-size:1.3rem;
-  color:#a0c8a8;
-  line-height:1;
-  margin-left:2px;
-  text-shadow:0 1px 5px rgba(0,0,0,.2);
-}
 
 /* ── Board: 3-col + 2 full rows ── */
 .board{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:11px;align-items:stretch}
@@ -73,7 +60,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 
 /* ── Corkboard (time box) ── */
 .cork{border-radius:12px;overflow:hidden;display:flex;flex-direction:column;position:relative;
-  border:3px solid transparent;
+  /* steel/metal frame */
+  border:3px solid transparent; /* set per-box via inline style */
   box-shadow:
     inset 0 1px 0 rgba(255,235,180,.18),
     inset 0 -2px 0 rgba(0,0,0,.4),
@@ -83,12 +71,16 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     0 2px 4px rgba(0,0,0,.35)}
 .cork.minimized>.cork-body{display:none}
 .cork.minimized{min-height:0!important}
-.cork-hdr{padding:6px 12px 5px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.22);flex-wrap:wrap}
-.cork-btns{display:flex;gap:3px;margin-left:auto}
+.cork-hdr{display:none}
+.cork-title{display:none}
 .cork-count{display:none}
-.corkbtn{width:18px;height:18px;border-radius:50%;border:1px solid rgba(255,255,255,.15);background:transparent;cursor:pointer;color:rgba(255,255,255,.35);font-size:10px;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0;flex-shrink:0}
-.corkbtn:hover{background:rgba(255,255,255,.12);color:rgba(255,255,255,.85)}
-/* Wait scraps */
+.today-date{padding:8px 12px 4px 12px;font-family:'Nunito',var(--font-b);font-weight:800;font-size:2.4rem;line-height:1;color:rgba(200,230,208,.55);letter-spacing:-.02em;pointer-events:none;user-select:none}
+.today-date .dow-letter{font-size:1rem;font-weight:700;vertical-align:super;margin-left:1px;opacity:.8}
+.cork-float{position:absolute;top:6px;right:6px;display:flex;gap:3px;z-index:10}
+.cork-btns{display:flex;gap:3px}
+.corkbtn{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);cursor:pointer;color:rgba(255,255,255,.5);font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0;flex-shrink:0;backdrop-filter:blur(4px)}
+.corkbtn:hover{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)}
+/* Wait scraps — torn paper above stickies */
 .wait-groups{display:flex;flex-wrap:wrap;gap:10px;padding:8px 14px 12px;width:100%;align-items:flex-start}
 .cork.minimized .wait-groups{display:none}
 .wait-ribbon{
@@ -96,6 +88,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   padding:4px 16px 5px;
   font-family:var(--font-note);
   font-size:12.5px;
+  
   color:#2a1f0e;
   background:#dfc99a;
   cursor:pointer;
@@ -109,12 +102,16 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .wait-ribbon:nth-child(3n+2){transform:rotate(0.8deg)}
 .wait-ribbon:nth-child(3n){transform:rotate(-0.4deg)}
 .wait-ribbon:hover{box-shadow:2px 5px 14px rgba(0,0,0,.5),0 1px 0 rgba(255,248,220,.6) inset}
+/* highlighted stickies when hovering a ribbon */
 .sn.wait-highlight{transform:translateY(-3px) rotate(1.5deg)!important;box-shadow:4px 7px 18px rgba(0,0,0,.4)!important;z-index:10}
+/* Cork body — sticky note grid */
 .cork-body{padding:10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+/* Inline add */
 .cork-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
 .cork-add.open{display:block}
 .cork-add input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:8px;padding:6px 10px;font-size:15px;font-family:var(--font-b);color:var(--ink);outline:none}
 .cork-add input::placeholder{color:var(--ink3);font-size:13px}
+/* Drag-over */
 .cork.drag-over>.cork-body{box-shadow:inset 0 0 0 2px rgba(220,190,255,.4)}
 
 /* ── Sticky note ── */
@@ -124,11 +121,14 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   transition:transform .13s,box-shadow .13s;
   cursor:pointer;position:relative;overflow:hidden;
   width:140px;aspect-ratio:1/1}
+/* blocked sticky — faded, in its date box below divider */
 .sn-blocked{opacity:.38;filter:saturate(.5)}
 .sn-blocked:hover{opacity:.55}
+/* divider line between active and blocked stickies */
 .cork-blocked-divider,.casu-pin-divider{width:100%;height:1px;background:rgba(255,255,255,.12);
   grid-column:1/-1;margin:4px 0;position:relative}
 .casu-pin-divider{background:rgba(255,255,255,.2)}
+/* Casual pin drop zone */
 .casu-pin-zone{
   width:100%;padding:8px 10px 6px;
   border:2px dashed rgba(255,255,255,.18);
@@ -142,6 +142,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .casu-pin-zone.drag-over{border-color:rgba(255,255,255,.55);color:rgba(255,255,255,.7);background:rgba(255,255,255,.06)}
 .casu-pin-zone.has-pins{border-style:solid;border-color:rgba(255,255,255,.12);color:rgba(255,255,255,.3)}
 .casu-pin-label{font-size:9px;font-family:var(--font-b);letter-spacing:.07em;text-transform:uppercase;color:rgba(255,255,255,.25);grid-column:1/-1;margin-bottom:2px}
+
+/* grow taller than square when wait text is present */
 .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
 .sn:not(.completing):hover{transform:translateY(-2px) rotate(.4deg);box-shadow:3px 5px 14px rgba(0,0,0,.3)}
 .sn.completing{animation:sn-done .45s ease-in forwards;pointer-events:none}
@@ -154,6 +156,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .sn-tab{padding:4px 8px;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;border-bottom:1px solid rgba(0,0,0,.12);background:rgba(0,0,0,.12);flex-shrink:0}
 .sn-tab-badges{display:flex;flex-wrap:wrap;gap:2px;justify-content:flex-end;align-items:center}
 .sn-streak{height:6px;width:100%;flex-shrink:0}
+
+/* ── Badges ── */
 .badge{font-size:10px;padding:1px 6px;border-radius:99px;font-weight:500;font-family:var(--font-b);color:inherit;opacity:.8}
 .badge-wait{background:rgba(100,15,15,.55);color:#f5c8c8;border:1px solid rgba(200,60,60,.25)}
 .badge-tmrw{background:rgba(90,65,5,.55);color:#f0e0a0;border:1px solid rgba(200,160,40,.2)}
@@ -161,17 +165,24 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .badge-today{background:rgba(15,70,30,.55);color:#c8e6d0;border:1px solid rgba(40,160,70,.2)}
 .badge-rep{background:rgba(255,255,255,.1)}
 .badge-time{background:rgba(255,255,255,.12)}
+
+/* ── Check button ── */
 .cbtn{width:22px;height:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .13s;background:none;border:none;padding:0;opacity:.7}
 .cbtn:hover{opacity:1;transform:translateY(-1px)}
 .cbtn.ck{opacity:.35;filter:grayscale(1)}
 .cbtn svg.pin{width:20px;height:20px}
+
+/* ── Wait icon (tab) + inline reveal ── */
 .sn-wait-btn{background:none;border:none;cursor:pointer;font-size:12px;padding:1px 2px;opacity:.65;line-height:1;color:inherit;flex-shrink:0;display:inline-flex;align-items:center}
 .sn-wait-btn:hover,.sn-wait-btn.open{opacity:1}
+/* Wait text reveal — shown below task name when ⏳ tapped */
 .sn-wait-reveal{display:none;font-family:var(--font-note);font-size:var(--ts);line-height:24px;
   color:inherit;opacity:.55;margin-top:0;word-break:break-word;
   border-top:1px solid rgba(0,0,0,.08);padding-top:2px;margin-top:4px}
 .sn.wait-open .sn-wait-reveal{display:block}
 .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
+
+/* ── Empty ── */
 .empty{width:100%;text-align:center;padding:.8rem .4rem;font-size:11px;font-family:var(--font-h);opacity:.3}
 
 /* ── Cat section ── */
@@ -188,9 +199,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cbox.minimized{min-height:0!important}
 .cbox.cbox-dragging{opacity:.45;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .cbox.drop-before{outline:2px solid var(--accent);outline-offset:-2px}
-.cbox-hdr{padding:7px 12px 6px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);cursor:grab}
+.cbox-hdr{padding:5px 8px 5px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);cursor:grab;min-height:32px}
 .cbox-hdr:active{cursor:grabbing}
-.cbox-btns{display:flex;gap:3px;margin-left:auto}
+.cbox-title{display:none}
+.cbox-count{display:none}
+.cbox-btns{display:flex;gap:3px}
 .cbox-body{padding:10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 .cbox-body .sn{width:140px;flex-shrink:0;aspect-ratio:1/1;min-height:unset}
 .cbox-body .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
@@ -200,7 +213,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cbox-add input::placeholder{color:var(--ink3);font-size:13px}
 .cbox.drag-over>.cbox-body{box-shadow:inset 0 0 0 2px rgba(220,190,255,.4)}
 
-/* ── Control dock ── */
+/* ── Control dock (Add/Cat/AI consolidated) ── */
 .dock{width:100%;margin-bottom:12px}
 .dock-icons{display:flex;justify-content:center;gap:12px;padding:10px 0;border-bottom:1px solid rgba(220,190,255,.08)}
 .dock-icon{width:44px;height:44px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.04);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;transition:all .15s;color:var(--ink)}
@@ -210,12 +223,16 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .dock-panel.open{max-height:500px}
 .dock-pane{display:none;padding:20px;flex-direction:column;gap:12px}
 .dock-pane.active{display:flex}
+/* Preset row */
 .preset-row{display:grid;gap:8px;padding:8px 0 4px;justify-content:center;border-bottom:1px solid rgba(220,190,255,.06)}
 .preset-btn{width:44px;height:44px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.04);display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;transition:transform .12s,box-shadow .12s,border-color .12s;flex-shrink:0}
 .preset-btn:hover{transform:scale(1.1);box-shadow:0 4px 16px rgba(0,0,0,.35);border-color:rgba(220,190,255,.45)}
 .preset-btn:active{transform:scale(.94)}
+/* Preset task row in editor */
 .pre-task-row{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:8px;display:flex;flex-direction:column;gap:5px}
 .pre-task-row input,.pre-task-row select{font-size:12px;padding:4px 7px;border-radius:6px;border:1px solid rgba(255,255,255,.1);background:rgba(0,0,0,.25);color:var(--ink)}
+
+/* Add task pane */
 .add-name{width:100%;background:rgba(255,255,255,.07);border:1px solid rgba(220,190,255,.18);border-radius:10px;padding:12px 16px;font-size:18px;font-family:var(--font-b);color:var(--ink);outline:none;transition:border-color .15s}
 .add-name:focus{border-color:rgba(220,190,255,.4)}
 .add-name::placeholder{color:var(--ink3)}
@@ -227,14 +244,19 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .pill.on .pill-val{max-width:140px}
 .pill select{background:transparent;border:none;color:var(--ink);font-size:12px;outline:none;cursor:pointer}
 .pill select option{background:#1c1528}
+.pill select option{background:#1c1528}
 .pill-extra{display:none;flex-direction:column;gap:9px;padding:4px 0}
 .pill-extra.open{display:flex}
 .add-submit{align-self:flex-end;padding:9px 22px;border-radius:10px;border:none;background:linear-gradient(135deg,#6b3d7a,#4a2d5e);color:#f0e8f5;font-size:13px;font-weight:500;cursor:pointer;transition:opacity .15s}
 .add-submit:hover{opacity:.85}
+
+/* Cat pane */
 .cat-chip-row{display:flex;flex-wrap:wrap;gap:5px}
 .cchip{padding:3px 9px;border-radius:99px;font-size:11px;cursor:pointer;border:1px solid transparent;display:flex;align-items:center;gap:3px;transition:opacity .13s}
 .cchip:hover{opacity:.75}
 .new-cat-row{display:flex;gap:6px;flex-wrap:wrap;align-items:flex-end}
+
+/* ── Task edit modal redesign ── */
 .em-grid{display:grid;grid-template-columns:repeat(3,52px);gap:10px;padding:4px 0 8px;justify-content:center}
 .ap-pill{width:40px!important;height:40px!important;font-size:1.1rem!important}
 .em-pill{display:flex;align-items:center;justify-content:center;width:52px;height:52px;border-radius:50%;border:1px solid rgba(220,190,255,.15);background:rgba(255,255,255,.05);font-size:1.4rem;cursor:pointer;transition:background .15s,border-color .15s;position:relative;flex-shrink:0}
@@ -259,6 +281,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .fi option{background:#1c1528}
 .fg{display:flex;flex-direction:column;gap:3px;flex:1;min-width:90px}
 .fl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3)}
+
+/* AI pane */
 .cl{display:flex;flex-direction:column;gap:7px;max-height:160px;overflow-y:auto;margin-bottom:8px}
 .cl::-webkit-scrollbar{width:3px}
 .cl::-webkit-scrollbar-thumb{background:rgba(220,190,255,.1);border-radius:99px}
@@ -277,6 +301,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .copy-btn:active{background:rgba(107,61,122,1)}
 .sb:disabled{opacity:.3;cursor:default}
 .sb.sonnet{background:linear-gradient(135deg,#2d4d3a,#1e3528);font-size:11px}
+
+/* Per-action review */
 .ar{background:rgba(220,190,255,.04);border:1px solid rgba(220,190,255,.1);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:5px}
 .ai-item{display:flex;align-items:flex-start;justify-content:space-between;gap:7px;padding:4px 0;border-bottom:1px solid rgba(220,190,255,.06)}
 .ai-item:last-of-type{border-bottom:none}
@@ -290,9 +316,12 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .ar-foot{display:flex;gap:6px;justify-content:flex-end;padding-top:3px}
 .aab{font-size:11px;padding:4px 12px;border-radius:6px;border:1px solid rgba(220,190,255,.14);background:rgba(220,190,255,.06);color:var(--ink);cursor:pointer}
 .aab.go{background:rgba(60,160,60,.15);border-color:rgba(60,160,60,.3)}
+
+/* ── Completed pile drawer ── */
 .pile-trigger{display:inline-flex;align-items:center;gap:8px;padding:8px 16px;border-radius:10px;background:rgba(220,190,255,.05);border:1px solid rgba(220,190,255,.12);cursor:pointer;font-size:14px;color:var(--ink2);transition:all .15s;margin-bottom:12px;font-family:var(--font-b)}
 .pile-trigger:hover{background:rgba(220,190,255,.1);color:var(--ink)}
 .pile-trigger .pile-count{display:none}
+/* Pile drawer */
 .pile-drawer{position:fixed;bottom:0;left:0;right:0;background:rgba(18,13,26,.97);border-top:1px solid rgba(220,190,255,.13);backdrop-filter:blur(14px);z-index:500;transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);padding:16px 20px 24px;max-height:60vh;overflow-y:auto}
 .pile-drawer.open{transform:translateY(0)}
 .pile-drawer-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
@@ -308,6 +337,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .pile-note:nth-child(3n){transform:rotate(-1.5deg)}
 .pile-note:hover{filter:none;transform:scale(1.05) rotate(0deg)!important}
 .pile-empty{font-size:13px;color:var(--ink3);font-family:var(--font-h)}
+
+/* ── Modals ── */
 .mo{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:600;display:flex;align-items:center;justify-content:center;padding:18px}
 .mo.hidden{display:none}
 .md{background:#1c1528;border:1px solid rgba(220,190,255,.15);border-radius:16px;padding:20px;width:100%;max-width:390px;display:flex;flex-direction:column;gap:10px;max-height:88vh;overflow-y:auto}
@@ -320,13 +351,18 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .dp-btns{display:flex;flex-direction:column;gap:5px}
 .dp-btn{padding:8px 12px;border-radius:8px;border:1px solid rgba(220,190,255,.1);background:rgba(220,190,255,.04);color:var(--ink);font-size:13px;cursor:pointer;text-align:left}
 .dp-btn:hover{background:rgba(220,190,255,.1)}
+
+/* ── Undo ── */
 .ub{position:fixed;bottom:70px;left:18px;background:rgba(18,13,26,.96);border:1px solid rgba(220,190,255,.12);border-radius:50px;padding:6px 14px;display:flex;align-items:center;gap:9px;font-size:11px;color:var(--ink2);z-index:300;transition:opacity .3s;backdrop-filter:blur(8px)}
 .ub.hidden{opacity:0;pointer-events:none}
 .ubtn{background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;font-weight:500;padding:0}
+
+/* color dots */
 .cdots{display:flex;gap:5px;flex-wrap:wrap}
 .cdot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .1s,border-color .12s;flex-shrink:0}
 .cdot.sel{border-color:rgba(255,255,255,.7);transform:scale(1.15)}
 .cdot.cx{background:rgba(255,255,255,.07);border-style:dashed;border-color:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink3)}
+/* day checks */
 .day-checks{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}
 .dclbl{display:flex;align-items:center;gap:2px;font-size:11px;color:var(--ink2);cursor:pointer;padding:3px 7px;border-radius:99px;border:1px solid rgba(220,190,255,.13);transition:all .12s}
 .dclbl:has(input:checked){background:rgba(220,190,255,.13);border-color:rgba(220,190,255,.35);color:var(--ink)}
@@ -336,6 +372,9 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <body>
 <div class="page">
   <div class="hdr">
+    <div class="hdr-left">
+      <span class="hdr-weekday" id="hdr-weekday"></span>
+    </div>
     <div class="hdr-flower">
       <svg width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
         <g transform="translate(26,26)">
@@ -353,11 +392,15 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         </g>
       </svg>
     </div>
+    <div class="hdr-right">
+      <span class="hdr-month" id="hdr-month"></span><span class="hdr-daynum" id="hdr-daynum"></span>
+    </div>
   </div>
 
   <div class="board" id="board"></div>
   <div class="full-row" id="casu-row"></div>
   <div class="full-row" id="wait-row"></div>
+  <!-- Control dock (between time boxes and categories) -->
   <div class="dock" id="dock-static">
     <div class="dock-icons" id="dock-icons">
       <div class="dock-icon" id="di-add" onclick="switchPane('add')" title="Add task" style="background:rgba(201,143,212,.15);border-color:rgba(201,143,212,.35)">🌸</div>
@@ -375,7 +418,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
           <input class="add-name" id="an" type="text" style="flex:1" placeholder="Task name">
           <button class="add-submit" onclick="addManual()" style="flex-shrink:0">Add</button>
         </div>
-        <div class="em-grid" style="margin-bottom:4px;grid-template-columns:repeat(9,40px);gap:6px">
+        <!-- Single-row pill grid for add pane -->
+        <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;margin-bottom:4px"><div class="em-grid" style="grid-template-columns:repeat(9,40px);gap:6px;width:max-content">
           <div class="em-pill ap-pill" id="ap-col" title="Time box" onclick="aemToggle('col')">📌</div>
           <div class="em-pill ap-pill" id="ap-cat" title="Category" onclick="aemToggle('cat')">🏷️</div>
           <div class="em-pill ap-pill" id="ap-date" title="Due date" onclick="aemToggle('date')">📅</div>
@@ -386,6 +430,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
           <div class="em-pill ap-pill" id="ap-color" title="Color" onclick="aemToggle('color')">🎨</div>
           <div class="em-pill ap-pill" id="ap-urgent" title="Urgent" onclick="aemToggleUrgent()">🚨</div>
         </div>
+        </div><!-- /scroll-wrap -->
+        <!-- Add sub-panels -->
         <div class="em-sub" id="as-col"><div class="em-col-opts" id="as-col-opts"></div></div>
         <div class="em-sub" id="as-cat"><div class="em-cat-opts" id="as-cat-opts"></div></div>
         <div class="em-sub" id="as-date">
@@ -416,6 +462,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
           </select>
         </div>
         <div class="em-sub" id="as-color"><div class="cdots" id="add-cr"></div></div>
+        <!-- hidden compat -->
         <select id="ac" style="display:none"></select>
         <input type="checkbox" id="aurgent" style="display:none">
         <select id="aco" style="display:none"><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option></select>
@@ -462,12 +509,14 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         </div>
       </div>
       <div class="dock-pane" id="pane-ai">
+        <!-- Notes area -->
         <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">Notes</div>
         <textarea id="ai-notes" rows="4" placeholder="Jot down ideas for changes…" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;color:var(--ink);font-size:12px;font-family:var(--font-b);resize:vertical;min-height:72px;line-height:1.5"></textarea>
         <div style="display:flex;gap:6px;margin-bottom:10px;margin-top:4px">
           <button id="ai-notes-save-btn" onclick="saveAiNotes()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">Save notes</button>
           <a href="https://github.com/maximvino/fleur/edit/main/index.html" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;text-decoration:none;font-family:var(--font-b)">Edit on GitHub ↗</a>
         </div>
+        <!-- Chat -->
         <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">AI</div>
         <div class="cl" id="chat-log">
           <div class="bl ai" id="ai-status">Send a message to fetch the current code and request a change.</div>
@@ -480,13 +529,16 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
           </div>
         </div>
       </div>
+      <!-- Presets pane -->
       <div class="dock-pane" id="pane-pre">
         <div style="font-family:var(--font-h);font-size:.85rem;color:var(--ink2);margin-bottom:8px">Preset tasks</div>
         <div id="pre-list" style="display:flex;flex-direction:column;gap:6px;max-height:300px;overflow-y:auto"></div>
         <div style="margin-top:10px;border-top:1px solid rgba(255,255,255,.08);padding-top:10px;display:flex;gap:6px;flex-wrap:wrap">
           <button class="add-submit" onclick="openPresetEditor(null)" style="flex:1">＋ New preset</button>
+
         </div>
       </div>
+      <!-- Pile pane -->
       <div class="dock-pane" id="pane-pile">
         <div id="pile-fan-inline" style="display:flex;flex-wrap:wrap;gap:10px;padding:4px 0"></div>
         <p id="pile-empty-msg" style="font-size:13px;color:var(--ink3);font-family:var(--font-h)">Nothing completed yet today.</p>
@@ -533,6 +585,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   <div class="cat-section" id="cat-section"></div>
 </div>
 
+
+<!-- Completed pile drawer -->
 <div class="pile-drawer" id="pile-drawer">
   <div class="pile-drawer-hdr">
     <span class="pile-drawer-title">Completed today</span>
@@ -541,38 +595,77 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   <div class="pile-fan" id="pile-fan"></div>
 </div>
 
+
+
 <!-- Task edit modal -->
 <div class="mo hidden" id="tm">
   <div class="md" style="max-width:360px">
+    <!-- Name field — always visible -->
     <input class="fi" id="en" type="text" placeholder="Task name" style="font-size:15px">
+
+    <!-- Emoji pill grid -->
     <div class="em-grid">
+      <!-- 📌 Box -->
       <div class="em-pill" id="ep-col" title="Time box" onclick="emToggle('col')">📌</div>
+      <!-- 🏷️ Category -->
       <div class="em-pill" id="ep-cat" title="Category" onclick="emToggle('cat')">🏷️</div>
+      <!-- 📅 Date -->
       <div class="em-pill" id="ep-date" title="Due date" onclick="emToggle('date')">📅</div>
+      <!-- 🕐 Time -->
       <div class="em-pill" id="ep-time" title="Due time" onclick="emToggle('time')">🕐</div>
+      <!-- ⏳ Wait -->
       <div class="em-pill" id="ep-wait" title="Wait" onclick="emToggle('wait')">⏳</div>
+      <!-- 🔗 Link -->
       <div class="em-pill" id="ep-link" title="Link" onclick="emToggle('link')">🔗</div>
+      <!-- 🔁 Repeat -->
       <div class="em-pill" id="ep-rep" title="Repeat" onclick="emToggle('rep')">🔁</div>
+      <!-- 🎨 Color -->
       <div class="em-pill" id="ep-color" title="Color" onclick="emToggle('color')">🎨</div>
+      <!-- 🚨 Urgent toggle -->
       <div class="em-pill" id="ep-urgent" title="Urgent" onclick="emToggleUrgent()">🚨</div>
     </div>
-    <div class="em-sub" id="es-col"><div class="em-col-opts" id="es-col-opts"></div></div>
-    <div class="em-sub" id="es-cat"><div class="em-cat-opts" id="es-cat-opts"></div></div>
+
+    <!-- Sub-panels (one open at a time) -->
+
+    <!-- Box sub -->
+    <div class="em-sub" id="es-col">
+      <div class="em-col-opts" id="es-col-opts"></div>
+    </div>
+
+    <!-- Category sub -->
+    <div class="em-sub" id="es-cat">
+      <div class="em-cat-opts" id="es-cat-opts"></div>
+    </div>
+
+    <!-- Date sub -->
     <div class="em-sub" id="es-date">
       <input class="fi" id="ed" type="date" style="font-size:15px">
       <button onclick="document.getElementById('ed').value='';document.getElementById('ep-date').classList.remove('has-val');document.getElementById('ep-date').style.background='';document.getElementById('ep-date').style.borderColor='';" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear date</button>
     </div>
-    <div class="em-sub" id="es-time"><input class="fi" id="etime" type="time" style="font-size:15px"></div>
+
+    <!-- Time sub -->
+    <div class="em-sub" id="es-time">
+      <input class="fi" id="etime" type="time" style="font-size:15px">
+    </div>
+
+    <!-- Wait sub -->
     <div class="em-sub" id="es-wait">
       <input class="fi" id="ew" type="text" placeholder="Waiting for… (text)">
       <select class="fi" id="ewt" style="font-size:13px"><option value="">After task: (none)</option></select>
       <input class="fi" id="ewu" type="datetime-local" style="font-size:13px">
     </div>
-    <div class="em-sub" id="es-link"><input class="fi" id="elink" type="url" placeholder="https://…"></div>
+
+    <!-- Link sub -->
+    <div class="em-sub" id="es-link">
+      <input class="fi" id="elink" type="url" placeholder="https://…">
+    </div>
+
+    <!-- Repeat sub -->
     <div class="em-sub" id="es-rep">
       <div class="em-rep-opts" id="es-rep-opts"></div>
       <div id="edc" style="display:none;margin-top:4px"><div class="day-checks" id="edit-days"></div><div id="emonthday-wrap" style="display:none;margin-top:6px"><input class="fi" id="emonthday" type="number" min="1" max="31" placeholder="Day 1–31"></div></div>
       <input class="fi" id="erep-start" type="date" style="display:none;margin-top:4px" placeholder="Start date">
+      <!-- hidden selects kept for saveTask compat -->
       <select id="erep" style="display:none" onchange="onRepCh('erep','edc')">
         <option value="">None</option><option value="daily">Daily</option><option value="weekly">Weekly</option>
         <option value="biweekly">Every 2 weeks</option><option value="MWF">M·W·F</option>
@@ -581,10 +674,17 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <option value="monthly-end">Monthly — last day</option><option value="monthly-day">Monthly — specific day…</option>
       </select>
     </div>
-    <div class="em-sub" id="es-color"><div class="cdots" id="edit-cr"></div></div>
+
+    <!-- Color sub -->
+    <div class="em-sub" id="es-color">
+      <div class="cdots" id="edit-cr"></div>
+    </div>
+
+    <!-- hidden inputs kept for saveTask compat -->
     <select id="eco" style="display:none"><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option></select>
     <select id="ec" style="display:none"></select>
     <input type="checkbox" id="eurgent" style="display:none">
+
     <div class="mf" style="margin-top:8px">
       <button class="mdel" onclick="delTask()">🗑</button>
       <button class="mcan" onclick="closeM('tm')">✕</button>
@@ -636,19 +736,23 @@ const PASTELS=['#f5e8d3','#e8d5e8','#d3e8d5','#d3dde8','#e8e0d3','#e8d3d3','#d3e
 const DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
 let _pi=0;function nxtP(){return PASTELS[_pi++%PASTELS.length];}
 
-let tasks=[],cats=[],colStyles={},colMin={},gTheme={},tid=100,cid=10,pid=1,presets=[];
+let tasks=[],cats=[],colStyles={},colMin={},gTheme={},tid=100,cid=10,pid=1,presets=[],aiNotes='';
 let undos=[],uTimer=null,editTid=null,editCid=null,dragTid=null,catDragId=null,pendingDrop=null,_day='';
-let completedToday=[];
+let completedToday=[];  // {id,name,color} — tasks completed this session
 
-function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gTheme,tid,cid,pid,presets,completedToday}));}
+// ── Persist ──────────────────────────────────────────────────────
+function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gTheme,tid,cid,pid,presets,completedToday,aiNotes}));}
 function ap(s){
   tasks=s.tasks||[];
   cats=(s.cats||s.categories||[]).map(c=>({showBox:1,minimized:false,colGroup:1,...c}));
   colMin=s.colMin||{};gTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
+  // Ensure new fields exist on all tasks
   tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;});
   presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
+  aiNotes=s.aiNotes||aiNotes||'';
+  // If no presets in loaded state, try to recover from any other local key
   if(!presets.length){
     for(let i=0;i<localStorage.length;i++){
       const k=localStorage.key(i);
@@ -664,35 +768,52 @@ function save(){
 }
 async function load(){
   let ok=false;
+  // Try Supabase first — shared across all devices
   try{
     const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'load'})});
     if(r.ok){
       const d=await r.json();
+      // d.state may be a parsed object OR a JSON string (double-encoded by some Supabase configs)
       let state=d?.state;
       if(typeof state==='string'){try{state=JSON.parse(state);}catch(e){state=null;}}
-      if(state&&typeof state==='object'){ap(state);localStorage.setItem(KEY,JSON.stringify(state));ok=true;}
+      if(state&&typeof state==='object'){
+        ap(state);localStorage.setItem(KEY,JSON.stringify(state));ok=true;
+      }
+    } else {
+      console.warn('Fleur sync load failed:',r.status,await r.text().catch(()=>''));
     }
-  }catch(e){}
-  if(!ok){const raw=localStorage.getItem(KEY);if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}}
+  }catch(e){console.warn('Fleur sync error:',e);}
+  // Fallback: try current KEY, then any previous fleur_ key in localStorage
+  if(!ok){
+    const raw=localStorage.getItem(KEY);
+    if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
+  }
   if(!ok){
     const oldKeys=['fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
-    for(const k of oldKeys){const raw=localStorage.getItem(k);if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}}
+    for(const k of oldKeys){
+      const raw=localStorage.getItem(k);
+      if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
+    }
   }
   if(!ok){
     for(let i=0;i<localStorage.length;i++){
       const k=localStorage.key(i);
-      if(k&&k.startsWith('fleur_')){try{const s=JSON.parse(localStorage.getItem(k));if(s&&s.tasks&&s.tasks.length){ap(s);ok=true;break;}}catch(e){}}
+      if(k&&k.startsWith('fleur_')){
+        try{const s=JSON.parse(localStorage.getItem(k));if(s&&s.tasks&&s.tasks.length){ap(s);ok=true;break;}}catch(e){}
+      }
     }
   }
+  console.log('Fleur load:',ok?'ok':'empty',tasks.length,'tasks');
   dayTrans();applyTheme();
 }
 
+// ── Day transition ───────────────────────────────────────────────
 function today(){const d=new Date();return fmt(d);}
 function tomorrow(){const d=new Date();d.setDate(d.getDate()+1);return fmt(d);}
 function fmt(d){return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;}
 function d2col(date,rep){
   if(!date&&!rep)return'casual';
-  if(!date&&rep)return'today';
+  if(!date&&rep)return'today'; // repeating with no fixed date lives in today
   const t=today(),tm=tomorrow();
   if(date<=t)return'today';if(date===tm)return'tomorrow';return'upcoming';
 }
@@ -701,12 +822,16 @@ function dayTrans(){
   const newDay=last!==t;
   if(newDay){_day=t;localStorage.setItem(KDAY,t);completedToday=[];tasks.forEach(tk=>{if(tk.repeat&&shouldRep(tk)){tk.done=false;}});tasks=tasks.filter(tk=>tk.col==='casual'||tk.col==='wait'||tk.repeat||!tk.done).map(tk=>({...tk,done:false}));}
   else{_day=t;}
+  // Re-route date-based tasks.
+  // For repeat tasks: if deadlineDate <= today, route normally (task has reached start date).
+  // If deadlineDate > today, keep current col (task was advanced by chk() and hasn't fired yet).
   tasks.forEach(tk=>{
     if(tk.col==='wait'||tk.col==='casual')return;
-    if(tk.repeat&&tk.deadlineDate&&tk.deadlineDate>today())return;
+    if(tk.repeat&&tk.deadlineDate&&tk.deadlineDate>today())return; // future — chk() manages
     if(tk.deadlineDate)tk.col=d2col(tk.deadlineDate,tk.repeat);
-    else if(tk.repeat)tk.col='today';
+    else if(tk.repeat)tk.col='today'; // repeating, no date → today
   });
+  // Liberate time-based waits that have already passed
   chkTimeWaits();
   if(newDay)save();
 }
@@ -719,23 +844,28 @@ function shouldRep(tk){
   if(r==='weekly'){if(!tk.repeatStart)return true;return Math.round((d-new Date(tk.repeatStart+'T12:00'))/864e5)%7===0;}
   if(r==='biweekly'){if(!tk.repeatStart)return true;return Math.round((d-new Date(tk.repeatStart+'T12:00'))/864e5)%14===0;}
   if(r==='custom')return(tk.repeatDays||[]).includes(dow);
-  if(r==='monthly-start')return dom===1;if(r==='monthly-mid')return dom===15;
+  if(r==='monthly-start')return dom===1;
+  if(r==='monthly-mid')return dom===15;
   if(r==='monthly-end')return dom===daysInMonth;
   if(r==='monthly-day')return dom===(tk.repeatMonthDay||1);
   return false;
 }
 function nextMonthlyDate(tk){
+  // Returns the next firing date string for monthly repeats
   const d=new Date();d.setHours(12,0,0,0);
-  const r=tk.repeat;let targetDay=1;
+  const r=tk.repeat;
+  let targetDay=1;
   if(r==='monthly-start')targetDay=1;
   else if(r==='monthly-mid')targetDay=15;
   else if(r==='monthly-end'){const nd=new Date(d.getFullYear(),d.getMonth()+2,0);return fmt(nd);}
   else if(r==='monthly-day')targetDay=tk.repeatMonthDay||1;
+  // Next month, same day
   const next=new Date(d.getFullYear(),d.getMonth()+1,targetDay);
   return fmt(next);
 }
 function chkDay(){if(today()!==_day){dayTrans();ra();}}
 
+// ── Undo ─────────────────────────────────────────────────────────
 function pu(l){undos.push({l,s:sn()});if(undos.length>50)undos.shift();}
 function undo(){if(!undos.length)return;const e=undos.pop();ap(e.s);save();ra();hideU();addB('Undone.','ai');}
 function showU(l){clearTimeout(uTimer);document.getElementById('ul').textContent=l;document.getElementById('ub').classList.remove('hidden');uTimer=setTimeout(hideU,5000);}
@@ -747,6 +877,7 @@ document.addEventListener('keydown',e=>{
   }
 });
 
+// ── Theme ─────────────────────────────────────────────────────────
 function applyTheme(){
   const r=document.documentElement;
   const d={'font-h':"'Lora',Georgia,serif",'font-b':"'DM Sans',sans-serif",'font-t':"'DM Sans',sans-serif",'ts':'15px','page':'#130e1c','ink':'#f0e8f5','ink2':'#c0b4d0','ink3':'#7a6e8a','border':'rgba(220,190,255,.1)','accent':'#c98fd4'};
@@ -755,6 +886,7 @@ function applyTheme(){
   document.body.style.background=gTheme['bg-style']||'';
 }
 
+// ── Helpers ───────────────────────────────────────────────────────
 function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
 function con(hex){try{const h=(hex||'').replace('#','');const r=parseInt(h.slice(0,2),16),g=parseInt(h.slice(2,4),16),b=parseInt(h.slice(4,6),16);return(0.299*r+0.587*g+0.114*b)/255>0.5?'#1a1a1a':'#f5f0e8';}catch(e){return'#f5f0e8';}}
 function getCat(id){return cats.find(c=>c.id==id)||null;}
@@ -780,23 +912,30 @@ function liberateDeps(id){
   tasks.forEach(t=>{
     if(t.waitTaskId==id){
       t.waitTaskId=null;t.waitingFor='';
-      if(!isBlocked(t)&&t.col==='wait'){t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}
+      // Only move out of wait col if no other block remains
+      if(!isBlocked(t)&&t.col==='wait'){
+        t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';
+      }
     }
   });
 }
 
+// ── Date formatting ───────────────────────────────────────────────
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DAY_ABBR=['Su','M','Tu','W','Th','F','Sa'];
+// no ordinals needed
 function fmtDate(dateStr){
   if(!dateStr)return'';
   const parts=dateStr.split('-');const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   const now=new Date();const t=today(),tm=tomorrow();
-  if(dateStr===t||dateStr===tm)return'';
+  if(dateStr===t||dateStr===tm)return''; // today/tomorrow — no date badge needed
+  // within a week: use day abbrev
   const diff=Math.round((d-now)/864e5);
   if(diff>=0&&diff<7)return DAY_ABBR[d.getDay()];
   return`${MONTHS[d.getMonth()]} ${d.getDate()}`;
 }
 
+// ── Time waits ────────────────────────────────────────────────────
 function chkTimeWaits(){
   const n=new Date(),ts=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;let chg=false;
   tasks.forEach(t=>{
@@ -808,6 +947,7 @@ function chkTimeWaits(){
   if(chg){save();ra();}
 }
 
+// ── Natural language ──────────────────────────────────────────────
 const WDM={sunday:0,monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6,sun:0,mon:1,tue:2,wed:3,thu:4,fri:5,sat:6};
 const MM2={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11,january:0,february:1,march:2,april:3,june:5,july:6,august:7,september:8,october:9,november:10,december:11};
 function parseNL(text){
@@ -820,6 +960,7 @@ function parseNL(text){
   return null;
 }
 
+// ── Color dots ────────────────────────────────────────────────────
 function mkDots(cid2,sel){const el=document.getElementById(cid2);if(!el)return;el.innerHTML=PASTELS.map(c=>`<div class="cdot${sel===c?' sel':''}" data-c="${c}" style="background:${c}" onclick="pickDot('${cid2}','${c}')"></div>`).join('')+`<div class="cdot cx${sel===''?' sel':''}" data-c="" onclick="pickDot('${cid2}','')">↻</div>`;}
 function pickDot(cid2,c){document.querySelectorAll(`#${cid2} .cdot`).forEach(s=>s.classList.remove('sel'));document.querySelector(`#${cid2} [data-c="${c}"]`)?.classList.add('sel');}
 function getDot(cid2){return document.querySelector(`#${cid2} .cdot.sel`)?.dataset.c||'';}
@@ -828,12 +969,14 @@ function getDays(cid2){return[...document.querySelectorAll(`#${cid2} input:check
 function onRepCh(selId,dcId){
   const v=document.getElementById(selId).value;
   const dc=document.getElementById(dcId);
-  if(v==='custom'||v==='monthly-day'){dc.style.display='block';}else{dc.style.display='none';}
+  if(v==='custom'||v==='monthly-day'){dc.style.display='block';}
+  else{dc.style.display='none';}
   if(v==='custom')buildDays(selId==='arep'?'add-days':'edit-days',[]);
   const mdWrap=document.getElementById(selId==='arep'?'amonthday-wrap':'emonthday-wrap');
   if(mdWrap)mdWrap.style.display=v==='monthly-day'?'block':'none';
 }
 
+// ── Dock / pane switching ─────────────────────────────────────────
 let _activePane=null;
 function switchPane(name){
   const panel=document.getElementById('dock-panel');
@@ -851,16 +994,47 @@ function switchPane(name){
 }
 function showTransferMenu(){document.getElementById('transfer-mo').classList.remove('hidden');}
 
+// ── Add task pill helpers ─────────────────────────────────────────
+function togglePillExtra(extId,pillId){const el=document.getElementById(extId);const on=el.classList.toggle('open');document.getElementById(pillId).classList.toggle('on',on);}
 function syncWaitUntil(){
   const d=document.getElementById('awu-date')?.value;
   const t=document.getElementById('awu-time')?.value;
   const awu=document.getElementById('awu');
   if(awu)awu.value=(d&&t)?`${d}T${t}`:(d?`${d}T00:00`:'');
 }
+function updatePills(){
+  const d=document.getElementById('ad').value;
+  const t=document.getElementById('at').value;
+  // Date pill
+  const dv=document.getElementById('pill-date-val');
+  if(dv){dv.textContent=d?fmtDate(d):'';}
+  document.getElementById('pill-date').classList.toggle('on',!!d);
+  // Time pill
+  const tv=document.getElementById('pill-time-val');
+  if(tv){tv.textContent=t||'';}
+  document.getElementById('pill-time')?.classList.toggle('on',!!t);
+  // Cat pill
+  const cv=document.getElementById('ac').value;const c=getCat(parseInt(cv));
+  const pp=document.getElementById('pill-cat');pp.classList.toggle('on',!!cv);if(c){pp.style.color=c.color;}else{pp.style.color='';}
+  const pcv=document.getElementById('pill-cat-val');if(pcv)pcv.textContent=c?c.name:'';
+  // Wait pill val
+  const wv=document.getElementById('pill-wait-val');
+  if(wv){const wt=document.getElementById('aw')?.value||'';wv.textContent=wt;}
+}
 
 const DOW_CLR=['#e08060','#d4a840','#7ab870','#60a8d4','#9878d0','#c068a8','#d06878'];
-
+// ── Render ────────────────────────────────────────────────────────
 function ra(){
+  const _d=new Date();
+  const _wd=_d.toLocaleDateString('en-CA',{weekday:'long'});
+  const _mo=_d.toLocaleDateString('en-CA',{month:'long'});
+  const _dow=_d.getDay();const _dc=DOW_CLR[_dow];
+  document.getElementById('hdr-weekday').textContent=_wd;
+  document.getElementById('hdr-weekday').style.color=_dc;
+  const _dn=_d.getDate();const _sfx=['th','st','nd','rd'];const _v=_dn%100;
+  const _ord=_dn+(_sfx[(_v-20)%10]||_sfx[_v]||_sfx[0]);
+  document.getElementById('hdr-month').textContent=_mo+' '+_ord;
+  document.getElementById('hdr-month').style.color=_dc;
   renderBoard();renderFull('wait');renderFull('casual');renderCatSection();renderCatChips();syncSelects();renderPile();renderPresetRow();
 }
 
@@ -869,14 +1043,18 @@ function repLabel(r){return{daily:'↻',weekly:'↻W',biweekly:'↻2W',MWF:'MWF'
 function snHTML(task,inCat){
   const bg=ensureColor(task);const tx=con(bg);
   const cat=getCat(task.categoryId);
+  // streak color = time box bg; tack color = time box txt (light, visible on dark tab)
   const streakBg=TBOX[task.col]?.bg||'rgba(0,0,0,.12)';
   const tackColor=task.urgent?'#ff4444':inCat?(TBOX[task.col]?.txt||tx):tx;
+  // Date/repeat badges go on the TAB (header area)
   const dateStr=fmtDate(task.deadlineDate);
   let dateCls='badge';
   if(task.col==='wait')dateCls+=' badge-wait';
   else if(task.col==='tomorrow')dateCls+=' badge-tmrw';
   else if(task.col==='upcoming')dateCls+=' badge-upco';
   else if(task.col==='today')dateCls+=' badge-today';
+  const timeStr=task.deadlineTime||'';
+  // Wait text: text label, dep name, or time label
   const wn=task.waitingFor||(task.waitTaskId?('until '+getDepName(task)+' done'):'')
           ||(task.waitUntil?waitUntilLabel(task):'');
   const blocked=isBlocked(task);
@@ -885,8 +1063,10 @@ function snHTML(task,inCat){
   const tabLeft=dateStr?`<span class="${dateCls}" style="font-size:9px;padding:1px 5px">${esc(dateStr)}</span>`:'';
   const tabRight=[
     task.repeat?`<span class="badge badge-rep" style="font-size:9px;padding:1px 4px">${repLabel(task.repeat)}</span>`:'',
-    waitIcon,linkIcon,
+    waitIcon,
+    linkIcon,
   ].filter(Boolean).join('');
+  // Tab style: in cat box use streakBg so tack stands out
   const tabStyle=inCat
     ?`background:${streakBg};border-bottom-color:rgba(0,0,0,.15)`
     :`border-bottom-color:${tx}22`;
@@ -906,6 +1086,7 @@ function snHTML(task,inCat){
   </div>`;
 }
 
+// ── Cork grain ──────────────────────────────────────────────────────
 const CORK_GFX={
   today:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28218%2C172%2C80%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%80%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28218%2C172%2C80%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%80%3C%2Ftext%3E%3C%2Fsvg%3E)',
   tomorrow:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28195%2C130%2C155%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%83%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28195%2C130%2C155%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9D%83%3C%2Ftext%3E%3C%2Fsvg%3E)',
@@ -913,17 +1094,10 @@ const CORK_GFX={
   wait:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28130%2C175%2C120%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BD%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28130%2C175%2C120%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BD%3C%2Ftext%3E%3C%2Fsvg%3E)',
   casual:'url(data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2252%22%20height%3D%2252%22%3E%3Ctext%20x%3D%2213%22%20y%3D%2218%22%20font-size%3D%2222%22%20fill%3D%22rgba%28210%2C120%2C90%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BE%3C%2Ftext%3E%3Ctext%20x%3D%2239%22%20y%3D%2244%22%20font-size%3D%2222%22%20fill%3D%22rgba%28210%2C120%2C90%2C0.4%29%22%20font-family%3D%22serif%22%20text-anchor%3D%22middle%22%3E%E2%9C%BE%3C%2Ftext%3E%3C%2Fsvg%3E)',
 };
-
-function todayDateBubbleHTML(){
-  const d=new Date();
-  const dayNum=d.getDate();
-  const dow=DAY_ABBR[d.getDay()];
-  return`<div class="today-date-bubble"><span class="today-date-day">${dayNum}</span><span class="today-date-dow">${dow}</span></div>`;
-}
-
 function corkHTML(col){
   const cs=colStyles[col]||TBOX[col];const isMin=colMin[col]||false;
-  const ct=tasks.filter(t=>t.col===col);
+  const ct=tasks.filter(t=>t.col===col);const done=ct.filter(t=>t.done).length;
+  // Also include tasks blocked by waitTaskId/waitUntil that belong to this col by date
   const blockedHere=tasks.filter(t=>t.col!==col&&t.deadlineDate&&d2col(t.deadlineDate,t.repeat)===col&&isBlocked(t)&&t.col!=='wait'||
     (t.col!==col&&!t.deadlineDate&&col==='today'&&isBlocked(t)&&t.col!=='wait'));
   function sortTasks(arr){return arr.slice().sort((a,b)=>{const da=a.deadlineDate||'',db=b.deadlineDate||'';if(da&&db)return da<db?-1:da>db?1:0;if(da)return -1;if(db)return 1;return a.name.localeCompare(b.name);});}
@@ -934,8 +1108,10 @@ function corkHTML(col){
   const divider=blockedItems.length?`<div class="cork-blocked-divider" style="color:${cs.txt}"></div>`:'';
   const allItems=[...activeItems,divider,...blockedItems];
   const content=allItems.length&&(activeItems.length||blockedItems.length)?allItems.join(''):`<div class="empty" style="color:${cs.txt}">—</div>`;
+  // Wait group pills (shown above stickies in Wait box)
   let wchipsHTML='';
   if(col==='wait'){
+    // Only text-based waitingFor gets a ribbon (task-tethered waits show on the sticky itself)
     const byR=new Map();ct.forEach(t=>{if(!t.waitingFor||t.waitTaskId)return;const k=t.waitingFor;if(!byR.has(k))byR.set(k,[]);byR.get(k).push(t.id);});
     wchipsHTML=[...byR.entries()].map(([k,ids])=>{
       const idsJson=JSON.stringify(ids);
@@ -948,7 +1124,7 @@ function corkHTML(col){
     }).join('');
   }
   const addId=`ca-${col}`;
-  const minLevel=colMin[col]||0;
+  const minLevel=colMin[col]||0;// 0=full,1=semi(casual pinned only),2=all hidden
   const isCasu=col==='casual';
   let bodyHTML='';
   if(isCasu){
@@ -964,6 +1140,8 @@ function corkHTML(col){
       ondragleave="this.classList.remove('drag-over')"
       ondrop="casuPinDrop(event)"
       >${hasPins?'★ pinned':'drag here to pin'}</div>`;
+    const pinnedGrid=hasPins?`<div class="casu-pin-label">★ pinned</div>${pinnedItems.join('')}`:'';
+    const pinDiv=hasPins&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'';
     const blockDiv=blockedItems2.length?`<div class="cork-blocked-divider"></div>`:'';
     if(minLevel===0)bodyHTML=pinZone+(hasPins?pinnedItems.join(''):'')+(hasPins&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'')+unpinnedItems.join('')+blockDiv+blockedItems2.join('');
     else if(minLevel===1)bodyHTML=pinnedItems.join('')||`<div class="empty" style="color:${cs.txt}">—</div>`;
@@ -971,61 +1149,103 @@ function corkHTML(col){
   } else {
     bodyHTML=content;
   }
-  const isUpcoming=col==='upcoming';
-  const calBtn=isUpcoming?`<button class="corkbtn" style="color:${cs.txt}" title="Calendar" onclick="openCalendar()">📅</button>`:'';
+    const isUpcoming=col==='upcoming';
+  const calBtn=isUpcoming?`<button class="corkbtn" style="color:\${cs.txt}" title="Calendar" onclick="openCalendar()">📅</button>`:'';
   const casuBtns=isCasu?`
     <button class="corkbtn" style="color:${cs.txt}" title="Minimize to pinned" onclick="toggleMin('${col}',1)">${minLevel===1?'◂':'◁'}</button>
     <button class="corkbtn" style="color:${cs.txt}" title="Minimize all" onclick="toggleMin('${col}',2)">${minLevel===2?'▸':'▾'}</button>`
     :`<button class="corkbtn" style="color:${cs.txt}" onclick="toggleMin('${col}')">${minLevel?'▸':'▾'}</button>`;
   const bodyHidden=isCasu?minLevel===2:minLevel;
-  // Date bubble only in today box, shown in the header area
-  const dateBubble=col==='today'?todayDateBubbleHTML():'';
-  return`<div class="cork${bodyHidden?' minimized':''}" data-col="${col}"
+    return`<div class="cork${bodyHidden?' minimized':''}" data-col="${col}"
     style="background:${CORK_GFX[col]},${cs.bg};border-color:${CORK_FRAME[col]||'#5a4a2e'}"
     ondragover="dover(event,'${col}')" ondrop="drop(event,'${col}')" ondragleave="dleave(event)">
-    <div class="cork-hdr" style="padding:0;flex-direction:column;align-items:stretch">
-      ${dateBubble}
-      <div style="display:flex;align-items:center;padding:4px 8px 5px;">
-        <div class="cork-btns" style="margin-left:auto">
-          ${calBtn}
-          <button class="corkbtn" style="color:${cs.txt}" onclick="toggleCorkAdd('${col}')">＋</button>
-          ${casuBtns}
-        </div>
-      </div>
+    <div class="cork-float">
+      ${calBtn}
+      <button class="corkbtn" style="color:${cs.txt}" onclick="toggleCorkAdd('${col}')">＋</button>
+      ${casuBtns}
     </div>
     ${wchipsHTML?`<div class="wait-groups">${wchipsHTML}</div>`:''}
-    ${bodyHidden?'':`<div class="cork-body">${bodyHTML||`<div class="empty" style="color:${cs.txt}">—</div>`}</div>`}
+    ${col==='today'?`<div class="today-date" id="today-date-badge"></div>`:''}
+    ${bodyHidden?'':`<div class="cork-body" style="${col==='today'?'padding-top:2px':''}">${bodyHTML||`<div class="empty" style="color:${cs.txt}">—</div>`}</div>`}
     <div class="cork-add" id="${addId}">
       <input id="${addId}-i" placeholder="" onkeydown="corkAddKey(event,'${col}')">
     </div>
   </div>`;
 }
 
-function renderBoard(){document.getElementById('board').innerHTML=['today','tomorrow','upcoming'].map(corkHTML).join('');}
+function renderBoard(){
+  document.getElementById('board').innerHTML=['today','tomorrow','upcoming'].map(corkHTML).join('');
+  // Populate today date badge
+  const el=document.getElementById('today-date-badge');
+  if(el){
+    const d=new Date();
+    const day=d.getDate();
+    const dow=d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);
+    el.innerHTML=day+'<span class="dow-letter">'+dow+'</span>';
+  }
+}
 
+// ── Preset row ──────────────────────────────────────────────────────
 function renderPresetRow(){
   const row=document.getElementById('preset-row');if(!row)return;
   const vis=presets.filter(p=>!p.groupBreak);
   if(!vis.length){row.innerHTML='';row.style.gridTemplateColumns='';return;}
   const n=vis.length;
+  // Smart grid: find most square-ish column count that divides evenly or near-evenly
+  // Up to 6: one row. 7+: find best cols so rows are as uniform as possible
   let cols;
-  if(n<=6){cols=n;}else if(n<=8){cols=4;}else if(n<=10){cols=5;}else if(n<=12){cols=4;}else if(n<=15){cols=5;}else if(n<=16){cols=4;}else if(n<=18){cols=6;}else{cols=6;}
+  if(n<=6){cols=n;}
+  else if(n<=8){cols=4;}      // 2x4
+  else if(n<=10){cols=5;}     // 2x5
+  else if(n<=12){cols=4;}     // 3x4
+  else if(n<=15){cols=5;}     // 3x5
+  else if(n<=16){cols=4;}     // 4x4
+  else if(n<=18){cols=6;}     // 3x6
+  else{cols=6;}               // 6 per row for anything larger
   row.style.gridTemplateColumns=`repeat(${cols},44px)`;
   row.innerHTML=vis.map(p=>`<div class="preset-btn" onclick="firePreset(${p.id})" title="${esc(p.label||p.tasks.map(t=>t.name).join(', '))}">${p.emoji}</div>`).join('');
 }
 
+// ── Fire a preset ────────────────────────────────────────────────────
 function firePreset(pid){
   const p=presets.find(x=>x.id===pid);if(!p)return;
-  pu('preset');const createdIds=[];
+  pu('preset');
+  const createdIds=[];
+  // First pass: create all tasks, collect their IDs
   p.tasks.forEach((tmpl,i)=>{
-    const id=tid++;createdIds.push(id);
+    const id=tid++;
+    createdIds.push(id);
     const waitUntil=tmpl.waitUntilTime?(today()+'T'+tmpl.waitUntilTime):null;
-    tasks.push({id,name:tmpl.name,col:tmpl.col||'today',deadlineDate:tmpl.deadlineDate||null,deadlineTime:tmpl.deadlineTime||null,waitingFor:tmpl.waitingFor||'',waitTaskId:null,waitUntil,done:false,repeat:tmpl.repeat||'',repeatDays:tmpl.repeatDays||[],repeatStart:null,repeatMonthDay:tmpl.repeatMonthDay||null,categoryId:tmpl.categoryId||null,stickyColor:'',link:tmpl.link||null,casuPin:false,paletteColor:nxtP()});
+    tasks.push({
+      id,name:tmpl.name,
+      col:tmpl.col||'today',
+      deadlineDate:tmpl.deadlineDate||null,
+      deadlineTime:tmpl.deadlineTime||null,
+      waitingFor:tmpl.waitingFor||'',
+      waitTaskId:null,// resolved in second pass
+      waitUntil,
+      done:false,
+      repeat:tmpl.repeat||'',
+      repeatDays:tmpl.repeatDays||[],
+      repeatStart:null,
+      repeatMonthDay:tmpl.repeatMonthDay||null,
+      categoryId:tmpl.categoryId||null,
+      stickyColor:'',
+      link:tmpl.link||null,
+      casuPin:false,
+      paletteColor:nxtP()
+    });
   });
-  p.tasks.forEach((tmpl,i)=>{if(tmpl.waitTaskIndex!=null&&tmpl.waitTaskIndex>=0&&tmpl.waitTaskIndex<createdIds.length){tasks.find(t=>t.id===createdIds[i]).waitTaskId=createdIds[tmpl.waitTaskIndex];}});
+  // Second pass: resolve waitTaskIndex → real waitTaskId
+  p.tasks.forEach((tmpl,i)=>{
+    if(tmpl.waitTaskIndex!=null&&tmpl.waitTaskIndex>=0&&tmpl.waitTaskIndex<createdIds.length){
+      tasks.find(t=>t.id===createdIds[i]).waitTaskId=createdIds[tmpl.waitTaskIndex];
+    }
+  });
   save();ra();showU(`${p.emoji} added`);
 }
 
+// ── Preset pane render ────────────────────────────────────────────────
 let _preDragIdx=null;
 function renderPresetPane(){
   const el=document.getElementById('pre-list');if(!el)return;
@@ -1049,12 +1269,17 @@ function renderPresetPane(){
 function preDragStart(e,idx){_preDragIdx=idx;e.dataTransfer.effectAllowed='move';}
 function preDragOver(e,idx){if(_preDragIdx===null||_preDragIdx===idx)return;e.preventDefault();}
 function preDrop(e,idx){
-  if(_preDragIdx===null||_preDragIdx===idx)return;e.preventDefault();
-  const moved=presets.splice(_preDragIdx,1)[0];const newIdx=_preDragIdx<idx?idx-1:idx;presets.splice(newIdx,0,moved);
+  if(_preDragIdx===null||_preDragIdx===idx)return;
+  e.preventDefault();
+  const moved=presets.splice(_preDragIdx,1)[0];
+  const newIdx=_preDragIdx<idx?idx-1:idx;
+  presets.splice(newIdx,0,moved);
   _preDragIdx=null;save();renderPresetPane();renderPresetRow();
 }
 function removePreset(idx){pu('pre');presets.splice(idx,1);save();renderPresetPane();renderPresetRow();}
+function addPresetGroupBreak(){pu('pre');presets.push({groupBreak:true});save();renderPresetPane();renderPresetRow();}
 
+// ── Preset editor ────────────────────────────────────────────────────
 let _editPresetIdx=null;
 function openPresetEditor(idx){
   _ptRows=[];_editPresetIdx=idx;
@@ -1111,7 +1336,9 @@ function addPresetTaskRow(){_ptRows.push({name:'',col:'today'});renderPresetTask
 function savePreset(){
   const emoji=document.getElementById('pre-emoji-btn').textContent.trim();
   const label=document.getElementById('pre-label').value.trim();
+  // Collect current row values from DOM
   document.querySelectorAll('#pre-tasks-list .pre-task-row').forEach((row,i)=>{
+    const inputs=row.querySelectorAll('input,select');
     _ptRows[i]=_ptRows[i]||{};
     _ptRows[i].name=row.querySelector('input[type=text]')?.value||'';
     const sels=[...row.querySelectorAll('select')];
@@ -1126,13 +1353,22 @@ function savePreset(){
   if(!tasks2.length){showU('Add at least one task');return;}
   pu('pre');
   const preset={id:pid++,emoji:emoji||'🎯',label,tasks:tasks2};
-  if(_editPresetIdx!=null)presets[_editPresetIdx]=preset;else presets.push(preset);
-  save();renderPresetPane();renderPresetRow();closeM('preset-mo');showU(`${emoji} preset saved`);
+  if(_editPresetIdx!=null)presets[_editPresetIdx]=preset;
+  else presets.push(preset);
+  save();renderPresetPane();renderPresetRow();
+  closeM('preset-mo');showU(`${emoji} preset saved`);
 }
 
+// ── Emoji picker ─────────────────────────────────────────────────────
 const EMOJIS=['🍳','🍽️','🥗','🍜','🥘','🫕','🧁','☕','🧺','👕','🏋️','🚴','🧘','🛒','📚','✏️','💻','📞','🏥','💊','🐕','🌿','🌸','🌱','🎵','🎬','🎮','🏠','🔧','🚗','✈️','🎯','⭐','💡','📝','🗓️','💰','🧹','🛁','😴','🌙','🌅','📧','📱','🤝','🎁','🏋️','⚽','🎾','🎸','🎨','🧪','🔬','📊','🗂️','📌','🔑','🧲','💪','🫀','🦷','👓','🎒','🛍️'];
-function openEmojiPick(){buildEmojiGrid(EMOJIS);document.getElementById('emoji-search').value='';document.getElementById('emoji-mo').classList.remove('hidden');}
-function buildEmojiGrid(list){document.getElementById('emoji-grid').innerHTML=list.map(e=>`<div onclick="pickEmoji('${e}')" style="font-size:24px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;transition:background .1s" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background=''">${e}</div>`).join('');}
+function openEmojiPick(){
+  buildEmojiGrid(EMOJIS);
+  document.getElementById('emoji-search').value='';
+  document.getElementById('emoji-mo').classList.remove('hidden');
+}
+function buildEmojiGrid(list){
+  document.getElementById('emoji-grid').innerHTML=list.map(e=>`<div onclick="pickEmoji('${e}')" style="font-size:24px;width:40px;height:40px;display:flex;align-items:center;justify-content:center;cursor:pointer;border-radius:8px;transition:background .1s" onmouseover="this.style.background='rgba(255,255,255,.1)'" onmouseout="this.style.background=''">${e}</div>`).join('');
+}
 function filterEmoji(q){buildEmojiGrid(q?EMOJIS.filter(e=>e.includes(q)):EMOJIS);}
 function pickEmoji(e){document.getElementById('pre-emoji-btn').textContent=e;closeM('emoji-mo');}
 
@@ -1142,7 +1378,7 @@ function renderRepPane(){
   if(!reps.length){el.innerHTML='<div style="font-size:12px;color:var(--ink3);">No repeating tasks yet.</div>';return;}
   const catOpts='<option value="">—</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
   el.innerHTML=reps.map(t=>{
-    const bg=ensureColor(t);
+    const bg=ensureColor(t);const tx=con(bg);
     return`<div class="rep-row" data-tid="${t.id}" style="background:${bg}22;border:1px solid ${bg}44;border-radius:8px;padding:6px 8px;display:flex;gap:6px;align-items:center;flex-wrap:wrap">
       <span style="flex:1;min-width:80px;font-size:13px;color:var(--ink);font-family:var(--font-note)">${esc(t.name)}</span>
       <select style="font-size:11px;background:rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.12);border-radius:6px;color:var(--ink2);padding:2px 4px" onchange="updRepField(${t.id},'repeat',this.value)">
@@ -1165,6 +1401,7 @@ function addRepTask(){
 }
 function renderFull(col){document.getElementById(col==='casual'?'casu-row':'wait-row').innerHTML=`<div style="border-radius:14px;overflow:hidden">${corkHTML(col)}</div>`;}
 
+// ── Cat section ───────────────────────────────────────────────────
 function renderCatSection(){
   const el=document.getElementById('cat-section');
   const vis=cats.filter(c=>c.showBox);if(!vis.length){el.innerHTML='';return;}
@@ -1173,12 +1410,15 @@ function renderCatSection(){
   [...groups.entries()].sort((a,b)=>a[0]-b[0]).forEach(([g,gc])=>{
     html+=`<div class="cat-row" data-group="${g}">`;
     gc.forEach(cat=>{
-      const ctRaw=tasks.filter(t=>t.categoryId==cat.id);
+      const ctRaw=tasks.filter(t=>t.categoryId==cat.id);const done=ctRaw.filter(t=>t.done).length;
       const ct=ctRaw.slice().sort((a,b)=>{const da=a.deadlineDate||'',db=b.deadlineDate||'';if(da&&db)return da<db?-1:da>db?1:0;if(da)return -1;if(db)return 1;return a.name.localeCompare(b.name);});
       const isMin=cat.minimized||false;const tx=con(cat.color);
       function sortT(arr){return arr.slice().sort((a,b)=>{const da=a.deadlineDate||'',db=b.deadlineDate||'';if(da&&db)return da<db?-1:da>db?1:0;if(da)return -1;if(db)return 1;return a.name.localeCompare(b.name);});}
       const activeT=sortT(ct.filter(t=>!isBlocked(t))).map(t=>snHTML(t,true));
-      const blockedT=sortT(ct.filter(t=>isBlocked(t))).map(t=>snHTML(t,true).replace(' sn-blocked',''));
+      const blockedT=sortT(ct.filter(t=>isBlocked(t))).map(t=>{
+        // No fade in cat boxes — just a divider
+        return snHTML(t,true).replace(' sn-blocked','');
+      });
       const catDiv=blockedT.length?`<div class="cork-blocked-divider" style="color:${tx}"></div>`:'';
       const items=[...activeT,catDiv,...blockedT];
       const content=items.length&&(activeT.length||blockedT.length)?items.join(''):`<div class="empty" style="color:${tx}">—</div>`;
@@ -1187,6 +1427,8 @@ function renderCatSection(){
         draggable="true" ondragstart="catDs(event,${cat.id})" ondragend="catDe(event)"
         ondragover="cboxOver(event,${cat.id})" ondrop="cboxDrop(event,${cat.id})" ondragleave="catDl(event)">
         <div class="cbox-hdr" style="border-bottom:1px solid rgba(0,0,0,.1)">
+          <span class="cbox-title" style="color:${tx}">${esc(cat.name)}</span>
+
           <div class="cbox-btns">
             <button class="corkbtn" style="color:${tx}" onclick="event.stopPropagation();toggleCboxAdd(${cat.id})">＋</button>
             <button class="corkbtn" style="color:${tx}" onclick="event.stopPropagation();openCat(${cat.id})">✎</button>
@@ -1210,6 +1452,7 @@ function renderCatChips(){
 }
 function syncSelects(){
   ['ac','ec'].forEach(sid=>{const s=document.getElementById(sid);if(!s)return;const cur=s.value;s.innerHTML='<option value="">—</option>'+cats.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');s.value=cur;});
+  // Task pickers for wait-on-task
   ['awt','ewt'].forEach(sid=>{
     const s=document.getElementById(sid);if(!s)return;
     const cur=s.value;
@@ -1219,37 +1462,57 @@ function syncSelects(){
   });
 }
 
+// ── Completed pile ────────────────────────────────────────────────
 function renderPile(){
+  // Update dock icon badge count
   const iconEl=document.getElementById('di-pile');
   if(iconEl)iconEl.title=`Completed today (${completedToday.length})`;
+  // Update inline pane fan
   renderPilePane();
+  // Update old drawer fan if it exists
   const fan=document.getElementById('pile-fan');
   if(fan)fan.innerHTML=completedToday.length
     ?completedToday.map((c,i)=>`<div class="pile-note" style="background:${c.color};color:${con(c.color)}" onclick="uncomplete(${c.id})">${esc(c.name)}</div>`).join('')
     :`<div class="pile-empty">Nothing completed yet today.</div>`;
 }
 function renderPilePane(){
-  const fan=document.getElementById('pile-fan-inline');const msg=document.getElementById('pile-empty-msg');
+  const fan=document.getElementById('pile-fan-inline');
+  const msg=document.getElementById('pile-empty-msg');
   if(!fan)return;
-  if(completedToday.length===0){fan.innerHTML='';if(msg)msg.style.display='';}
-  else{if(msg)msg.style.display='none';fan.innerHTML=completedToday.map((c,i)=>`<div class="pile-note" style="background:${c.color};color:${con(c.color)};transform:rotate(${i%3===0?-3:i%3===1?2:-1.5}deg)" onclick="uncomplete(${c.id})">${esc(c.name)}</div>`).join('');}
+  if(completedToday.length===0){
+    fan.innerHTML='';
+    if(msg)msg.style.display='';
+  } else {
+    if(msg)msg.style.display='none';
+    fan.innerHTML=completedToday.map((c,i)=>`<div class="pile-note" style="background:${c.color};color:${con(c.color)};transform:rotate(${i%3===0?-3:i%3===1?2:-1.5}deg)" onclick="uncomplete(${c.id})">${esc(c.name)}</div>`).join('');
+  }
 }
 function togglePile(){switchPane('pile');}
 function uncomplete(id){
+  // Find in completedToday and restore to tasks
   const entry=completedToday.find(c=>c.id==id);if(!entry)return;
-  pu('uncomplete');completedToday=completedToday.filter(c=>c.id!=id);
+  pu('uncomplete');
+  completedToday=completedToday.filter(c=>c.id!=id);
+  // Find task if still exists
   const t=tasks.find(t=>t.id==id);
-  if(t){t.done=false;}else{tasks.push({id:entry.id,name:entry.name,col:'today',deadlineDate:today(),deadlineTime:null,waitingFor:'',waitTaskId:null,done:false,repeat:'',repeatDays:[],repeatStart:null,categoryId:entry.categoryId||null,stickyColor:entry.color,paletteColor:''});}
+  if(t){t.done=false;}else{// Re-add
+    tasks.push({id:entry.id,name:entry.name,col:'today',deadlineDate:today(),deadlineTime:null,waitingFor:'',waitTaskId:null,done:false,repeat:'',repeatDays:[],repeatStart:null,categoryId:entry.categoryId||null,stickyColor:entry.color,paletteColor:''});
+  }
   save();ra();
 }
 
+// ── Minimize ──────────────────────────────────────────────────────
 function toggleMin(col,level){
-  if(col==='casual'&&level!==undefined){colMin[col]=colMin[col]===level?0:level;}
-  else{colMin[col]=colMin[col]?0:1;}
+  if(col==='casual'&&level!==undefined){
+    colMin[col]=colMin[col]===level?0:level;
+  } else {
+    colMin[col]=colMin[col]?0:1;
+  }
   save();ra();
 }
 function toggleCatMin(id){const c=cats.find(c=>c.id==id);if(c){c.minimized=!c.minimized;save();ra();}}
 
+// ── Inline add ────────────────────────────────────────────────────
 function toggleCorkAdd(col){const id=`ca-${col}`;const el=document.getElementById(id);if(!el)return;const op=el.classList.toggle('open');if(op)setTimeout(()=>document.getElementById(id+'-i')?.focus(),40);}
 function toggleCboxAdd(catId){const id=`cba-${catId}`;const el=document.getElementById(id);if(!el)return;const op=el.classList.toggle('open');if(op)setTimeout(()=>document.getElementById(id+'-i')?.focus(),40);}
 
@@ -1273,6 +1536,9 @@ function cboxKey(e,catId){
   e.target.value='';save();ra();showU('Added');
 }
 
+// ── Manual add ────────────────────────────────────────────────────
+
+// ── Add pane emoji pill logic (mirrors edit modal) ─────────────────
 let _aemOpen=null;
 let _aurgent=false;
 
@@ -1284,9 +1550,15 @@ function aemToggle(key){
   aemClose();_aemOpen=key;
   document.getElementById('as-'+key).classList.add('open');
   document.getElementById('ap-'+key).classList.add('active');
-  if(key==='col')aemBuildCol();if(key==='cat')aemBuildCat();if(key==='rep')aemBuildRep();
+  if(key==='col') aemBuildCol();
+  if(key==='cat') aemBuildCat();
+  if(key==='rep') aemBuildRep();
 }
-function aemToggleUrgent(){_aurgent=!_aurgent;document.getElementById('ap-urgent').classList.toggle('lit',_aurgent);document.getElementById('aurgent').checked=_aurgent;}
+function aemToggleUrgent(){
+  _aurgent=!_aurgent;
+  document.getElementById('ap-urgent').classList.toggle('lit',_aurgent);
+  document.getElementById('aurgent').checked=_aurgent;
+}
 function aemBuildCol(){
   const cur=document.getElementById('aco').value||'today';
   document.getElementById('as-col-opts').innerHTML=Object.entries(TBOX_UI).map(([k,v])=>
@@ -1295,7 +1567,8 @@ function aemBuildCol(){
 }
 function aemSetCol(col){
   document.getElementById('aco').value=col;
-  const v=TBOX_UI[col];const pill=document.getElementById('ap-col');
+  const v=TBOX_UI[col];
+  const pill=document.getElementById('ap-col');
   pill.style.background=v.bg;pill.style.borderColor=v.txt;pill.style.color=v.txt;
   aemBuildCol();
 }
@@ -1303,13 +1576,16 @@ function aemBuildCat(){
   const cur=document.getElementById('ac').value;
   const opts=[{id:'',name:'None',color:'rgba(255,255,255,.08)'},...cats];
   document.getElementById('as-cat-opts').innerHTML=opts.map(c=>{
-    const bg=c.id?c.color:'rgba(255,255,255,.06)';const txt=c.id?con(c.color):'var(--ink2)';
+    const bg=c.id?c.color:'rgba(255,255,255,.06)';
+    const txt=c.id?con(c.color):'var(--ink2)';
     return `<div class="em-cat-opt${String(cur)===String(c.id)?' sel':''}" style="background:${bg};color:${txt}" onclick="aemSetCat('${c.id}','${bg}')">${esc(c.name)}</div>`;
   }).join('');
 }
 function aemSetCat(id,bg){
-  document.getElementById('ac').value=id;const pill=document.getElementById('ap-cat');
-  if(id){pill.style.background=bg;pill.style.borderColor='rgba(255,255,255,.3)';}else{pill.style.background='';pill.style.borderColor='';}
+  document.getElementById('ac').value=id;
+  const pill=document.getElementById('ap-cat');
+  if(id){pill.style.background=bg;pill.style.borderColor='rgba(255,255,255,.3)';}
+  else{pill.style.background='';pill.style.borderColor='';}
   aemBuildCat();
 }
 function aemBuildRep(){
@@ -1322,22 +1598,29 @@ function aemBuildRep(){
   const rs=document.getElementById('arep-start');if(rs)rs.style.display=cur&&cur!==''?'block':'none';
 }
 function aemSetRep(val){
-  document.getElementById('arep').value=val;onRepCh('arep','adc');aemBuildRep();
+  document.getElementById('arep').value=val;
+  onRepCh('arep','adc');
+  aemBuildRep();
   const pill=document.getElementById('ap-rep');
   if(val){pill.classList.add('has-val');}else{pill.classList.remove('has-val');pill.style.background='';pill.style.borderColor='';}
 }
 function aemUpdateDatePill(){
-  const val=document.getElementById('ad').value;const pill=document.getElementById('ap-date');
-  pill.classList.toggle('has-val',!!val);if(!val){pill.style.background='';pill.style.borderColor='';}
+  const val=document.getElementById('ad').value;
+  const pill=document.getElementById('ap-date');
+  pill.classList.toggle('has-val',!!val);
+  if(!val){pill.style.background='';pill.style.borderColor='';}
 }
 function aemReset(){
   _aurgent=false;_aemOpen=null;
   ['ap-col','ap-cat','ap-date','ap-time','ap-wait','ap-link','ap-rep','ap-color'].forEach(id=>{
     const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';el.classList.remove('has-val','active');}
   });
-  document.getElementById('ap-urgent').classList.remove('lit');document.getElementById('aurgent').checked=false;
-  document.getElementById('aco').value='today';document.getElementById('ac').value='';
-  document.getElementById('arep').value='';document.getElementById('adc').style.display='none';
+  document.getElementById('ap-urgent').classList.remove('lit');
+  document.getElementById('aurgent').checked=false;
+  document.getElementById('aco').value='today';
+  document.getElementById('ac').value='';
+  document.getElementById('arep').value='';
+  document.getElementById('adc').style.display='none';
   document.querySelectorAll('[id^="as-"]').forEach(el=>el.classList.remove('open'));
 }
 function addManual(){
@@ -1350,24 +1633,28 @@ function addManual(){
   const repDays=rep==='custom'?getDays('add-days'):[];const repMonthDay=rep==='monthly-day'?parseInt(document.getElementById('amonthday')?.value||1):null;
   const repStart=document.getElementById('arep-start').value||null;
   const wait=document.getElementById('aw').value.trim()||(cat?.defaultWait||'');
-  const waitTaskIdRaw=document.getElementById('awt')?.value;const waitTaskId=waitTaskIdRaw?parseInt(waitTaskIdRaw):null;
+  const waitTaskIdRaw=document.getElementById('awt')?.value;
+  const waitTaskId=waitTaskIdRaw?parseInt(waitTaskIdRaw):null;
   const waitUntil=document.getElementById('awu')?.value||null;
   const chosenCol=document.getElementById('aco').value||'';
   const link=document.getElementById('alink')?.value.trim()||null;
   const urgent=document.getElementById('aurgent')?.checked||false;
   let col=chosenCol||'today';
+  // Route: if wait with no date, go to wait col; if date given, route by date
   if((wait||waitTaskId||waitUntil)&&!date)col='wait';
   else if(date)col=d2col(date,rep);
   else if(!chosenCol)col=rep?'today':'casual';
   const color=getDot('add-cr');
   pu('add');
   tasks.push({id:tid++,name,col,deadlineDate:date,deadlineTime:time,waitingFor:(col==='wait'&&!waitTaskId&&!waitUntil)?wait:'',waitTaskId:waitTaskId||null,waitUntil:waitUntil||null,done:false,urgent,repeat:rep,repeatDays:repDays,repeatStart:repStart,repeatMonthDay:repMonthDay,categoryId:catId?parseInt(catId):null,stickyColor:color,link,paletteColor:color?'':nxtP()});
+  // Reset
   document.getElementById('an').value='';document.getElementById('ad').value='';document.getElementById('at').value='';document.getElementById('aw').value='';if(document.getElementById('awt'))document.getElementById('awt').value='';if(document.getElementById('awu'))document.getElementById('awu').value='';if(document.getElementById('awu-date'))document.getElementById('awu-date').value='';if(document.getElementById('awu-time'))document.getElementById('awu-time').value='';if(document.getElementById('alink'))document.getElementById('alink').value='';
   mkDots('add-cr','');aemReset();aemClose();save();ra();showU('Added');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement.id==='an'&&!(e.ctrlKey||e.metaKey)){e.preventDefault();addManual();}});
-document.getElementById('arep').addEventListener('change',function(){});
+document.getElementById('arep').addEventListener('change',function(){document.getElementById('pill-rep-lbl').textContent=this.value?repLabel(this.value):'—';});
 
+// ── Cat CRUD ──────────────────────────────────────────────────────
 function addCat(){
   const name=document.getElementById('nca').value.trim();if(!name)return;pu('addCat');
   cats.push({id:cid++,name,color:document.getElementById('ncc').value,defaultDate:document.getElementById('ncdate').value||null,defaultWait:document.getElementById('ncwait').value.trim()||null,showBox:1,minimized:false,colGroup:cats.length?Math.max(...cats.map(c=>c.colGroup||1))+1:1});
@@ -1377,38 +1664,55 @@ function openCat(id){const c=cats.find(c=>c.id==id);if(!c)return;editCid=id;docu
 function saveCat(){const c=cats.find(c=>c.id==editCid);if(!c)return;pu('editCat');c.name=document.getElementById('ecn').value.trim()||c.name;c.color=document.getElementById('ecc').value;c.defaultDate=document.getElementById('ecdate').value||null;c.defaultWait=document.getElementById('ecwait').value.trim()||null;c.showBox=document.getElementById('ec-show').value==='1'?1:0;c.colGroup=parseInt(document.getElementById('ec-group').value)||1;closeM('cm');save();ra();showU('Category updated');}
 function delCat(){pu('delCat');cats=cats.filter(c=>c.id!==editCid);tasks.forEach(t=>{if(t.categoryId===editCid)t.categoryId=null;});closeM('cm');save();ra();}
 
+// ── Task actions ──────────────────────────────────────────────────
 function chk(id){
   pu('chk');const t=tasks.find(t=>t.id==id);if(!t)return;
   if(!t.done){
+    // Animate the sticky note out, then commit state
     document.querySelectorAll(`[data-tid="${id}"]`).forEach(el=>el.classList.add('completing'));
     setTimeout(()=>{
       t.done=true;liberateDeps(id);
       completedToday.push({id:t.id,name:t.name,color:ensureColor(t),categoryId:t.categoryId});
       if(!t.repeat){tasks=tasks.filter(x=>x.id!==id);}
       else{
-        t.done=false;let daysAhead=1;
-        if(t.repeat==='daily'){daysAhead=1;}else if(t.repeat==='weekly'){daysAhead=7;}else if(t.repeat==='biweekly'){daysAhead=14;}
+        // Repeating: advance to next occurrence
+        t.done=false;
+        let daysAhead=1;
+        if(t.repeat==='daily'){daysAhead=1;}
+        else if(t.repeat==='weekly'){daysAhead=7;}
+        else if(t.repeat==='biweekly'){daysAhead=14;}
         else if(['MWF','TTS','weekdays','custom'].includes(t.repeat)){
           const repDays={MWF:[1,3,5],TTS:[2,4,6],weekdays:[1,2,3,4,5]}[t.repeat]||(t.repeatDays||[]);
           for(let i=1;i<=7;i++){const ndd=new Date();ndd.setDate(ndd.getDate()+i);if(repDays.includes(ndd.getDay())){daysAhead=i;break;}}
         }
-        if(['monthly-start','monthly-mid','monthly-end','monthly-day'].includes(t.repeat)){t.deadlineDate=nextMonthlyDate(t);t.col='upcoming';}
-        else{if(t.deadlineDate){const nd=new Date(t.deadlineDate+'T12:00');nd.setDate(nd.getDate()+daysAhead);t.deadlineDate=fmt(nd);}t.col=daysAhead===1?'tomorrow':'upcoming';}
+        // Advance deadlineDate so dayTrans doesn't re-route back to today
+        if(['monthly-start','monthly-mid','monthly-end','monthly-day'].includes(t.repeat)){
+          t.deadlineDate=nextMonthlyDate(t);t.col='upcoming';
+        } else {
+          if(t.deadlineDate){const nd=new Date(t.deadlineDate+'T12:00');nd.setDate(nd.getDate()+daysAhead);t.deadlineDate=fmt(nd);}
+          t.col=daysAhead===1?'tomorrow':'upcoming';
+        }
       }
       save();ra();showU('Done ✓');
     },430);
   }
 }
 function casuPinDrop(e){
-  e.preventDefault();e.stopPropagation();document.getElementById('casu-pin-zone')?.classList.remove('drag-over');
-  if(dragTid===null)return;const id=dragTid;dragTid=null;
-  const task=tasks.find(t=>t.id==id);if(!task)return;pu('pin');task.casuPin=true;task.col='casual';save();ra();showU('Pinned ★');
+  e.preventDefault();e.stopPropagation();
+  document.getElementById('casu-pin-zone')?.classList.remove('drag-over');
+  if(dragTid===null)return;
+  const id=dragTid;dragTid=null;
+  const task=tasks.find(t=>t.id==id);if(!task)return;
+  pu('pin');task.casuPin=true;task.col='casual';
+  save();ra();showU('Pinned ★');
 }
 function hlWait(ids){document.querySelectorAll('[data-tid]').forEach(el=>{el.classList.toggle('wait-highlight',ids.includes(parseInt(el.dataset.tid)));});}
 function unhlWait(){document.querySelectorAll('.wait-highlight').forEach(el=>el.classList.remove('wait-highlight'));}
 function clrWait(id){pu('clr');const t=tasks.find(t=>t.id==id);if(!t)return;t.waitingFor='';t.waitTaskId=null;t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';save();ra();showU('Freed');}
 function clrWaitGroup(ids){pu('clrG');ids.forEach(id=>{const t=tasks.find(t=>t.id==id);if(t){t.waitingFor='';t.waitTaskId=null;t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}});save();ra();showU(`Freed ${ids.length}`);}
 
+
+// ── Emoji pill modal logic ─────────────────────────────────────────
 const TBOX_UI={
   today:  {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0'},
   tomorrow:{label:'Tomorrow',bg:'#3a2c06',txt:'#f0e0a0'},
@@ -1423,88 +1727,176 @@ const REP_LABELS=[
 ];
 let _emOpen=null;
 
-function emClose(){if(_emOpen){document.getElementById('es-'+_emOpen)?.classList.remove('open');document.getElementById('ep-'+_emOpen)?.classList.remove('active');_emOpen=null;}}
+function emClose(){
+  if(_emOpen){document.getElementById('es-'+_emOpen)?.classList.remove('open');document.getElementById('ep-'+_emOpen)?.classList.remove('active');_emOpen=null;}
+}
 function emToggle(key){
-  if(_emOpen===key){emClose();return;}emClose();_emOpen=key;
-  document.getElementById('es-'+key).classList.add('open');document.getElementById('ep-'+key).classList.add('active');
-  if(key==='col')buildEmCol();if(key==='cat')buildEmCat();if(key==='rep')buildEmRep();
+  if(_emOpen===key){emClose();return;}
+  emClose();
+  _emOpen=key;
+  document.getElementById('es-'+key).classList.add('open');
+  document.getElementById('ep-'+key).classList.add('active');
+  // Build dynamic content
+  if(key==='col') buildEmCol();
+  if(key==='cat') buildEmCat();
+  if(key==='rep') buildEmRep();
 }
-function emToggleUrgent(){const cb=document.getElementById('eurgent');cb.checked=!cb.checked;document.getElementById('ep-urgent').classList.toggle('lit',cb.checked);}
-function buildEmCol(){
-  const cur=document.getElementById('eco').value;const wrap=document.getElementById('es-col-opts');
-  wrap.innerHTML=Object.entries(TBOX_UI).map(([k,v])=>`<div class="em-col-opt${cur===k?' sel':''}" style="background:${v.bg};color:${v.txt}" onclick="emSetCol('${k}')">${v.label}</div>`).join('');
-}
-function emSetCol(col){
-  document.getElementById('eco').value=col;const v=TBOX_UI[col];const pill=document.getElementById('ep-col');
-  pill.style.background=v.bg;pill.style.borderColor=v.txt;pill.style.color=v.txt;buildEmCol();
-}
-function buildEmCat(){
-  const cur=document.getElementById('ec').value;const wrap=document.getElementById('es-cat-opts');
-  const opts=[{id:'',name:'None',color:'rgba(255,255,255,.08)'},...cats];
-  wrap.innerHTML=opts.map(c=>{const bg=c.id?c.color:'rgba(255,255,255,.06)';const txt=c.id?con(c.color):'var(--ink2)';return `<div class="em-cat-opt${String(cur)===String(c.id)?' sel':''}" style="background:${bg};color:${txt}" onclick="emSetCat('${c.id}','${bg}')">${esc(c.name)}</div>`;}).join('');
-}
-function emSetCat(id,bg){
-  document.getElementById('ec').value=id;const pill=document.getElementById('ep-cat');
-  if(id){pill.style.background=bg;pill.style.borderColor='rgba(255,255,255,.3)';}else{pill.style.background='';pill.style.borderColor='';}buildEmCat();
-}
-function buildEmRep(){
-  const cur=document.getElementById('erep').value;const wrap=document.getElementById('es-rep-opts');
-  wrap.innerHTML=REP_LABELS.map(([v,l])=>`<div class="em-rep-opt${cur===v?' sel':''}" onclick="emSetRep('${v}')">${l}</div>`).join('');
-  document.getElementById('edc').style.display=cur==='custom'?'block':'none';
-  const mw=document.getElementById('emonthday-wrap');if(mw)mw.style.display=cur==='monthly-day'?'block':'none';
-  const rs=document.getElementById('erep-start');if(rs)rs.style.display=cur&&cur!==''?'block':'none';
-}
-function emSetRep(val){
-  document.getElementById('erep').value=val;onRepCh('erep','edc');buildEmRep();
-  const pill=document.getElementById('ep-rep');
-  if(val){pill.style.background='rgba(220,190,255,.15)';pill.style.borderColor='rgba(220,190,255,.35)';}else{pill.style.background='';pill.style.borderColor='';}
-}
-function emSyncPills(t){
-  const cv=TBOX_UI[t.col];const cp=document.getElementById('ep-col');
-  if(cv){cp.style.background=cv.bg;cp.style.borderColor=cv.txt;cp.style.color=cv.txt;}
-  const cat=cats.find(c=>c.id==t.categoryId);const kp=document.getElementById('ep-cat');
-  if(cat){kp.style.background=cat.color;kp.style.borderColor='rgba(255,255,255,.3)';}else{kp.style.background='';kp.style.borderColor='';}
-  const dp=document.getElementById('ep-date');dp.classList.toggle('has-val',!!t.deadlineDate);if(!t.deadlineDate){dp.style.background='';dp.style.borderColor='';}
-  const tp=document.getElementById('ep-time');tp.classList.toggle('has-val',!!t.deadlineTime);if(!t.deadlineTime){tp.style.background='';tp.style.borderColor='';}
-  const wp=document.getElementById('ep-wait');wp.classList.toggle('has-val',!!(t.waitingFor||t.waitTaskId||t.waitUntil));if(!(t.waitingFor||t.waitTaskId||t.waitUntil)){wp.style.background='';wp.style.borderColor='';}
-  const lp=document.getElementById('ep-link');lp.classList.toggle('has-val',!!t.link);if(!t.link){lp.style.background='';lp.style.borderColor='';}
-  const rp=document.getElementById('ep-rep');rp.classList.toggle('has-val',!!t.repeat);if(!t.repeat){rp.style.background='';rp.style.borderColor='';}
-  const clp=document.getElementById('ep-color');if(t.stickyColor){clp.style.background=t.stickyColor;clp.style.borderColor=t.stickyColor;}else{clp.style.background='';clp.style.borderColor='';clp.classList.remove('has-val');}
-  document.getElementById('ep-urgent').classList.toggle('lit',!!t.urgent);document.getElementById('eurgent').checked=!!t.urgent;
+function emToggleUrgent(){
+  const cb=document.getElementById('eurgent');
+  cb.checked=!cb.checked;
+  document.getElementById('ep-urgent').classList.toggle('lit',cb.checked);
 }
 
+function buildEmCol(){
+  const cur=document.getElementById('eco').value;
+  const wrap=document.getElementById('es-col-opts');
+  wrap.innerHTML=Object.entries(TBOX_UI).map(([k,v])=>
+    `<div class="em-col-opt${cur===k?' sel':''}" style="background:${v.bg};color:${v.txt}" onclick="emSetCol('${k}')">${v.label}</div>`
+  ).join('');
+}
+function emSetCol(col){
+  document.getElementById('eco').value=col;
+  const v=TBOX_UI[col];
+  const pill=document.getElementById('ep-col');
+  pill.style.background=v.bg;pill.style.borderColor=v.txt;pill.style.color=v.txt;
+  buildEmCol();
+}
+
+function buildEmCat(){
+  const cur=document.getElementById('ec').value;
+  const wrap=document.getElementById('es-cat-opts');
+  const opts=[{id:'',name:'None',color:'rgba(255,255,255,.08)'},...cats];
+  wrap.innerHTML=opts.map(c=>{
+    const bg=c.id?c.color:'rgba(255,255,255,.06)';
+    const txt=c.id?con(c.color):'var(--ink2)';
+    return `<div class="em-cat-opt${String(cur)===String(c.id)?' sel':''}" style="background:${bg};color:${txt}" onclick="emSetCat('${c.id}','${bg}')">${esc(c.name)}</div>`;
+  }).join('');
+}
+function emSetCat(id,bg){
+  document.getElementById('ec').value=id;
+  const pill=document.getElementById('ep-cat');
+  if(id){pill.style.background=bg;pill.style.borderColor='rgba(255,255,255,.3)';}
+  else{pill.style.background='';pill.style.borderColor='';}
+  buildEmCat();
+}
+
+function buildEmRep(){
+  const cur=document.getElementById('erep').value;
+  const wrap=document.getElementById('es-rep-opts');
+  wrap.innerHTML=REP_LABELS.map(([v,l])=>
+    `<div class="em-rep-opt${cur===v?' sel':''}" onclick="emSetRep('${v}')">${l}</div>`
+  ).join('');
+  const needCustom=cur==='custom';
+  document.getElementById('edc').style.display=needCustom?'block':'none';
+  const needMonthDay=cur==='monthly-day';
+  const mw=document.getElementById('emonthday-wrap');if(mw)mw.style.display=needMonthDay?'block':'none';
+  const rs=document.getElementById('erep-start');
+  if(rs)rs.style.display=cur&&cur!==''?'block':'none';
+}
+function emSetRep(val){
+  document.getElementById('erep').value=val;
+  onRepCh('erep','edc');
+  buildEmRep();
+  // Update pill indicator
+  const pill=document.getElementById('ep-rep');
+  if(val){pill.style.background='rgba(220,190,255,.15)';pill.style.borderColor='rgba(220,190,255,.35)';}
+  else{pill.style.background='';pill.style.borderColor='';}
+}
+
+function emSyncPills(t){
+  // Box pill
+  const cv=TBOX_UI[t.col];
+  const cp=document.getElementById('ep-col');
+  if(cv){cp.style.background=cv.bg;cp.style.borderColor=cv.txt;cp.style.color=cv.txt;}
+  // Category pill
+  const cat=cats.find(c=>c.id==t.categoryId);
+  const kp=document.getElementById('ep-cat');
+  if(cat){kp.style.background=cat.color;kp.style.borderColor='rgba(255,255,255,.3)';}
+  else{kp.style.background='';kp.style.borderColor='';}
+  // Date pill
+  const dp=document.getElementById('ep-date');
+  dp.classList.toggle('has-val',!!t.deadlineDate);
+  if(!t.deadlineDate){dp.style.background='';dp.style.borderColor='';}
+  const tp=document.getElementById('ep-time');
+  tp.classList.toggle('has-val',!!t.deadlineTime);
+  if(!t.deadlineTime){tp.style.background='';tp.style.borderColor='';}
+  const wp=document.getElementById('ep-wait');
+  wp.classList.toggle('has-val',!!(t.waitingFor||t.waitTaskId||t.waitUntil));
+  if(!(t.waitingFor||t.waitTaskId||t.waitUntil)){wp.style.background='';wp.style.borderColor='';}
+  const lp=document.getElementById('ep-link');
+  lp.classList.toggle('has-val',!!t.link);
+  if(!t.link){lp.style.background='';lp.style.borderColor='';}
+  const rp=document.getElementById('ep-rep');
+  rp.classList.toggle('has-val',!!t.repeat);
+  if(!t.repeat){rp.style.background='';rp.style.borderColor='';}
+  const clp=document.getElementById('ep-color');
+  if(t.stickyColor){clp.style.background=t.stickyColor;clp.style.borderColor=t.stickyColor;}
+  else{clp.style.background='';clp.style.borderColor='';clp.classList.remove('has-val');}
+  // Urgent pill
+  document.getElementById('ep-urgent').classList.toggle('lit',!!t.urgent);
+  document.getElementById('eurgent').checked=!!t.urgent;
+}
+
+// Wire color dots change → update pill live
+const _origMkDots=mkDots;
+// ── Task edit modal ───────────────────────────────────────────────
 function openTask(id){
   const t=tasks.find(t=>t.id==id);if(!t)return;editTid=id;
-  document.getElementById('en').value=t.name;document.getElementById('eco').value=t.col;
-  document.getElementById('ed').value=t.deadlineDate||'';document.getElementById('etime').value=t.deadlineTime||'';
-  document.getElementById('ew').value=t.waitingFor||'';syncSelects();
+  document.getElementById('en').value=t.name;
+  document.getElementById('eco').value=t.col;
+  document.getElementById('ed').value=t.deadlineDate||'';
+  document.getElementById('etime').value=t.deadlineTime||'';
+  document.getElementById('ew').value=t.waitingFor||'';
+  syncSelects();
   const ewtEl=document.getElementById('ewt');if(ewtEl)ewtEl.value=t.waitTaskId||'';
   const ewuEl=document.getElementById('ewu');if(ewuEl)ewuEl.value=t.waitUntil?t.waitUntil.slice(0,16):'';
-  document.getElementById('elink').value=t.link||'';document.getElementById('erep').value=t.repeat||'';
+  // ewg always visible
+  document.getElementById('elink').value=t.link||'';
+  document.getElementById('erep').value=t.repeat||'';
   document.getElementById('erep-start').value=t.repeatStart||'';
   if(document.getElementById('emonthday'))document.getElementById('emonthday').value=t.repeatMonthDay||'';
   const isC=t.repeat==='custom';document.getElementById('edc').style.display=isC?'block':'none';
   if(isC)buildDays('edit-days',t.repeatDays||[]);
   syncSelects();document.getElementById('ec').value=t.categoryId||'';
-  mkDots('edit-cr',t.stickyColor||'');emClose();
-  ['ep-col','ep-cat','ep-date','ep-time','ep-wait','ep-link','ep-rep','ep-color'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';}});
+  mkDots('edit-cr',t.stickyColor||'');
+  emClose();
+  // Reset pill styles before sync
+  ['ep-col','ep-cat','ep-date','ep-time','ep-wait','ep-link','ep-rep','ep-color'].forEach(id=>{
+    const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';}
+  });
   emSyncPills(t);
-  document.querySelectorAll('#edit-cr .cdot').forEach(d=>{d.addEventListener('click',()=>{const clp=document.getElementById('ep-color');const sc=getDot('edit-cr');clp.style.background=sc||'';clp.style.borderColor=sc||'';});});
+  // Wire color pill: update when dot changes
+  document.querySelectorAll('#edit-cr .cdot').forEach(d=>{
+    d.addEventListener('click',()=>{
+      const clp=document.getElementById('ep-color');
+      const sc=getDot('edit-cr');
+      clp.style.background=sc||'';clp.style.borderColor=sc||'';
+    });
+  });
   document.getElementById('tm').classList.remove('hidden');
 }
+// ewg always visible — no listener needed
 function saveTask(){
   const t=tasks.find(t=>t.id==editTid);if(!t)return;pu('edit');
-  t.name=document.getElementById('en').value.trim()||t.name;t.col=document.getElementById('eco').value;
-  t.deadlineDate=document.getElementById('ed').value||null;t.deadlineTime=document.getElementById('etime').value||null;
+  t.name=document.getElementById('en').value.trim()||t.name;
+  t.col=document.getElementById('eco').value;
+  t.deadlineDate=document.getElementById('ed').value||null;
+  t.deadlineTime=document.getElementById('etime').value||null;
   t.waitingFor=document.getElementById('ew').value.trim();
-  const ewtVal=document.getElementById('ewt')?.value;t.waitTaskId=ewtVal?parseInt(ewtVal):null;
-  if(t.waitTaskId)t.waitingFor='';
-  const ewuVal=document.getElementById('ewu')?.value;t.waitUntil=ewuVal||null;
-  t.link=document.getElementById('elink').value.trim()||null;t.repeat=document.getElementById('erep').value;
-  t.repeatStart=document.getElementById('erep-start').value||null;t.repeatDays=t.repeat==='custom'?getDays('edit-days'):[];
+  const ewtVal=document.getElementById('ewt')?.value;
+  t.waitTaskId=ewtVal?parseInt(ewtVal):null;
+  if(t.waitTaskId)t.waitingFor=''; // task-dep takes precedence over text
+  const ewuVal=document.getElementById('ewu')?.value;
+  t.waitUntil=ewuVal||null;
+  t.link=document.getElementById('elink').value.trim()||null;
+  t.repeat=document.getElementById('erep').value;t.repeatStart=document.getElementById('erep-start').value||null;
+  t.repeatDays=t.repeat==='custom'?getDays('edit-days'):[];
   t.repeatMonthDay=t.repeat==='monthly-day'?parseInt(document.getElementById('emonthday')?.value||1):null;
   const cv=document.getElementById('ec').value;t.categoryId=cv?parseInt(cv):null;
   t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;
+  // Auto-route: if task has a deadline, keep it in its date col even with a wait
+  // (it'll show as blocked/faded below the divider in that col)
+  // Only pure wait (no deadline) routes to the Wait box
   const chosenCol=document.getElementById('eco').value;
   if((t.waitingFor||t.waitTaskId||t.waitUntil)&&!t.deadlineDate){t.col='wait';}
   else if(chosenCol==='wait'&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}
@@ -1513,6 +1905,7 @@ function saveTask(){
 }
 function delTask(){pu('del');tasks=tasks.filter(t=>t.id!==editTid);closeM('tm');save();ra();showU('Deleted');}
 
+// ── Drag tasks ────────────────────────────────────────────────────
 function dstart(e,id){
   if(e.target.closest('[data-catid]')&&!e.target.closest('[data-tid]'))return;
   dragTid=id;e.dataTransfer.effectAllowed='move';e.stopPropagation();
@@ -1538,6 +1931,7 @@ function confirmDrop(){
   pendingDrop=null;closeM('dm');
 }
 
+// ── Touch long-press + move menu ─────────────────────────────────
 let _tT=null,_tTk=null;
 document.addEventListener('touchstart',e=>{const el=e.target.closest('[data-tid]');if(!el)return;_tTk=parseInt(el.dataset.tid);_tT=setTimeout(()=>{showMoveMenu(_tTk);_tTk=null;},600);},{passive:true});
 document.addEventListener('touchend',()=>{clearTimeout(_tT);_tTk=null;},{passive:true});
@@ -1546,9 +1940,11 @@ function showMoveMenu(id){
   const task=tasks.find(t=>t.id==id);if(!task)return;
   const mo=document.getElementById('dm');
   document.getElementById('dm-title').textContent=`Move "${task.name}"`;
-  document.getElementById('dm-dg').style.display='none';document.getElementById('dm-wg').style.display='none';
+  document.getElementById('dm-dg').style.display='none';
+  document.getElementById('dm-wg').style.display='none';
   mo.querySelectorAll('.dp-btns').forEach(e=>e.remove());
   const btns=document.createElement('div');btns.className='dp-btns';
+  // Time box section
   const tboxLabel=document.createElement('div');tboxLabel.style.cssText='font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);padding:2px 0 4px';tboxLabel.textContent='Move to';btns.appendChild(tboxLabel);
   Object.keys(TBOX).filter(c=>c!==task.col).forEach(col=>{
     const b=document.createElement('button');b.className='dp-btn';b.textContent=TBOX[col].label;
@@ -1558,41 +1954,349 @@ function showMoveMenu(id){
       else{mo.classList.add('hidden');confirmDrop();}
     };btns.appendChild(b);
   });
+  // Pin to Casual top section option
   if(task.col==='casual'||true){
     const sepEl=document.createElement('div');sepEl.style.cssText='height:1px;background:rgba(255,255,255,.08);margin:4px 0';btns.appendChild(sepEl);
-    const bpin=document.createElement('button');bpin.className='dp-btn';bpin.textContent=task.casuPin?'Unpin from top':'Pin to Casual top';
-    bpin.onclick=()=>{pu('pin');task.casuPin=!task.casuPin;if(task.casuPin)task.col='casual';mo.classList.add('hidden');save();ra();showU(task.casuPin?'Pinned':'Unpinned');};btns.appendChild(bpin);
+    const bpin=document.createElement('button');bpin.className='dp-btn';
+    bpin.textContent=task.casuPin?'Unpin from top':'Pin to Casual top';
+    bpin.onclick=()=>{pu('pin');task.casuPin=!task.casuPin;if(task.casuPin)task.col='casual';mo.classList.add('hidden');save();ra();showU(task.casuPin?'Pinned':'Unpinned');};
+    btns.appendChild(bpin);
   }
+  // Category section
   if(cats.length){
     const catLabel=document.createElement('div');catLabel.style.cssText='font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);padding:6px 0 4px';catLabel.textContent='Assign category';btns.appendChild(catLabel);
     cats.forEach(cat=>{
-      const b=document.createElement('button');b.className='dp-btn';b.style.cssText=`border-left:3px solid ${cat.color}`;b.textContent=cat.name+(task.categoryId===cat.id?' ✓':'');
-      b.onclick=()=>{pu('cat');task.categoryId=cat.id;mo.classList.add('hidden');save();ra();showU('Category set');};btns.appendChild(b);
+      const b=document.createElement('button');b.className='dp-btn';
+      b.style.cssText=`border-left:3px solid ${cat.color}`;
+      b.textContent=cat.name+(task.categoryId===cat.id?' ✓':'');
+      b.onclick=()=>{pu('cat');task.categoryId=cat.id;mo.classList.add('hidden');save();ra();showU('Category set');};
+      btns.appendChild(b);
     });
     if(task.categoryId!=null){const bc=document.createElement('button');bc.className='dp-btn';bc.textContent='Clear category';bc.style.color='var(--ink3)';bc.onclick=()=>{pu('cat');task.categoryId=null;mo.classList.add('hidden');save();ra();showU('Category cleared');};btns.appendChild(bc);}
   }
-  mo.querySelector('.md').insertBefore(btns,mo.querySelector('.mf'));mo.classList.remove('hidden');
+  mo.querySelector('.md').insertBefore(btns,mo.querySelector('.mf'));
+  mo.classList.remove('hidden');
 }
 
+// ── Time-wait checker ────────────────────────────────────────────
+function chkTimeWaits(){
+  const now=new Date();let changed=false;
+  tasks.forEach(t=>{
+    if(t.waitUntil&&new Date(t.waitUntil)<=now){
+      t.waitUntil=null;changed=true;
+      // If still in wait col (text-only wait resolved), route to date col
+      if(t.col==='wait'&&!t.waitingFor&&!t.waitTaskId){
+        t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';
+      }
+    }
+  });
+  if(changed){save();ra();}
+}
+// ── Cat drag reorder ──────────────────────────────────────────────
 function catDs(e,id){if(e.target.closest('[data-tid]'))return;catDragId=id;e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('catid',String(id));e.stopPropagation();setTimeout(()=>document.getElementById(`cbox-${id}`)?.classList.add('cbox-dragging'),0);}
 function catDe(e){catDragId=null;document.querySelectorAll('.cbox-dragging,.drop-before').forEach(el=>el.classList.remove('cbox-dragging','drop-before'));}
 function catDl(e){e.currentTarget.classList.remove('drop-before','drag-over');}
+// cboxOver/cboxDrop: routes between task-drag and cat-reorder
 function cboxOver(e,id){
   if(dragTid!==null){e.preventDefault();e.stopPropagation();e.currentTarget.classList.add('drag-over');}
   else if(catDragId!==null&&catDragId!==id){e.preventDefault();e.stopPropagation();document.querySelectorAll('.drop-before').forEach(el=>el.classList.remove('drop-before'));document.getElementById(`cbox-${id}`)?.classList.add('drop-before');}
 }
 function cboxDrop(e,targetId){
   e.stopPropagation();e.currentTarget.classList.remove('drag-over','drop-before');
-  if(dragTid!==null){const id=dragTid;dragTid=null;const task=tasks.find(t=>t.id==id);if(!task)return;pu('drag');task.categoryId=targetId;save();ra();showU('Category assigned');}
-  else if(catDragId!==null&&catDragId!==targetId){const src=cats.find(c=>c.id==catDragId),tgt=cats.find(c=>c.id==targetId);if(!src||!tgt)return;pu('reorderCat');src.colGroup=tgt.colGroup;const si=cats.indexOf(src);cats.splice(si,1);const ti=cats.indexOf(tgt);cats.splice(ti,0,src);catDragId=null;save();ra();}
+  if(dragTid!==null){
+    // Task dropped onto category box → assign category, keep col
+    const id=dragTid;dragTid=null;
+    const task=tasks.find(t=>t.id==id);if(!task)return;
+    pu('drag');task.categoryId=targetId;save();ra();showU('Category assigned');
+  } else if(catDragId!==null&&catDragId!==targetId){
+    const src=cats.find(c=>c.id==catDragId),tgt=cats.find(c=>c.id==targetId);if(!src||!tgt)return;
+    pu('reorderCat');src.colGroup=tgt.colGroup;const si=cats.indexOf(src);cats.splice(si,1);const ti=cats.indexOf(tgt);cats.splice(ti,0,src);catDragId=null;save();ra();
+  }
 }
 
+// ── Export / Import ───────────────────────────────────────────────
+
 function dlContextDoc(){
-  const md=`# Fleur — Full Project Context\n## Current version: Foxglove Petal\n\nPaste this at the start of a new Claude conversation, then upload the current HTML file.\n\n---\n\n## Infrastructure\n\n- **Frontend**: single \`index.html\` file hosted on GitHub Pages\n- **Backend**: Netlify at \`https://fleurplanner.netlify.app\`\n- **Database**: Supabase, table \`planner_state\`, single row \`id=1\`, column \`state\` (JSON)\n- **Model**: \`claude-sonnet-4-6\`\n- **Storage key**: \`fleur_foxglove_v1\`\n`;
-  const b=new Blob([md],{type:'text/markdown'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='fleur-context.md';a.click();
+  const md=`# Fleur — Full Project Context
+## Current version: Bellflower
+
+Paste this at the start of a new Claude conversation, then upload the current HTML file.
+
+---
+
+## Infrastructure
+
+- **Frontend**: single \`index.html\` file hosted on GitHub Pages at \`https://maximvino.github.io/fleur\`. Updated by replacing the file in the GitHub repo — no build step, no CLI needed.
+- **Backend**: Netlify at \`https://fleurplanner.netlify.app\` — deployed once, rarely changed. Two serverless functions:
+  - \`/api/chat\` → proxies Anthropic API (key in Netlify env var \`ANTHROPIC_API_KEY\`)
+  - \`/api/sync\` → Supabase upsert/load (env vars \`SUPABASE_URL\`, \`SUPABASE_APIKEY\`)
+- **Database**: Supabase, table \`planner_state\`, single row \`id=1\`, column \`state\` (JSON)
+- **Model**: \`claude-haiku-4-5\` (1500 tokens). Sonnet toggle: \`claude-sonnet-4-5\` (2500 tokens)
+- **Storage key**: \`fleur_bellflower_v1\` (localStorage + Supabase reference). \`load()\` falls back through all prior version keys if current is empty.
+- **Backend files** (\`netlify.toml\`, \`chat.js\`, \`sync.js\`): essentially permanent. \`sync.js\` has \`Access-Control-Allow-Origin: *\` CORS headers — required because frontend is on a different origin from the API.
+- **Output files**: always named \`[VersionName].html\` (e.g. \`Bellflower.html\`). User renames to \`index.html\` when uploading to GitHub.
+
+---
+
+## Naming convention
+
+Every update is named after the next letter of the alphabet using a flower/plant name.
+
+Full history: Aster → Bellflower → Cornflower → Dahlia → Eglantine → Foxglove → Gentian → Hyacinth → Iris → Jasmine → Lavender → Marigold → Narcissus → Orchid → Peony → Quince → Rose → Sunflower → Tulip → Verbena → Wisteria → Xeranthemum → Yarrow → Zinnia → Amaranth → Bellflower
+
+**On every new version sent**, update: \`<title>Fleur · [Name]</title>\`, \`const KEY='fleur_[name]_v1'\`, \`version:'[name]'\` in exportData, and add the new key to the \`oldKeys\` fallback array in \`load()\`.
+
+---
+
+## Design language
+
+**Theme**: deep purple floral dark (\`--page: #130e1c\`), dusty rose accent (\`#c98fd4\`)
+
+**CSS variables**:
+\`\`\`css
+--page: #130e1c       /* page background */
+--surface: #1c1528    /* card/modal surface */
+--ink: #f0e8f5        /* primary text */
+--ink2: #c0b4d0       /* secondary text */
+--ink3: #7a6e8a       /* muted text */
+--accent: #c98fd4     /* dusty rose */
+--font-h: 'Lora'      /* headings */
+--font-b: 'DM Sans'   /* UI/body */
+--font-note: 'Spectral' /* sticky note text */
+--ts: 15px            /* sticky font size */
+\`\`\`
+
+**Fonts**: Lora (headings/UI labels), DM Sans (UI/body), Spectral (sticky note text, serif). Loaded from Google Fonts.
+
+---
+
+## Sticky notes
+
+- Fixed \`width:140px\`, \`aspect-ratio:1/1\` → always square by default
+- Grows taller (not wider) when \`data-haswait\` attr is present: \`aspect-ratio:unset; min-height:140px\`
+- \`overflow:hidden\` on \`.sn\` — never change this
+- Background: \`ensureColor(task)\` — task's \`stickyColor\`, or \`paletteColor\`, or category color
+- Text color: \`con(bg)\` — auto dark/light contrast
+- **Urgent flag**: \`task.urgent\` (bool). When true, the thumbtack SVG renders in \`#ff4444\` (red) instead of the normal \`tackColor\`. Toggle via the edit modal (🚨 Urgent checkbox).
+
+**Structure TOP→BOTTOM**:
+1. \`.sn-tab\` — 3-col CSS grid (\`1fr auto 1fr\`):
+   - Left cell: date badge (\`.badge\` with col-specific class)
+   - Center: thumbtack button (\`.cbtn\`) — always centered regardless of badges. Color is red if \`task.urgent\`, else normal \`tackColor\`.
+   - Right cell: \`.sn-tab-badges\` — repeat badge + ⏳ wait icon + 🔗 link icon
+2. \`.sn-body\` — ruled lines via \`repeating-linear-gradient(24px)\`:
+   - \`.sn-name\` — task name in Spectral
+   - \`.sn-wait-reveal\` — wait text, hidden by default, shown when \`.sn\` has \`.wait-open\` class
+3. \`.sn-streak\` (cat box stickies only) — thin colored bar at bottom, color = \`TBOX[task.col].bg\`
+
+**Tab styling in category boxes**: tab bg = \`TBOX[task.col].bg\` (streakBg); tack color = \`TBOX[task.col].txt\` (ensures visibility on dark tab). Urgent overrides tack color to \`#ff4444\`.
+
+**Completion animation**: \`.completing\` class → \`sn-done\` keyframe (scale+rotate+fade, 450ms), then state commits
+
+**Blocked stickies**: \`.sn-blocked\` — \`opacity:.38; filter:saturate(.5)\` — used in time boxes only, not category boxes
+
+---
+
+## Cork boards (time boxes, Wait, Casual)
+
+**Background**: \`background:\${CORK_GFX[col]},\${cs.bg}\` — per-box Unicode floral glyph tile layered over the solid time-box color. \`CORK_GFX\` is a JS object keyed by col name, each value a URL-encoded SVG data URI with a half-drop repeat pattern. Never regenerate unless explicitly asked.
+
+**Glyphs per box**: today \`❀\`, tomorrow \`✾\`, upcoming \`✽\`, wait \`❃\`, casual \`✤\`. Each in a complementary color to that box's background (amber on green, mauve on amber, periwinkle on orange, sage on red, coral on purple).
+
+**Half-drop tile geometry**: SVG is \`2s × 2s\` pixels (where \`s = fontSize + 4\`). Glyph 1 at \`(s/2, s*0.72)\`, glyph 2 at \`(3s/2, s*0.72 + s)\`. When tiled this produces a brick/half-drop stagger with no dead space.
+
+**Metal frame**: \`border:3px solid #5a4a2e\` + directional inset box-shadows (highlight top, shadow bottom)
+
+**TBOX colors**:
+| Col | bg | txt |
+|-----|----|-----|
+| today | \`#1e3d2a\` | \`#c8e6d0\` |
+| tomorrow | \`#3a2c06\` | \`#f0e0a0\` |
+| upcoming | \`#3a1d00\` | \`#f5d4a8\` |
+| wait | \`#3a0f0f\` | \`#f5c8c8\` |
+| casual | \`#1e1040\` | \`#d4c8f5\` |
+
+**Cork body grid**: \`display:grid; grid-template-columns:repeat(auto-fill,140px); gap:8px; justify-content:center\`
+
+**Category box bg**: \`color-mix(in srgb, cat.color 45%, #0d0a14 55%)\`
+
+---
+
+## Header
+
+Single flex row, \`position:relative; justify-content:space-between\`:
+- Left: \`.hdr-left\` → weekday italic (Lora)
+- Center: \`.hdr-flower\` → \`position:absolute; left:50%; transform:translateX(-50%)\` — 8-petal SVG flower, always truly centered
+- Right: \`.hdr-right\` → day number (large) + month name italic
+
+Mobile (<480px): smaller font sizes, flower shrinks to 44px. All stays on one line.
+
+---
+
+## Page layout (top to bottom)
+
+1. Header
+2. Board: Today / Tomorrow / Upcoming (\`align-items:stretch\` for uniform heights)
+3. Casual (full-width cork)
+4. Wait (full-width cork)
+5. **Dock**:
+   - Row 1 — 7 master icons (44×44px circles): 🌸 Add, 🌿 Categories, 🌼 AI, 🍃 Pile, 🌾 Repeating, 🪴 Presets, 🌱 Import/Export
+   - Row 2 — Preset buttons (same 44×44px size, grid layout computed by JS)
+   - Pane opens downward below dock
+6. Category boxes
+
+**Note**: Casual appears above Wait in the layout (changed from original order).
+
+---
+
+## Dock panes
+
+| Icon | Pane ID | Purpose |
+|------|---------|---------|
+| 🌸 | pane-add | Add task |
+| 🌿 | pane-cat | Manage categories |
+| 🌼 | pane-ai | AI assistant + context doc download |
+| 🍃 | pane-pile | Completed today / pile |
+| 🌾 | pane-rep | Repeating tasks manager |
+| 🪴 | pane-pre | Preset tasks manager |
+| 🌱 | transfer-mo modal | Import / Export |
+
+**AI pane extras**: Contains a "Download context doc" button that generates and downloads the current project context as a \`.md\` file.
+
+---
+
+## State shape
+
+\`\`\`js
+// Task
+{
+  id,                   // int
+  name,                 // string
+  col,                  // 'today'|'tomorrow'|'upcoming'|'wait'|'casual'
+  deadlineDate,         // 'YYYY-MM-DD' or null
+  deadlineTime,         // 'HH:MM' or null
+  waitingFor,           // string label
+  waitTaskId,           // int or null
+  waitUntil,            // ISO datetime string or null
+  done,                 // bool
+  urgent,               // bool — red thumbtack signifier
+  repeat,               // ''|'daily'|'weekly'|'biweekly'|'MWF'|'TTS'|'weekdays'|'custom'|'monthly-start'|'monthly-mid'|'monthly-end'|'monthly-day'
+  repeatDays,           // [0-6] for 'custom'
+  repeatStart,          // 'YYYY-MM-DD' or null
+  repeatMonthDay,       // 1-31 for 'monthly-day', else null
+  categoryId,           // int or null
+  stickyColor,          // hex string or ''
+  paletteColor,         // hex string (auto-assigned from PASTELS cycle)
+  link,                 // URL string or null
+  casuPin,              // bool — pinned to top section of Casual
+}
+
+// Category
+{ id, name, color, defaultDate, defaultWait, showBox, minimized, colGroup }
+
+// Preset
+{
+  id, emoji, label,
+  tasks: [{ name, col, deadlineDate, waitingFor, waitUntilTime, waitTaskIndex, categoryId, repeat, repeatDays, repeatMonthDay, link }]
+}
+
+// Top-level state
+{ tasks, cats, presets, completedToday, colStyles, colMin, gTheme, tid, cid, pid }
+\`\`\`
+
+---
+
+## Key functions
+
+### State / persistence
+- \`sn()\` — serializes full state
+- \`ap(s)\` — loads state; migrates missing fields including \`urgent\`
+- \`save()\` — localStorage + Supabase
+- \`load()\` — Supabase → current key → old keys → any \`fleur_*\` key
+
+### Rendering
+- \`ra()\` — re-renders everything
+- \`snHTML(task, inCat)\` — builds sticky HTML. Tack color: \`task.urgent ? '#ff4444' : tackColor\`
+- \`corkHTML(col)\` — builds cork board. Background: \`CORK_GFX[col]\` (per-box glyph)
+- \`renderCatSection()\`, \`renderPresetRow()\`, \`renderRepPane()\`, \`renderPresetPane()\`
+
+### Task actions
+- \`chk(id)\` — marks done with animation; advances repeating tasks
+- \`liberateDeps(id)\` — clears waitTaskId on dependent tasks
+- \`isBlocked(task)\` — waitTaskId → incomplete OR waitUntil in future
+- \`openTask(id)\` — opens edit modal; populates \`urgent\` checkbox
+- \`saveTask()\` — reads \`urgent\` checkbox from \`#eurgent\`
+
+---
+
+## Wait system
+
+A task is **blocked** when:
+1. \`waitTaskId\` exists and that task is not done, OR
+2. \`waitUntil\` exists and is in the future
+
+**Wait ribbons** (torn paper scraps above Wait stickies): only for text \`waitingFor\` groups. Style: \`background:#dfc99a; color:#2a1f0e\`, Spectral italic, irregular torn \`clip-path\` polygon edges (~50 points, heavily jagged top and bottom). Hidden when Wait is minimized.
+
+**⏳ icon tooltip**: shows the actual wait text (\`task.waitingFor\`) on hover, not a generic label.
+
+---
+
+## Casual double-minimize
+
+\`colMin['casual']\` has three levels: \`0\` (full), \`1\` (semi — pinned only), \`2\` (all hidden).
+
+---
+
+## Export / Import
+
+\`exportData()\` → JSON with \`sn()\` + \`{version:'foxglove-stem', exported: ISO string}\`
+\`importData(event)\` → parses JSON, calls \`ap()\`
+
+**Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
+
+### ap() migration:
+\`\`\`js
+tasks.forEach(t => {
+  if(t.waitUntil === undefined)     t.waitUntil = null;
+  if(t.link === undefined)          t.link = null;
+  if(t.repeatMonthDay === undefined) t.repeatMonthDay = null;
+  if(t.casuPin === undefined)       t.casuPin = false;
+  if(t.urgent === undefined)        t.urgent = false;
+});
+\`\`\`
+
+---
+
+## CSS rules — never violate
+
+- \`.sn\`: \`width:140px; aspect-ratio:1/1; overflow:hidden\`
+- \`.sn[data-haswait]\`: \`aspect-ratio:unset; min-height:140px\`
+- \`.sn-tab\`: \`display:grid; grid-template-columns:1fr auto 1fr\`
+- \`.cork-body\`, \`.cbox-body\`: \`display:grid; grid-template-columns:repeat(auto-fill,140px); justify-content:center\`
+- \`.sn-blocked\`: \`opacity:.38; filter:saturate(.5)\` — time boxes only
+- \`textarea\`, date/time inputs: \`font-size:16px\` minimum
+- Never use \`overflow:visible\` on \`.sn\`
+
+---
+
+## Working method (critical)
+
+- **Read before editing**: always \`view\` the exact lines before any \`str_replace\` or Python replace
+- **Use Python string replace** via bash for edits — exact string matching, verify after
+- **Run a verification pass** after every batch of changes
+- **Never send test files** — final output only, named \`[VersionName].html\`
+- **Always rename** to the next flower/plant letter on every version sent — update \`<title>\`, \`KEY\`, \`version:\`, and add new key to \`oldKeys\` in \`load()\`
+- **Never add busy UI text** — no counts, no labels, no extra tooltips unless explicitly requested
+- **Preserve \`CORK_GFX\`** — it is a pre-computed constant object; never regenerate unless asked
+- The user has **limited 5-hour message credits** — no test files, no unnecessary clarifying questions
+- User's GitHub: \`maximvino\`, repo: \`fleur\`
+`;
+  const b=new Blob([md],{type:'text/markdown'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='fleur-context.md';a.click();
 }
 function openCalendar(){
-  const dated=tasks.filter(t=>t.deadlineDate&&!t.done).sort((a,b)=>a.deadlineDate<b.deadlineDate?-1:a.deadlineDate>b.deadlineDate?1:0);
+  const dated=tasks.filter(t=>t.deadlineDate&&!t.done)
+    .sort((a,b)=>a.deadlineDate<b.deadlineDate?-1:a.deadlineDate>b.deadlineDate?1:0);
   let html='';let lastDate='';
   dated.forEach(t=>{
     const d=new Date(t.deadlineDate+'T12:00:00');
@@ -1603,70 +2307,131 @@ function openCalendar(){
     if(dateStr!==lastDate){
       if(lastDate)html+=`</div>`;
       html+=`<div style="display:flex;align-items:baseline;gap:.4em;padding:${lastDate?'10px':'2px'} 0 6px;${lastDate?'border-top:1px solid rgba(220,190,255,.1);margin-top:6px;':''}line-height:1"><span style="font-size:1.2rem;font-family:var(--font-h);font-weight:500;color:${_calClr}">${dateStr}</span><span style="font-size:.72rem;font-family:var(--font-h);color:${_calClr};opacity:.7">${_calWd}</span></div>`;
-      html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start">`;lastDate=dateStr;
+      html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:flex-start">`;
+      lastDate=dateStr;
     }
     html+=snHTML(t,false);
   });
   if(lastDate)html+=`</div>`;
   if(!dated.length)html=`<div style="color:var(--ink3);font-size:13px;text-align:center;padding:20px">No dated tasks</div>`;
-  document.getElementById('cal-list').innerHTML=html;document.getElementById('cal-mo').classList.remove('hidden');
+  document.getElementById('cal-list').innerHTML=html;
+  document.getElementById('cal-mo').classList.remove('hidden');
 }
-function exportData(){const d={version:'foxglove-petal',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+
+function exportData(){const d={version:'foxglove-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
+// ── Modal helpers ─────────────────────────────────────────────────
 function closeM(id){const mo=document.getElementById(id);mo.classList.add('hidden');mo.querySelector('.dp-btns')?.remove();}
 document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeM(o.id);}));
 
+// ── AI ────────────────────────────────────────────────────────────
 function addB(text,role){
-  const l=document.getElementById('chat-log');const d=document.createElement('div');d.className='bl '+role;d.textContent=text;l.appendChild(d);l.scrollTop=l.scrollHeight;return d;
-}
-function addCodeBlock(code){
-  const l=document.getElementById('chat-log');const wrap=document.createElement('div');wrap.className='bl ai';wrap.style.padding='0';wrap.style.background='none';wrap.style.border='none';
-  const btn=document.createElement('button');btn.className='copy-btn';btn.textContent='Copy';btn.onclick=()=>{navigator.clipboard.writeText(code).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});};
-  const pre=document.createElement('div');pre.className='code-block';pre.appendChild(btn);pre.appendChild(document.createTextNode(code));wrap.appendChild(pre);l.appendChild(wrap);l.scrollTop=l.scrollHeight;
+  const l=document.getElementById('chat-log');
+  const d=document.createElement('div');
+  d.className='bl '+role;
+  d.textContent=text;
+  l.appendChild(d);
+  l.scrollTop=l.scrollHeight;
+  return d;
 }
 
+function addCodeBlock(code){
+  const l=document.getElementById('chat-log');
+  const wrap=document.createElement('div');
+  wrap.className='bl ai';
+  wrap.style.padding='0';
+  wrap.style.background='none';
+  wrap.style.border='none';
+  const btn=document.createElement('button');
+  btn.className='copy-btn';
+  btn.textContent='Copy';
+  btn.onclick=()=>{navigator.clipboard.writeText(code).then(()=>{btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);});};
+  const pre=document.createElement('div');
+  pre.className='code-block';
+  pre.appendChild(btn);
+  pre.appendChild(document.createTextNode(code));
+  wrap.appendChild(pre);
+  l.appendChild(wrap);
+  l.scrollTop=l.scrollHeight;
+}
+
+
 const AI_NOTES_KEY='fleur_ai_notes';
-async function saveAiNotes(){
-  const v=document.getElementById('ai-notes').value;localStorage.setItem(AI_NOTES_KEY,v);
-  const btn=document.getElementById('ai-notes-save-btn');const orig=btn.textContent;btn.textContent='Saving…';
-  try{await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',key:'fleur_ai_notes',state:v})});btn.textContent='Saved!';}catch(e){btn.textContent='Saved locally';}
+function saveAiNotes(){
+  const v=document.getElementById('ai-notes').value;
+  aiNotes=v;
+  const btn=document.getElementById('ai-notes-save-btn');
+  const orig=btn.textContent;btn.textContent='Saving…';
+  save();
+  setTimeout(()=>btn.textContent='Saved!',200);
   setTimeout(()=>btn.textContent=orig,1800);
 }
-async function loadAiNotes(){
+function loadAiNotes(){
   const el=document.getElementById('ai-notes');if(!el)return;
-  try{const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'load',key:'fleur_ai_notes'})});if(r.ok){const d=await r.json();let v=d?.state;if(typeof v==='string'&&v){el.value=v;localStorage.setItem(AI_NOTES_KEY,v);return;}}}catch(e){}
-  el.value=localStorage.getItem(AI_NOTES_KEY)||'';
+  el.value=aiNotes||localStorage.getItem(AI_NOTES_KEY)||'';
 }
 let _fleurCode='';
 async function loadFleurCode(){
-  const btn=document.getElementById('load-code-btn');const status=document.getElementById('ai-status');
-  if(btn)btn.textContent='Loading…';status.textContent='Fetching current code…';
-  try{const r=await fetch('https://maximvino.github.io/fleur/index.html?cb='+Date.now());if(!r.ok)throw new Error('HTTP '+r.status);_fleurCode=await r.text();status.textContent='Code loaded. Now describe your change.';if(btn){btn.textContent='✓ Code loaded';btn.style.color='#7ab870';}}
-  catch(e){_fleurCode='';status.textContent='Could not fetch from GitHub.';if(btn)btn.textContent='⬆ Load code';}
+  const btn=document.getElementById('load-code-btn');
+  const status=document.getElementById('ai-status');
+  if(btn)btn.textContent='Loading…';
+  status.textContent='Fetching current code…';
+  try{
+    const r=await fetch('https://maximvino.github.io/fleur/index.html?cb='+Date.now());
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    _fleurCode=await r.text();
+    status.textContent='Code loaded. Now describe your change.';
+    if(btn){btn.textContent='✓ Code loaded';btn.style.color='#7ab870';}
+  }catch(e){
+    _fleurCode='';
+    status.textContent='Could not fetch from GitHub.';
+    if(btn)btn.textContent='⬆ Load code';
+  }
 }
 async function sendCode(){
-  const inp=document.getElementById('ci');const text=inp.value.trim();if(!text)return;
+  const inp=document.getElementById('ci');
+  const text=inp.value.trim();
+  if(!text)return;
+
   const codeLoaded=!!_fleurCode;
   const sys='You are a coding assistant for Fleur, a single-file HTML task planner.'
     +(codeLoaded?' Return the COMPLETE updated HTML file inside a single ```html code block. Brief summary after the block. Never partial code. Never explain before the block.\nCURRENT FILE:\n'+_fleurCode:' Answer questions about Fleur helpfully and concisely. If asked to make a code change, tell the user to click "Load code" first.');
   const estTokens=Math.ceil((sys.length+text.length)/4);
   if(estTokens>8000){
     const fullPrompt=sys+'\n\nUSER REQUEST: '+text;
-    navigator.clipboard.writeText(fullPrompt).then(()=>{addB('Prompt too large (~'+estTokens+' tokens). Copied to clipboard — opening Claude.ai now, just paste.','ai');}).catch(()=>{addB('Prompt too large (~'+estTokens+' tokens). Could not copy automatically.','ai');});
-    window.open('https://claude.ai/new','_blank');return;
+    navigator.clipboard.writeText(fullPrompt).then(()=>{
+      addB('Prompt too large (~'+estTokens+' tokens). Copied to clipboard — opening Claude.ai now, just paste.','ai');
+    }).catch(()=>{
+      addB('Prompt too large (~'+estTokens+' tokens). Could not copy automatically — please copy your request manually and paste it into Claude.ai.','ai');
+    });
+    window.open('https://claude.ai/new','_blank');
+    return;
   }
-  inp.value='';inp.style.height='auto';addB(text,'user');const thinking=addB('Thinking…','thinking');document.getElementById('sb').disabled=true;
+  inp.value='';inp.style.height='auto';
+  addB(text,'user');
+  const thinking=addB('Thinking…','thinking');
+  document.getElementById('sb').disabled=true;
   try{
-    const res=await fetch('https://fleurplanner.netlify.app/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,system:sys,messages:[{role:'user',content:text}]})});
-    const data=await res.json();if(data.error)throw new Error(data.error.message);
-    const raw=data.content.map(c=>c.text||'').join('').trim();thinking.remove();
+    const res=await fetch('https://fleurplanner.netlify.app/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:8000,system:sys,messages:[{role:'user',content:text}]})
+    });
+    const data=await res.json();
+    if(data.error)throw new Error(data.error.message);
+    const raw=data.content.map(c=>c.text||'').join('').trim();
+    thinking.remove();
     const codeMatch=raw.match(/```(?:html)?\n?([\s\S]*?)```/);
-    if(codeMatch){addCodeBlock(codeMatch[1].trim());const summary=raw.slice(raw.lastIndexOf('```')+3).trim();if(summary)addB(summary,'ai');}
-    else{addB(raw,'ai');}
+    if(codeMatch){
+      addCodeBlock(codeMatch[1].trim());
+      const summary=raw.slice(raw.lastIndexOf('```')+3).trim();
+      if(summary)addB(summary,'ai');
+    }else{addB(raw,'ai');}
   }catch(err){thinking.remove();addB('Error: '+err.message,'err');}
   document.getElementById('sb').disabled=false;
 }
+
 
 const ta=document.getElementById('ci');
 ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,90)+'px';});
