@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Gentian Petal</title>
+<title>Fleur · Foxglove Seed</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -35,13 +35,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .page{max-width:1160px;margin:0 auto;padding:1.8rem 1.4rem 8rem}
 
 /* ── Header ── */
-.hdr{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:1.4rem;padding:0;min-height:72px}
+.hdr{position:relative;display:flex;align-items:center;justify-content:space-between;margin-bottom:2rem;padding:0 2px;min-height:60px}
 .hdr-left{display:none}
 .hdr-weekday{font-family:var(--font-h);font-size:1.4rem;font-weight:400;color:var(--ink);opacity:.6;letter-spacing:-.01em;white-space:nowrap}
-.hdr-flower{width:100%;display:flex;align-items:center;justify-content:center;gap:0;flex-wrap:nowrap;overflow:hidden}
-.hdr-glyph{font-size:1.6rem;opacity:.5;pointer-events:none;flex-shrink:0;line-height:1;padding:0 4px}
-.hdr-date-btn{font-family:"Nunito",var(--font-b);font-weight:800;font-size:1.9rem;letter-spacing:-.03em;background:none;border:none;cursor:pointer;line-height:1;padding:0 10px;flex-shrink:0;transition:opacity .15s}
-.hdr-date-btn:hover{opacity:.8}
+.hdr-flower{position:absolute;left:50%;transform:translateX(-50%);flex-shrink:0;pointer-events:none}
 .hdr-right{display:none}
 .hdr-daynum{display:none}
 .hdr-month{font-family:var(--font-h);font-size:1.5rem;color:var(--ink);white-space:nowrap}
@@ -80,7 +77,6 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .today-date{padding:8px 12px 4px 12px;font-family:'Nunito',var(--font-b);font-weight:800;font-size:2.4rem;line-height:1;color:rgba(200,230,208,.55);letter-spacing:-.02em;pointer-events:none;user-select:none}
 .today-date .dow-letter{font-size:1rem;font-weight:700;vertical-align:super;margin-left:1px;opacity:.8}
 .cork-float{position:absolute;top:6px;right:6px;display:flex;gap:3px;z-index:10}
-.cork-float-l{position:absolute;top:6px;left:6px;z-index:10}
 .cork-btns{display:flex;gap:3px}
 .corkbtn{width:22px;height:22px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);cursor:pointer;color:rgba(255,255,255,.5);font-size:11px;display:flex;align-items:center;justify-content:center;transition:all .12s;padding:0;flex-shrink:0;backdrop-filter:blur(4px)}
 .corkbtn:hover{background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)}
@@ -161,13 +157,6 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .sn-tab-badges{display:flex;flex-wrap:wrap;gap:2px;justify-content:flex-end;align-items:center}
 .sn-streak{height:6px;width:100%;flex-shrink:0}
 
-
-/* ── Page curl / fade-for-day ── */
-.sn-curl{position:absolute;bottom:0;right:0;width:20px;height:20px;cursor:pointer;opacity:0;transition:opacity .15s;z-index:5}
-.sn:hover .sn-curl,.sn.sn-faded .sn-curl{opacity:1}
-.sn-curl svg{display:block}
-.sn.sn-faded{opacity:.28;filter:saturate(.3)}
-.sn.sn-faded:hover{opacity:.45}
 /* ── Badges ── */
 .badge{font-size:10px;padding:1px 6px;border-radius:99px;font-weight:500;font-family:var(--font-b);color:inherit;opacity:.8}
 .badge-wait{background:rgba(100,15,15,.55);color:#f5c8c8;border:1px solid rgba(200,60,60,.25)}
@@ -383,27 +372,28 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <body>
 <div class="page">
   <div class="hdr">
+    <div class="hdr-left">
+      <span class="hdr-weekday" id="hdr-weekday"></span>
+    </div>
     <div class="hdr-flower">
-      <svg id="hdr-svg" width="100%" height="80" viewBox="0 0 800 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-        <!-- scattered flowers across the full width -->
-        <!-- 5-petal flowers -->
-        <g transform="translate(60,40)"><g opacity=".55"><ellipse rx="4" ry="9" fill="#c98fd4" transform="rotate(0) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#b87ec4" transform="rotate(72) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#c98fd4" transform="rotate(144) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#b87ec4" transform="rotate(216) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#c98fd4" transform="rotate(288) translate(0,-10)"/><circle r="4" fill="#f5d4a8"/></g></g>
-        <g transform="translate(150,30)"><g opacity=".45"><ellipse rx="3" ry="7" fill="#9dc4a0" transform="rotate(0) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#7ab898" transform="rotate(60) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#9dc4a0" transform="rotate(120) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#7ab898" transform="rotate(180) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#9dc4a0" transform="rotate(240) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#7ab898" transform="rotate(300) translate(0,-8)"/><circle r="3.5" fill="#f5d4a8"/></g></g>
-        <g transform="translate(230,52)"><g opacity=".5"><ellipse rx="4" ry="10" fill="#d4a574" transform="rotate(0) translate(0,-11)"/><ellipse rx="4" ry="10" fill="#c48a5a" transform="rotate(72) translate(0,-11)"/><ellipse rx="4" ry="10" fill="#d4a574" transform="rotate(144) translate(0,-11)"/><ellipse rx="4" ry="10" fill="#c48a5a" transform="rotate(216) translate(0,-11)"/><ellipse rx="4" ry="10" fill="#d4a574" transform="rotate(288) translate(0,-11)"/><circle r="4.5" fill="#f0e8d0"/></g></g>
-        <g transform="translate(310,25)"><g opacity=".4"><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(0) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#8090c0" transform="rotate(45) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(90) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#8090c0" transform="rotate(135) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(180) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#8090c0" transform="rotate(225) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(270) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#8090c0" transform="rotate(315) translate(0,-7)"/><circle r="3" fill="#f5e8b0"/></g></g>
-        <g transform="translate(370,55)"><g opacity=".45"><ellipse rx="3.5" ry="8" fill="#d4a8c0" transform="rotate(0) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#c090a8" transform="rotate(72) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#d4a8c0" transform="rotate(144) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#c090a8" transform="rotate(216) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#d4a8c0" transform="rotate(288) translate(0,-9)"/><circle r="4" fill="#f5e0d0"/></g></g>
-        <!-- center: 15M button -->
-        <foreignObject x="365" y="5" width="70" height="70" style="pointer-events:all">
-          <div xmlns="http://www.w3.org/1999/xhtml" style="width:70px;height:70px;display:flex;align-items:center;justify-content:center">
-            <button id="hdr-date-btn" onclick="openCalendar()" style="background:none;border:none;cursor:pointer;font-family:'Nunito',sans-serif;font-weight:800;font-size:1.8rem;color:rgba(240,232,245,.82);letter-spacing:-.03em;line-height:1;padding:0;pointer-events:all"></button>
-          </div>
-        </foreignObject>
-        <g transform="translate(455,28)"><g opacity=".4"><ellipse rx="3" ry="7" fill="#c8a0d4" transform="rotate(0) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#b088c0" transform="rotate(60) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#c8a0d4" transform="rotate(120) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#b088c0" transform="rotate(180) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#c8a0d4" transform="rotate(240) translate(0,-8)"/><ellipse rx="3" ry="7" fill="#b088c0" transform="rotate(300) translate(0,-8)"/><circle r="3.5" fill="#f8e8c0"/></g></g>
-        <g transform="translate(540,50)"><g opacity=".5"><ellipse rx="4" ry="9" fill="#9dc4a0" transform="rotate(0) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#7ab080" transform="rotate(72) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#9dc4a0" transform="rotate(144) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#7ab080" transform="rotate(216) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#9dc4a0" transform="rotate(288) translate(0,-10)"/><circle r="4" fill="#e8f0c8"/></g></g>
-        <g transform="translate(620,24)"><g opacity=".45"><ellipse rx="3.5" ry="8" fill="#d4a574" transform="rotate(0) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#c48a5a" transform="rotate(72) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#d4a574" transform="rotate(144) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#c48a5a" transform="rotate(216) translate(0,-9)"/><ellipse rx="3.5" ry="8" fill="#d4a574" transform="rotate(288) translate(0,-9)"/><circle r="4" fill="#f5e8c8"/></g></g>
-        <g transform="translate(700,44)"><g opacity=".55"><ellipse rx="4" ry="9" fill="#c98fd4" transform="rotate(0) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#b87ec4" transform="rotate(72) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#c98fd4" transform="rotate(144) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#b87ec4" transform="rotate(216) translate(0,-10)"/><ellipse rx="4" ry="9" fill="#c98fd4" transform="rotate(288) translate(0,-10)"/><circle r="4" fill="#f5d4a8"/></g></g>
-        <g transform="translate(760,28)"><g opacity=".4"><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(0) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(60) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(120) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(180) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(240) translate(0,-7)"/><ellipse rx="2.5" ry="6" fill="#a0b8d8" transform="rotate(300) translate(0,-7)"/><circle r="3" fill="#f5e8b0"/></g></g>
+      <svg width="52" height="52" viewBox="0 0 52 52" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(26,26)">
+          <ellipse rx="7" ry="14" fill="#c98fd4" opacity=".85" transform="rotate(0) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#b87ec4" opacity=".8" transform="rotate(45) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#c98fd4" opacity=".85" transform="rotate(90) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#b87ec4" opacity=".8" transform="rotate(135) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#c98fd4" opacity=".85" transform="rotate(180) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#b87ec4" opacity=".8" transform="rotate(225) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#c98fd4" opacity=".85" transform="rotate(270) translate(0,-8)"/>
+          <ellipse rx="7" ry="14" fill="#b87ec4" opacity=".8" transform="rotate(315) translate(0,-8)"/>
+          <circle r="8" fill="#f5d4a8"/>
+          <circle r="5" fill="#e8b87a"/>
+          <circle r="2.5" fill="#d4a060"/>
+        </g>
       </svg>
+    </div>
+    <div class="hdr-right">
+      <span class="hdr-month" id="hdr-month"></span><span class="hdr-daynum" id="hdr-daynum"></span>
     </div>
   </div>
 
@@ -519,14 +509,25 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         </div>
       </div>
       <div class="dock-pane" id="pane-ai">
-        <textarea id="ai-notes" placeholder="…" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;color:var(--ink);font-size:13px;font-family:var(--font-b);resize:vertical;min-height:110px;line-height:1.5;outline:none"></textarea>
-        <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:6px">
-          <button id="ai-notes-save-btn" onclick="saveAiNotes()" title="Save notes" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">💾</button>
-          <button onclick="dlContextDoc()" title="Download context doc" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center">📋</button>
-          <a href="https://github.com/maximvino/fleur/edit/main/index.html" target="_blank" title="Edit on GitHub" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-decoration:none">🐙</a>
-          <button onclick="openAiLink()" title="Open AI chat" style="width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center" id="ai-link-btn">🤖</button>
+        <!-- Notes area -->
+        <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">Notes</div>
+        <textarea id="ai-notes" rows="4" placeholder="Jot down ideas for changes…" style="width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:8px;padding:8px;color:var(--ink);font-size:12px;font-family:var(--font-b);resize:vertical;min-height:72px;line-height:1.5"></textarea>
+        <div style="display:flex;gap:6px;margin-bottom:10px;margin-top:4px">
+          <button id="ai-notes-save-btn" onclick="saveAiNotes()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">Save notes</button>
+          <a href="https://github.com/maximvino/fleur/edit/main/index.html" target="_blank" style="flex:1;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:7px;padding:5px 8px;color:var(--ink2);font-size:11px;text-decoration:none;font-family:var(--font-b)">Edit on GitHub ↗</a>
         </div>
-        <input id="ai-link-input" type="url" placeholder="https://claude.ai/new" style="display:none;margin-top:6px;width:100%;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;padding:6px 10px;color:var(--ink);font-size:13px;font-family:var(--font-b);outline:none" onchange="saveAiLink(this.value)" onblur="this.style.display='none'">
+        <!-- Chat -->
+        <div style="font-size:10px;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;font-family:var(--font-b);margin-bottom:4px">AI</div>
+        <div class="cl" id="chat-log">
+          <div class="bl ai" id="ai-status">Send a message to fetch the current code and request a change.</div>
+        </div>
+        <div style="padding:4px 0 6px;display:flex;gap:6px"><button onclick="dlContextDoc()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">⬇ Context doc</button><button id="load-code-btn" onclick="loadFleurCode()" style="flex:1;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:5px 10px;color:var(--ink2);font-size:11px;cursor:pointer;font-family:var(--font-b)">⬆ Load code</button></div>
+        <div class="ai-row">
+          <textarea id="ci" rows="1" placeholder="Describe a change…"></textarea>
+          <div class="ai-btns">
+            <button class="sb" id="sb" onclick="sendCode()">Send</button>
+          </div>
+        </div>
       </div>
       <!-- Presets pane -->
       <div class="dock-pane" id="pane-pre">
@@ -721,7 +722,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_gentian_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_foxglove_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -744,12 +745,11 @@ function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gThe
 function ap(s){
   tasks=s.tasks||[];
   cats=(s.cats||s.categories||[]).map(c=>({showBox:1,minimized:false,colGroup:1,...c}));
-  colMin=s.colMin||{};colMin['wait']=0;
-  gTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
+  colMin=s.colMin||{};colMin['wait']=0;// always expand wait on loadgTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
-  tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;if(t.fadedUntil===undefined)t.fadedUntil=null;});
+  tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;});
   presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
   aiNotes=s.aiNotes||aiNotes||'';
   // If no presets in loaded state, try to recover from any other local key
@@ -871,10 +871,6 @@ function undo(){if(!undos.length)return;const e=undos.pop();ap(e.s);save();ra();
 function showU(l){clearTimeout(uTimer);document.getElementById('ul').textContent=l;document.getElementById('ub').classList.remove('hidden');uTimer=setTimeout(hideU,5000);}
 function hideU(){document.getElementById('ub').classList.add('hidden');}
 document.addEventListener('keydown',e=>{
-  if((e.ctrlKey||e.metaKey)&&e.key==='s'){
-    const notes=document.getElementById('ai-notes');
-    if(notes&&document.activeElement===notes){e.preventDefault();saveAiNotes();return;}
-  }
   if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){
     if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;
     e.preventDefault();undo();
@@ -1074,8 +1070,7 @@ function snHTML(task,inCat){
   const tabStyle=inCat
     ?`background:${streakBg};border-bottom-color:rgba(0,0,0,.15)`
     :`border-bottom-color:${tx}22`;
-  const isFaded=task.fadedUntil&&new Date(task.fadedUntil)>new Date();
-  return`<div class="sn${inCat?' cat-sn':''}${blocked?' sn-blocked':''}${isFaded?' sn-faded':''}" draggable="true"
+  return`<div class="sn${inCat?' cat-sn':''}${blocked?' sn-blocked':''}" draggable="true"
     style="background:${bg};color:${tx}" data-tid="${task.id}" ${wn?'data-haswait':''} ${blocked?'data-blocked':''}
     onclick="openTask(${task.id})" ondragstart="dstart(event,${task.id})" ondragend="dend()">
     <div class="sn-tab" style="${tabStyle}">
@@ -1088,9 +1083,6 @@ function snHTML(task,inCat){
       ${wn?`<div class="sn-wait-reveal">${esc(wn)}</div>`:''}
     </div>
     ${inCat?'<div class="sn-streak" style="background:'+streakBg+'"></div>':''}
-    <div class="sn-curl" onclick="event.stopPropagation();toggleFade(${task.id})" title="Fade for today">
-      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M20,20 L20,12 Q20,20 12,20 Z" fill="rgba(0,0,0,.18)"/><path d="M20,20 L20,13 Q19,20 13,20 Z" fill="rgba(0,0,0,.28)"/></svg>
-    </div>
   </div>`;
 }
 
@@ -1115,7 +1107,7 @@ function corkHTML(col){
   const blockedItems=sortTasks([...ct.filter(t=>isBlocked(t)&&withinWeek(t)),...blockedHere.filter(withinWeek)]).map(t=>snHTML(t,false));
   const divider=blockedItems.length?`<div class="cork-blocked-divider" style="color:${cs.txt}"></div>`:'';
   const allItems=[...activeItems,divider,...blockedItems];
-  const content=allItems.length&&(activeItems.length||blockedItems.length)?allItems.join(''):"";
+  const content=allItems.length&&(activeItems.length||blockedItems.length)?allItems.join(''):`<div class="empty" style="color:${cs.txt}">—</div>`;
   // Wait group pills (shown above stickies in Wait box)
   let wchipsHTML='';
   if(col==='wait'){
@@ -1152,21 +1144,29 @@ function corkHTML(col){
     const pinDiv=hasPins&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'';
     const blockDiv=blockedItems2.length?`<div class="cork-blocked-divider"></div>`:'';
     if(minLevel===0)bodyHTML=pinZone+(hasPins?pinnedItems.join(''):'')+(hasPins&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'')+unpinnedItems.join('')+blockDiv+blockedItems2.join('');
-    else bodyHTML=pinnedItems.join('')||'';
+    else if(minLevel===1)bodyHTML=pinnedItems.join('')||`<div class="empty" style="color:${cs.txt}">—</div>`;
+    else bodyHTML='';
   } else {
     bodyHTML=content;
   }
-    const calBtn='';
-  const casuBtns='';
-  const bodyHidden=isCasu?false:minLevel;
+    const isUpcoming=col==='upcoming';
+  const calBtn=isUpcoming?`<button class="corkbtn" style="color:${cs.txt}" title="Calendar" onclick="openCalendar()">📅</button>`:'';
+  const casuBtns=isCasu?`
+    <button class="corkbtn" style="color:${cs.txt}" title="Minimize to pinned" onclick="toggleMin('${col}',1)">${minLevel===1?'◂':'◁'}</button>
+    <button class="corkbtn" style="color:${cs.txt}" title="Minimize all" onclick="toggleMin('${col}',2)">${minLevel===2?'▸':'▾'}</button>`
+    :`<button class="corkbtn" style="color:${cs.txt}" onclick="toggleMin('${col}')">${minLevel?'▸':'▾'}</button>`;
+  const bodyHidden=isCasu?minLevel===2:minLevel;
     return`<div class="cork${bodyHidden?' minimized':''}" data-col="${col}"
     style="background:${CORK_GFX[col]},${cs.bg};border-color:${CORK_FRAME[col]||'#5a4a2e'}"
     ondragover="dover(event,'${col}')" ondrop="drop(event,'${col}')" ondragleave="dleave(event)">
-    <div class="cork-float-l"><button class="corkbtn" style="color:${cs.txt};position:absolute;top:6px;left:6px" onclick="toggleCorkAdd('${col}')" title="Add"></button></div>
-    <div class="cork-float"><button class="corkbtn" style="color:${cs.txt}" onclick="${isCasu?`toggleMin('${col}',2)`:`toggleMin('${col}')`}" title="Minimize"></button></div>
+    <div class="cork-float">
+      ${calBtn}
+      <button class="corkbtn" style="color:${cs.txt}" onclick="toggleCorkAdd('${col}')">＋</button>
+      ${casuBtns}
+    </div>
     ${wchipsHTML?`<div class="wait-groups">${wchipsHTML}</div>`:''}
-
-    ${bodyHidden?'':`<div class="cork-body" style="${col==='today'?'padding-top:2px':''}">${bodyHTML||""}</div>`}
+    ${col==='today'?`<div class="today-date" id="today-date-badge"></div>`:''}
+    ${bodyHidden?'':`<div class="cork-body" style="${col==='today'?'padding-top:2px':''}">${bodyHTML||`<div class="empty" style="color:${cs.txt}">—</div>`}</div>`}
     <div class="cork-add" id="${addId}">
       <input id="${addId}-i" placeholder="" onkeydown="corkAddKey(event,'${col}')">
     </div>
@@ -1175,7 +1175,14 @@ function corkHTML(col){
 
 function renderBoard(){
   document.getElementById('board').innerHTML=['today','tomorrow','upcoming'].map(corkHTML).join('');
-
+  // Populate today date badge
+  const el=document.getElementById('today-date-badge');
+  if(el){
+    const d=new Date();
+    const day=d.getDate();
+    const dow=d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);
+    el.innerHTML=day+'<span class="dow-letter">'+dow+'</span>';
+  }
 }
 
 // ── Preset row ──────────────────────────────────────────────────────
@@ -1495,16 +1502,6 @@ function uncomplete(id){
 }
 
 // ── Minimize ──────────────────────────────────────────────────────
-
-function toggleFade(id){
-  const t=tasks.find(t=>t.id==id);if(!t)return;
-  const isFaded=t.fadedUntil&&new Date(t.fadedUntil)>new Date();
-  if(isFaded){t.fadedUntil=null;}
-  else{// fade until midnight tonight
-    const d=new Date();d.setHours(23,59,59,999);t.fadedUntil=d.toISOString();
-  }
-  save();ra();
-}
 function toggleMin(col,level){
   if(col==='casual'&&level!==undefined){
     colMin[col]=colMin[col]===level?0:level;
@@ -1655,7 +1652,7 @@ function addManual(){
   mkDots('add-cr','');aemReset();aemClose();save();ra();showU('Added');
 }
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.activeElement.id==='an'&&!(e.ctrlKey||e.metaKey)){e.preventDefault();addManual();}});
-document.getElementById('arep')?.addEventListener('change',function(){const el=document.getElementById('pill-rep-lbl');if(el)el.textContent=this.value?repLabel(this.value):'—';});
+document.getElementById('arep').addEventListener('change',function(){document.getElementById('pill-rep-lbl').textContent=this.value?repLabel(this.value):'—';});
 
 // ── Cat CRUD ──────────────────────────────────────────────────────
 function addCat(){
@@ -2252,7 +2249,7 @@ A task is **blocked** when:
 
 ## Export / Import
 
-\`exportData()\` → JSON with \`sn()\` + \`{version:'gentian-petal', exported: ISO string}\`
+\`exportData()\` → JSON with \`sn()\` + \`{version:'foxglove-seed', exported: ISO string}\`
 \`importData(event)\` → parses JSON, calls \`ap()\`
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\` — the full project context document for pasting into a new AI conversation.
@@ -2321,7 +2318,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'gentian-petal',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'foxglove-seed',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();addB('Imported!','ai');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
@@ -2361,20 +2358,6 @@ function addCodeBlock(code){
 
 
 const AI_NOTES_KEY='fleur_ai_notes';
-
-const AI_LINK_KEY='fleur_ai_link';
-function openAiLink(){
-  const saved=localStorage.getItem(AI_LINK_KEY)||'https://claude.ai/new';
-  const inp=document.getElementById('ai-link-input');
-  if(inp.style.display==='none'){inp.value=saved;inp.style.display='block';inp.focus();}
-  else{window.open(saved,'_blank');}
-}
-function saveAiLink(url){
-  if(url)localStorage.setItem(AI_LINK_KEY,url);
-  const inp=document.getElementById('ai-link-input');
-  if(inp)inp.style.display='none';
-  window.open(url||'https://claude.ai/new','_blank');
-}
 function saveAiNotes(){
   const v=document.getElementById('ai-notes').value;
   aiNotes=v;
@@ -2451,8 +2434,8 @@ async function sendCode(){
 
 
 const ta=document.getElementById('ci');
-if(ta){ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,90)+'px';});
-ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendCode();}});}
+ta.addEventListener('input',()=>{ta.style.height='auto';ta.style.height=Math.min(ta.scrollHeight,90)+'px';});
+ta.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendCode();}});
 setInterval(chkTimeWaits,60000);
 load().then(()=>{ra();mkDots('add-cr','');syncSelects();chkTimeWaits();});
 </script>
