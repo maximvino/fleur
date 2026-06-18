@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Iris</title>
+<title>Fleur · Jasmine</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -35,14 +35,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .page{max-width:1160px;margin:0 auto;padding:1.8rem 1.4rem 8rem}
 
 /* ── Header ── */
-.hdr{position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:1.4rem;padding:0;min-height:72px}
-.hdr-flower{width:100%;display:flex;align-items:center;justify-content:center}
-.hdr-date-btn{transition:opacity .15s}
-.hdr-date-btn:hover{opacity:.78}
-.hbtns{display:flex;gap:6px}
-.hbtn{background:rgba(220,190,255,.05);border:1px solid rgba(220,190,255,.1);border-radius:18px;padding:5px 11px;font-size:11px;color:var(--ink3);cursor:pointer;display:flex;align-items:center;gap:3px;transition:all .15s;font-family:var(--font-b)}
-.hbtn:hover{background:rgba(220,190,255,.1);color:var(--ink)}
-.hbtn svg{width:10px;height:10px}
+.hdr{margin-bottom:1.4rem;padding:0 1rem;min-height:80px}
+.hdr-svg{display:block}
+.hdr-cal-group{transition:opacity .15s}
+.hdr-cal-group:hover{opacity:.8}
+@media(max-width:480px){.hdr{min-height:64px}}
 
 /* ── Board: 3-col + 2 full rows ── */
 .board{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:11px;align-items:stretch}
@@ -75,7 +72,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
   box-shadow:0 1px 1.5px rgba(0,0,0,.6);opacity:.45;transition:opacity .15s,transform .15s}
 .cork-nail:hover::before{opacity:.85;transform:translate(-50%,-50%) scale(1.3)}
 /* Wait scraps — torn paper above stickies */
-.wait-groups{display:flex;flex-wrap:wrap;gap:10px;padding:8px 14px 12px;width:100%;align-items:flex-start}
+.wait-groups{display:flex;flex-wrap:wrap;gap:10px;padding:38px 14px 12px;width:100%;align-items:flex-start}
 .cork.minimized .wait-groups{display:none}
 .wait-ribbon{
   display:inline-block;
@@ -99,7 +96,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* highlighted stickies when hovering a ribbon */
 .sn.wait-highlight{transform:translateY(-3px) rotate(1.5deg)!important;box-shadow:4px 7px 18px rgba(0,0,0,.4)!important;z-index:10}
 /* Cork body — sticky note grid */
-.cork-body{padding:10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cork-body{padding:34px 10px 10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 /* Inline add */
 .cork-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
 .cork-add.open{display:block}
@@ -118,6 +115,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* blocked sticky — faded, in its date box below divider */
 .sn-blocked{opacity:.38;filter:saturate(.5)}
 .sn-blocked:hover{opacity:.55}
+.sn-curl{position:absolute;bottom:0;right:0;width:26px;height:26px;cursor:pointer;z-index:6}
+.sn.sn-faded{opacity:.4;filter:saturate(.4)}
 /* divider line between active and blocked stickies */
 .cork-blocked-divider,.casu-pin-divider{width:100%;height:1px;background:rgba(255,255,255,.12);
   grid-column:1/-1;margin:4px 0;position:relative}
@@ -185,20 +184,19 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cat-row .cbox{flex:1;min-width:0}
 
 /* ── Category box ── */
-.cbox{border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
-  min-height:180px;cursor:default;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Crect width='60' height='60' fill='none'/%3E%3Cellipse cx='12' cy='8' rx='18' ry='2.5' fill='none' stroke='rgba(0,0,0,.1)' stroke-width='1' transform='rotate(-15 12 8)'/%3E%3Cellipse cx='40' cy='22' rx='22' ry='2' fill='none' stroke='rgba(0,0,0,.08)' stroke-width='1' transform='rotate(8 40 22)'/%3E%3Ccircle cx='5' cy='30' r='1.2' fill='rgba(0,0,0,.12)'/%3E%3Ccircle cx='55' cy='35' r='1.5' fill='rgba(0,0,0,.1)'/%3E%3C/svg%3E");
-  box-shadow:0 0 0 2px rgba(0,0,0,.25),0 2px 10px rgba(0,0,0,.25)}
-.cbox.minimized>.cbox-body,.cbox.minimized>.cbox-add{display:none}
+.cbox{border-radius:12px;overflow:hidden;display:flex;flex-direction:column;
+  min-height:120px;cursor:default;position:relative;
+  box-shadow:inset 0 1px 0 rgba(255,235,180,.08),inset 0 -2px 0 rgba(0,0,0,.3),0 6px 20px rgba(0,0,0,.4),0 2px 4px rgba(0,0,0,.25);
+  border:2px solid rgba(0,0,0,.35)}
+.cbox.minimized>.cbox-body{display:none}
 .cbox.minimized{min-height:0!important}
 .cbox.cbox-dragging{opacity:.45;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 .cbox.drop-before{outline:2px solid var(--accent);outline-offset:-2px}
-.cbox-hdr{padding:5px 8px 5px;display:flex;align-items:center;gap:6px;background:rgba(0,0,0,.15);cursor:grab;min-height:32px}
-.cbox-hdr:active{cursor:grabbing}
+.cbox-hdr{display:none}
 .cbox-title{display:none}
 .cbox-count{display:none}
-.cbox-btns{display:flex;gap:3px}
-.cbox-body{padding:10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cbox-btns{display:none}
+.cbox-body{padding:34px 10px 10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 .cbox-body .sn{width:140px;flex-shrink:0;aspect-ratio:1/1;min-height:unset}
 .cbox-body .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
 .cbox-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
@@ -366,38 +364,20 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <body>
 <div class="page">
   <div class="hdr">
-    <div class="hdr-flower">
-      <svg width="100%" height="84" viewBox="0 0 800 90" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
-        <g transform="translate(60,50)"><g opacity=".55"><ellipse rx="5" ry="12" fill="#d4a574" transform="rotate(0) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c48a5a" transform="rotate(45) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#d4a574" transform="rotate(90) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c48a5a" transform="rotate(135) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#d4a574" transform="rotate(180) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c48a5a" transform="rotate(225) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#d4a574" transform="rotate(270) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c48a5a" transform="rotate(315) translate(0,-13)"/><circle r="5" fill="#f0e8d0"/></g></g>
-        <g transform="translate(160,50)"><g opacity=".55"><ellipse rx="5" ry="12" fill="#9dc4a0" transform="rotate(0) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#7ab898" transform="rotate(45) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#9dc4a0" transform="rotate(90) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#7ab898" transform="rotate(135) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#9dc4a0" transform="rotate(180) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#7ab898" transform="rotate(225) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#9dc4a0" transform="rotate(270) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#7ab898" transform="rotate(315) translate(0,-13)"/><circle r="5" fill="#f5d4a8"/></g></g>
-        <g transform="translate(250,50)"><g opacity=".55"><ellipse rx="5" ry="12" fill="#a0b8d8" transform="rotate(0) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#8090c0" transform="rotate(45) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#a0b8d8" transform="rotate(90) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#8090c0" transform="rotate(135) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#a0b8d8" transform="rotate(180) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#8090c0" transform="rotate(225) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#a0b8d8" transform="rotate(270) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#8090c0" transform="rotate(315) translate(0,-13)"/><circle r="5" fill="#f5e8b0"/></g></g>
-        <g class="hdr-date-btn" onclick="openCalendar()" style="cursor:pointer" pointer-events="all">
-          <title>Calendar</title>
-          <text id="hdr-daynum" x="355" y="59" font-family="Nunito, sans-serif" font-weight="800" font-size="34" letter-spacing="-1.5" fill="#f0e8f5" fill-opacity=".82" text-anchor="end">17</text>
-          <g transform="translate(400,50)">
-            <path d="M0,-2 Q-2,16 0,32" stroke="#6f8f6a" stroke-width="2.5" fill="none" opacity=".5" stroke-linecap="round"/>
-            <path d="M0,15 Q-13,12 -15,2 Q-4,4 0,15Z" fill="#7a9a7e" opacity=".5"/>
-            <path d="M0,21 Q13,18 16,8 Q5,9 0,21Z" fill="#8aa888" opacity=".45"/>
-            <g opacity=".92">
-              <ellipse rx="7.5" ry="19" fill="#c98fd4" transform="rotate(0) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#a874b8" transform="rotate(45) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#c98fd4" transform="rotate(90) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#a874b8" transform="rotate(135) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#c98fd4" transform="rotate(180) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#a874b8" transform="rotate(225) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#c98fd4" transform="rotate(270) translate(0,-21)"/>
-              <ellipse rx="7.5" ry="19" fill="#a874b8" transform="rotate(315) translate(0,-21)"/>
-            </g>
-            <circle r="9" fill="#f5d4a8"/>
-            <circle r="9" fill="none" stroke="#e0b888" stroke-width="1" opacity=".5"/>
-          </g>
-          <text id="hdr-dow" x="445" y="55" font-family="Nunito, sans-serif" font-weight="700" font-size="17" letter-spacing="-.5" fill="#f0e8f5" fill-opacity=".6" text-anchor="start">W</text>
-        </g>
-        <g transform="translate(550,50)"><g opacity=".55"><ellipse rx="5" ry="12" fill="#d4a8c0" transform="rotate(0) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c090a8" transform="rotate(45) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#d4a8c0" transform="rotate(90) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c090a8" transform="rotate(135) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#d4a8c0" transform="rotate(180) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c090a8" transform="rotate(225) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#d4a8c0" transform="rotate(270) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c090a8" transform="rotate(315) translate(0,-13)"/><circle r="5" fill="#f5e0d0"/></g></g>
-        <g transform="translate(640,50)"><g opacity=".55"><ellipse rx="5" ry="12" fill="#c8a0d4" transform="rotate(0) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#b088c0" transform="rotate(45) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a0d4" transform="rotate(90) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#b088c0" transform="rotate(135) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a0d4" transform="rotate(180) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#b088c0" transform="rotate(225) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a0d4" transform="rotate(270) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#b088c0" transform="rotate(315) translate(0,-13)"/><circle r="5" fill="#f8e8c0"/></g></g>
-        <g transform="translate(740,50)"><g opacity=".55"><ellipse rx="5" ry="12" fill="#e0c068" transform="rotate(0) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a850" transform="rotate(45) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#e0c068" transform="rotate(90) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a850" transform="rotate(135) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#e0c068" transform="rotate(180) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a850" transform="rotate(225) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#e0c068" transform="rotate(270) translate(0,-13)"/><ellipse rx="5" ry="12" fill="#c8a850" transform="rotate(315) translate(0,-13)"/><circle r="5" fill="#fdf0d8"/></g></g>
-      </svg>
-    </div>
+    <svg class="hdr-svg" width="100%" height="80" viewBox="0 0 520 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block">
+      <g id="hdr-f0" transform="translate(28,40)"><g opacity=".35"><ellipse rx="5" ry="13" class="fp0" transform="rotate(0) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(45) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(90) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(135) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(180) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(225) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(270) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(315) translate(0,-14)"/><circle r="5.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f1" transform="translate(98,40)"><g opacity=".35"><ellipse rx="5" ry="13" class="fp1" transform="rotate(0) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(45) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(90) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(135) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(180) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(225) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(270) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(315) translate(0,-14)"/><circle r="5.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f2" transform="translate(168,40)"><g opacity=".35"><ellipse rx="5" ry="13" class="fp2" transform="rotate(0) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(45) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(90) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(135) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(180) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(225) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(270) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(315) translate(0,-14)"/><circle r="5.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f3" transform="translate(260,40)" onclick="openCalendar()" style="cursor:pointer"><g opacity=".92"><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(0) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(45) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(90) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(135) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(180) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(225) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(270) translate(0,-22)"/><ellipse rx="7.5" ry="20" class="fp3" transform="rotate(315) translate(0,-22)"/><circle r="8.6" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f4" transform="translate(352,40)"><g opacity=".35"><ellipse rx="5" ry="13" class="fp4" transform="rotate(0) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(45) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(90) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(135) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(180) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(225) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(270) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(315) translate(0,-14)"/><circle r="5.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f5" transform="translate(422,40)"><g opacity=".35"><ellipse rx="5" ry="13" class="fp5" transform="rotate(0) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(45) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(90) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(135) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(180) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(225) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(270) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(315) translate(0,-14)"/><circle r="5.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f6" transform="translate(492,40)"><g opacity=".35"><ellipse rx="5" ry="13" class="fp6" transform="rotate(0) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(45) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(90) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(135) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(180) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(225) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(270) translate(0,-14)"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(315) translate(0,-14)"/><circle r="5.8" fill="#f5e8c8"/></g></g>
+      <g onclick="openCalendar()" style="cursor:pointer" class="hdr-cal-group">
+        <rect x="178" y="10" width="164" height="60" fill="transparent" rx="8"/>
+        <text id="hdr-dow" x="214" y="40" font-family="Lora,Georgia,serif" font-weight="700" font-style="italic" font-size="24" text-anchor="middle" dominant-baseline="central" fill="#af68d3">W</text>
+        <text id="hdr-daynum" x="306" y="40" font-family="Lora,Georgia,serif" font-weight="700" font-style="italic" font-size="24" text-anchor="middle" dominant-baseline="central" fill="#af68d3">17</text>
+      </g>
+    </svg>
   </div>
 
   <div class="board" id="board"></div>
@@ -714,7 +694,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_iris_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_jasmine_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -743,7 +723,6 @@ function ap(s){
   // Ensure new fields exist on all tasks
   tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;if(t.fadedUntil===undefined)t.fadedUntil=null;});
   presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
-  aiNotes=s.aiNotes||aiNotes||'';
   aiNotes=s.aiNotes||aiNotes||'';
   // If no presets in loaded state, try to recover from any other local key
   if(!presets.length){
@@ -782,7 +761,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -823,6 +802,10 @@ function dayTrans(){
     if(tk.repeat&&tk.deadlineDate&&tk.deadlineDate>today())return; // future — chk() manages
     if(tk.deadlineDate)tk.col=d2col(tk.deadlineDate,tk.repeat);
     else if(tk.repeat)tk.col='today'; // repeating, no date → today
+    // Dateless tasks in tomorrow/upcoming: set their deadlineDate so they route correctly going forward
+    else if(tk.col==='tomorrow'){tk.deadlineDate=tomorrow();tk.col='today';}
+    else if(tk.col==='upcoming'){// no date, no repeat in upcoming — move to today
+      tk.col='today';}
   });
   // Liberate time-based waits that have already passed
   chkTimeWaits();
@@ -864,6 +847,9 @@ function undo(){if(!undos.length)return;const e=undos.pop();ap(e.s);save();ra();
 function showU(l){clearTimeout(uTimer);document.getElementById('ul').textContent=l;document.getElementById('ub').classList.remove('hidden');uTimer=setTimeout(hideU,5000);}
 function hideU(){document.getElementById('ub').classList.add('hidden');}
 document.addEventListener('keydown',e=>{
+  if((e.ctrlKey||e.metaKey)&&e.key==='s'){
+    if(document.activeElement.id==='ai-notes'){e.preventDefault();saveAiNotes();return;}
+  }
   if((e.ctrlKey||e.metaKey)&&e.key==='z'&&!e.shiftKey){
     if(['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName))return;
     e.preventDefault();undo();
@@ -996,16 +982,26 @@ function syncWaitUntil(){
   if(awu)awu.value=(d&&t)?`${d}T${t}`:(d?`${d}T00:00`:'');
 }
 
-const DOW_CLR=['#e08060','#d4a840','#7ab870','#60a8d4','#9878d0','#c068a8','#d06878'];
+const DOW_CLR=['#d3abe6','#abc9e6','#abe6d4','#b2e6ab','#e1e6ab','#e6bcab','#e6abcb'];
+const DOW_FULL=['#d368a1','#af68d3','#689ed3','#68d3b2','#74d368','#cad368','#d38668'];
+const DOW_DARK=['#a4517d','#8851a4','#517ba4','#51a48a','#5aa451','#9da451','#a46851'];
 // ── Render ────────────────────────────────────────────────────────
 function ra(){
   const _d=new Date();
-  const _dow=_d.getDay();const _dc=DOW_CLR[_dow];
+  const _dow=_d.getDay();const _dc=DOW_FULL[_dow];
   const _dn=_d.getDate();
+  // Color the 7 header flowers: center (f3) = today, offsets -3..+3
+  const _offsets=[-3,-2,-1,0,1,2,3];
+  _offsets.forEach((off,i)=>{
+    const di=(_dow+off+700)%7;
+    const c1=DOW_FULL[di],c2=DOW_DARK[di];
+    const fg=document.getElementById('hdr-f'+i);
+    if(fg){fg.querySelectorAll('ellipse').forEach((el,j)=>el.setAttribute('fill',j%2===0?c1:c2));}
+  });
   const _daynumEl=document.getElementById('hdr-daynum');
   const _dowEl=document.getElementById('hdr-dow');
-  if(_daynumEl)_daynumEl.textContent=_dn;
-  if(_dowEl)_dowEl.textContent=_d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);
+  if(_daynumEl){_daynumEl.textContent=_dn;_daynumEl.setAttribute('fill',_dc);}
+  if(_dowEl){_dowEl.textContent=_d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);_dowEl.setAttribute('fill',_dc);}
   renderBoard();renderFull('wait');renderFull('casual');renderCatSection();renderCatChips();syncSelects();renderPile();renderPresetRow();
 }
 
@@ -1055,9 +1051,7 @@ function snHTML(task,inCat){
       ${wn?`<div class="sn-wait-reveal">${esc(wn)}</div>`:''}
     </div>
     ${inCat?'<div class="sn-streak" style="background:'+streakBg+'"></div>':''}
-    <div class="sn-curl" onclick="event.stopPropagation();toggleFade(${task.id})" title="Fade for today">
-      <svg width="20" height="20" viewBox="0 0 20 20"><path d="M20,20 L20,12 Q20,20 12,20 Z" fill="rgba(0,0,0,.18)"/><path d="M20,20 L20,13 Q19,20 13,20 Z" fill="rgba(0,0,0,.28)"/></svg>
-    </div>
+    <div class="sn-curl" onclick="event.stopPropagation();toggleFade(${task.id})" title="Fade for today"></div>
   </div>`;
 }
 
@@ -1133,7 +1127,7 @@ function corkHTML(col){
       ${addBtn}
     </div>
     ${wchipsHTML?`<div class="wait-groups">${wchipsHTML}</div>`:''}
-    ${bodyHidden?'':`<div class="cork-body" style="${col==='today'?'padding-top:2px':''}">${bodyHTML}</div>`}
+    ${bodyHidden?'':`<div class="cork-body">${bodyHTML}</div>`}
     <div class="cork-add" id="${addId}">
       <input id="${addId}-i" placeholder="" onkeydown="corkAddKey(event,'${col}')">
     </div>
@@ -1385,15 +1379,8 @@ function renderCatSection(){
       html+=`<div class="cbox${isMin?' minimized':''}" id="cbox-${cat.id}" data-catid="${cat.id}" style="background:color-mix(in srgb,${cat.color} 45%,#0d0a14 55%)"
         draggable="true" ondragstart="catDs(event,${cat.id})" ondragend="catDe(event)"
         ondragover="cboxOver(event,${cat.id})" ondrop="cboxDrop(event,${cat.id})" ondragleave="catDl(event)">
-        <div class="cbox-hdr" style="border-bottom:1px solid rgba(0,0,0,.1)">
-          <span class="cbox-title" style="color:${tx}">${esc(cat.name)}</span>
-
-          <div class="cbox-btns">
-            <button class="corkbtn" style="color:${tx}" onclick="event.stopPropagation();toggleCboxAdd(${cat.id})">＋</button>
-            <button class="corkbtn" style="color:${tx}" onclick="event.stopPropagation();openCat(${cat.id})">✎</button>
-            <button class="corkbtn" style="color:${tx}" onclick="event.stopPropagation();toggleCatMin(${cat.id})">${isMin?'▸':'▾'}</button>
-          </div>
-        </div>
+        <div class="cork-float-l"><button class="cork-nail" style="position:absolute;top:6px;left:6px" onclick="event.stopPropagation();toggleCboxAdd(${cat.id})" title="Add"></button></div>
+        <div class="cork-float"><button class="cork-nail" onclick="event.stopPropagation();toggleCatMin(${cat.id})" title="${isMin?'Expand':'Minimize'}"></button></div>
         <div class="cbox-body">${content}</div>
         <div class="cbox-add" id="${addId}">
           <input id="${addId}-i" placeholder="" onkeydown="cboxKey(event,${cat.id})">
@@ -1482,7 +1469,11 @@ function corkAddKey(e,col){
   if(e.key==='Escape'){e.target.closest('.cork-add').classList.remove('open');return;}
   if(e.key!=='Enter')return;e.preventDefault();
   const val=e.target.value.trim();if(!val)return;
-  const p=parseNL(val);const name=p?(p.name||val):val;const date=p?p.date:null;
+  const p=parseNL(val);const name=p?(p.name||val):val;
+  let date=p?p.date:null;
+  // If no NL date parsed, assign a date based on the target col so dayTrans can re-route later
+  if(!date&&col==='today')date=today();
+  else if(!date&&col==='tomorrow')date=tomorrow();
   let fc=col;if(date&&col!=='wait'&&col!=='casual')fc=d2col(date,'');
   pu('add');tasks.push({id:tid++,name,col:fc,deadlineDate:date,deadlineTime:null,waitingFor:'',waitTaskId:null,done:false,repeat:'',repeatDays:[],repeatStart:null,categoryId:null,stickyColor:'',paletteColor:nxtP()});
   e.target.value='';save();ra();showU('Added');
@@ -2288,7 +2279,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'iris',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'jasmine',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
@@ -2313,14 +2304,18 @@ function saveAiLink(url){
   if(inp)inp.style.display='none';
   window.open(url||'https://claude.ai/new','_blank');
 }
-function saveAiNotes(){
+async function saveAiNotes(){
   const v=document.getElementById('ai-notes').value;
   aiNotes=v;
   const btn=document.getElementById('ai-notes-save-btn');
   const orig=btn.textContent;btn.textContent='Saving…';
-  save();
-  setTimeout(()=>btn.textContent='Saved!',200);
-  setTimeout(()=>btn.textContent=orig,1800);
+  // save() is fire-and-forget; for notes we do a targeted sync to confirm
+  localStorage.setItem(KEY,JSON.stringify(sn()));
+  try{
+    const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',state:sn()})});
+    btn.textContent=r.ok?'Saved ✓':'Saved locally';
+  }catch(e){btn.textContent='Saved locally';}
+  setTimeout(()=>btn.textContent=orig,2000);
 }
 function loadAiNotes(){
   const el=document.getElementById('ai-notes');if(!el)return;
