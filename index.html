@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Jasmine Stem</title>
+<title>Fleur · Jasmine Petal</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -32,7 +32,7 @@
   /* day abbrevs */
 }
 body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weight:300;min-height:100vh}
-.page{max-width:1160px;margin:0 auto;padding:1.8rem 1.4rem 8rem}
+.page{max-width:1160px;margin:0 auto;padding:1.8rem 0 8rem}
 
 /* ── Header ── */
 .hdr{margin-bottom:1.4rem;padding:0 1rem;min-height:80px}
@@ -374,8 +374,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       <g id="hdr-f6" transform="translate(530,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
       <g onclick="openCalendar()" style="cursor:pointer" class="hdr-cal-group">
         <rect x="200" y="8" width="160" height="64" fill="transparent" rx="8"/>
-        <text id="hdr-dow"    x="220" y="40" font-family="'DM Sans',sans-serif" font-weight="600" font-size="22" text-anchor="middle" dominant-baseline="central" fill="#af68d3">W</text>
-        <text id="hdr-daynum" x="340" y="40" font-family="'DM Sans',sans-serif" font-weight="600" font-size="22" text-anchor="middle" dominant-baseline="central" fill="#af68d3">17</text>
+        <text id="hdr-dow"    x="220" y="40" font-family="Nunito,sans-serif" font-weight="800" font-size="22" text-anchor="middle" dominant-baseline="central" fill="#af68d3">W</text>
+        <text id="hdr-daynum" x="340" y="40" font-family="Nunito,sans-serif" font-weight="800" font-size="22" text-anchor="middle" dominant-baseline="central" fill="#af68d3">17</text>
       </g>
     </svg>
   </div>
@@ -693,7 +693,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_jasmine_stem_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_jasmine_petal_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -716,7 +716,7 @@ function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gThe
 function ap(s){
   tasks=s.tasks||[];
   cats=(s.cats||s.categories||[]).map(c=>({showBox:1,minimized:false,colGroup:1,...c}));
-  colMin=s.colMin||{};colMin['wait']=0;// always expand wait on loadgTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
+  colMin=s.colMin||{};if(colMin['wait']===undefined)colMin['wait']=1;if(colMin['casual']===undefined)colMin['casual']=1;gTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
@@ -760,7 +760,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -774,6 +774,7 @@ async function load(){
       }
     }
   }
+  if(!ok)ap({}); // truly fresh install — still apply defaults (e.g. Wait/Casual start minimized)
   console.log('Fleur load:',ok?'ok':'empty',tasks.length,'tasks');
   dayTrans();applyTheme();
 }
@@ -1000,7 +1001,14 @@ function ra(){
   const _daynumEl=document.getElementById('hdr-daynum');
   const _dowEl=document.getElementById('hdr-dow');
   if(_daynumEl){_daynumEl.textContent=_dn;_daynumEl.setAttribute('fill',_dc);}
-  if(_dowEl){_dowEl.textContent=_d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);_dowEl.setAttribute('fill',_dc);}
+  if(_dowEl){
+    // Two-letter abbreviations: Th and Su to distinguish from Tu and Sa
+    const _dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
+    const _ab=_dayNames[_dow];
+    _dowEl.setAttribute('fill',_dc);
+    // First letter full size, second letter smaller (tspan)
+    _dowEl.innerHTML=_ab[0]+(_ab.length>1?`<tspan font-size="14" dy="1">${_ab[1]}</tspan>`:'');
+  }
   renderBoard();renderFull('wait');renderFull('casual');renderCatSection();renderCatChips();syncSelects();renderPile();renderPresetRow();
 }
 
@@ -2265,7 +2273,7 @@ function openCalendar(){
   dated.forEach(t=>{
     const d=new Date(t.deadlineDate+'T12:00:00');
     const _calMo=d.toLocaleDateString('en-CA',{month:'long',day:'numeric'});
-    const _calWd=d.toLocaleDateString('en-CA',{weekday:'short'}).charAt(0);
+    const _calWd=['Su','Mo','Tu','We','Th','Fr','Sa'][d.getDay()];
     const _calDow=d.getDay();const _calClr=DOW_CLR[_calDow];
     const dateStr=_calMo;
     if(dateStr!==lastDate){
@@ -2282,7 +2290,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'jasmine-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'jasmine-petal',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
