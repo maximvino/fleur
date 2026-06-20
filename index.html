@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Jasmine Bud</title>
+<title>Fleur · Jasmine Bloom</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -42,7 +42,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 @media(max-width:480px){.hdr{min-height:64px}}
 
 /* ── Board: 3-col + 2 full rows ── */
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:11px;align-items:stretch}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:7px;align-items:stretch}
 @media(max-width:660px){.board{grid-template-columns:1fr}}
 .full-row{margin-bottom:11px}
 
@@ -96,7 +96,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* highlighted stickies when hovering a ribbon */
 .sn.wait-highlight{transform:translateY(-3px) rotate(1.5deg)!important;box-shadow:4px 7px 18px rgba(0,0,0,.4)!important;z-index:10}
 /* Cork body — sticky note grid */
-.cork-body{padding:34px 10px 10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cork-body{padding:34px 6px 6px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 /* Inline add */
 .cork-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
 .cork-add.open{display:block}
@@ -180,7 +180,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 
 /* ── Cat section ── */
 .cat-section{margin-bottom:12px}
-.cat-row{display:flex;gap:11px;margin-bottom:11px;align-items:start;flex-wrap:wrap}
+.cat-row{display:flex;gap:7px;margin-bottom:7px;align-items:start;flex-wrap:wrap}
 .cat-row .cbox{flex:1;min-width:0}
 
 /* ── Category box ── */
@@ -196,7 +196,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cbox-title{display:none}
 .cbox-count{display:none}
 .cbox-btns{display:none}
-.cbox-body{padding:34px 10px 10px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cbox-body{padding:34px 6px 6px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 .cbox-body .sn{width:140px;flex-shrink:0;aspect-ratio:1/1;min-height:unset}
 .cbox-body .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
 .cbox-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
@@ -364,15 +364,15 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <body>
 <div class="page">
   <div class="hdr">
-    <svg class="hdr-svg" width="100%" height="80" viewBox="0 0 560 80" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block">
-      <g id="hdr-f0" transform="translate(30,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp0" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp0" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp0" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp0" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp0" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f1" transform="translate(100,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp1" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp1" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp1" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp1" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp1" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f2" transform="translate(170,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp2" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp2" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp2" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp2" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp2" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f3" transform="translate(280,40)" onclick="openCalendar()" style="cursor:pointer"><g opacity=".95"><ellipse rx="5.7" ry="15.0" class="fp3" transform="rotate(45) translate(0,-19)" opacity=".60"/><ellipse rx="5.7" ry="15.0" class="fp3" transform="rotate(135) translate(0,-19)" opacity=".60"/><ellipse rx="5.7" ry="15.0" class="fp3" transform="rotate(225) translate(0,-19)" opacity=".60"/><ellipse rx="5.7" ry="15.0" class="fp3" transform="rotate(315) translate(0,-19)" opacity=".60"/><ellipse rx="6.5" ry="17" class="fp3" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="6.5" ry="17" class="fp3" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="6.5" ry="17" class="fp3" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="6.5" ry="17" class="fp3" transform="rotate(270) translate(0,-19)" opacity="1"/><circle id="hdr-disk3" r="15" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f4" transform="translate(390,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp4" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp4" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp4" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp4" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp4" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f5" transform="translate(460,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp5" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp5" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp5" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp5" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp5" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f6" transform="translate(530,40)"><g opacity=".32"><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(45) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(135) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(225) translate(0,-14)" opacity=".55"/><ellipse rx="4.4" ry="11.4" class="fp6" transform="rotate(315) translate(0,-14)" opacity=".55"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(0) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(90) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(180) translate(0,-14)" opacity="1"/><ellipse rx="5" ry="13" class="fp6" transform="rotate(270) translate(0,-14)" opacity="1"/><circle r="6.2" fill="#f5e8c8"/></g></g>
-      <text id="hdr-daynum" x="280" y="40" font-family="Nunito,sans-serif" font-weight="800" font-size="20" text-anchor="middle" dominant-baseline="central" fill="#3a2e1c">17</text>
+    <svg class="hdr-svg" width="100%" height="90" viewBox="0 0 560 90" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block">
+      <g id="hdr-f0" transform="translate(32,40)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f1" transform="translate(104,40)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f2" transform="translate(176,40)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f3" transform="translate(280,40)" onclick="openCalendar()" style="cursor:pointer"><g opacity=".95"><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(45) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(135) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(225) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(315) translate(0,-26)" opacity=".60"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(0) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(90) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(180) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(270) translate(0,-26)" opacity="1"/><circle id="hdr-disk3" r="18" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f4" transform="translate(384,40)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f5" transform="translate(456,40)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f6" transform="translate(528,40)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <text id="hdr-daynum" x="280" y="40" onclick="openCalendar()" style="cursor:pointer" font-family="Nunito,sans-serif" font-weight="700" font-size="18" text-anchor="middle" dominant-baseline="central" fill="#5a4a38">17</text>
     </svg>
   </div>
 
@@ -689,7 +689,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_jasmine_bud_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_jasmine_bloom_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -756,7 +756,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -2289,7 +2289,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'jasmine-bud',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'jasmine-bloom',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
