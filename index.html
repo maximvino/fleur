@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Jasmine Thorn</title>
+<title>Fleur · Jasmine Root</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -35,14 +35,18 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .page{max-width:1160px;margin:0 auto;padding:1.8rem 0 8rem}
 
 /* ── Header ── */
-.hdr{margin-bottom:1.4rem;padding:0 1rem;min-height:80px}
+.hdr{margin-bottom:.8rem;padding:0;min-height:80px}
 .hdr-svg{display:block}
 .hdr-cal-group{transition:opacity .15s}
 .hdr-cal-group:hover{opacity:.8}
-@media(max-width:480px){.hdr{min-height:64px}}
+@media(max-width:480px){
+  .hdr{min-height:54px;margin-bottom:.3rem}
+  .hdr-svg #hdr-f0>g,.hdr-svg #hdr-f1>g,.hdr-svg #hdr-f2>g,.hdr-svg #hdr-f4>g,.hdr-svg #hdr-f5>g,.hdr-svg #hdr-f6>g{transform:scale(.8);transform-origin:0 0}
+  .hdr-svg #hdr-f3>g{transform:scale(1.18);transform-origin:0 0}
+}
 
 /* ── Board: 3-col + 2 full rows ── */
-.board{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:7px;align-items:stretch}
+.board{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-bottom:4px;align-items:stretch}
 @media(max-width:660px){.board{grid-template-columns:1fr}}
 .full-row{margin-bottom:11px}
 
@@ -96,7 +100,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* highlighted stickies when hovering a ribbon */
 .sn.wait-highlight{transform:translateY(-3px) rotate(1.5deg)!important;box-shadow:4px 7px 18px rgba(0,0,0,.4)!important;z-index:10}
 /* Cork body — sticky note grid */
-.cork-body{padding:34px 6px 6px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cork-body{padding:34px 3px 3px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 /* Inline add */
 .cork-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
 .cork-add.open{display:block}
@@ -180,7 +184,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 
 /* ── Cat section ── */
 .cat-section{margin-bottom:12px}
-.cat-row{display:flex;gap:7px;margin-bottom:7px;align-items:start;flex-wrap:wrap}
+.cat-row{display:flex;gap:4px;margin-bottom:4px;align-items:start;flex-wrap:wrap}
 .cat-row .cbox{flex:1;min-width:0}
 
 /* ── Category box ── */
@@ -196,7 +200,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cbox-title{display:none}
 .cbox-count{display:none}
 .cbox-btns{display:none}
-.cbox-body{padding:34px 6px 6px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cbox-body{padding:34px 3px 3px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 .cbox-body .sn{width:140px;flex-shrink:0;aspect-ratio:1/1;min-height:unset}
 .cbox-body .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
 .cbox-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
@@ -364,15 +368,15 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <body>
 <div class="page">
   <div class="hdr">
-    <svg class="hdr-svg" width="100%" height="98" viewBox="0 0 680 98" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block">
-      <g id="hdr-f0" transform="translate(40,45)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f1" transform="translate(128,45)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f2" transform="translate(216,45)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f3" transform="translate(320,45)" onclick="openCalendar()" style="cursor:pointer"><g opacity=".95"><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(45) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(135) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(225) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(315) translate(0,-26)" opacity=".60"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(0) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(90) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(180) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(270) translate(0,-26)" opacity="1"/><circle id="hdr-disk3" r="18" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f4" transform="translate(424,45)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f5" transform="translate(512,45)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
-      <g id="hdr-f6" transform="translate(600,45)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
-      <text id="hdr-daynum" x="320" y="45" onclick="openCalendar()" style="cursor:pointer" font-family="Lora,Georgia,serif" font-weight="600" font-size="19" text-anchor="middle" dominant-baseline="central" fill="#5a4a38">17</text>
+    <svg class="hdr-svg" width="100%" height="80" viewBox="0 0 640 88" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" style="overflow:visible;display:block">
+      <g id="hdr-f0" transform="translate(40,44)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp0" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp0" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f1" transform="translate(128,44)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp1" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp1" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f2" transform="translate(216,44)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp2" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp2" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f3" transform="translate(320,44)" onclick="openCalendar()" style="cursor:pointer"><g opacity=".95"><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(45) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(135) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(225) translate(0,-26)" opacity=".60"/><ellipse rx="7.7" ry="20.2" class="fp3" transform="rotate(315) translate(0,-26)" opacity=".60"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(0) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(90) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(180) translate(0,-26)" opacity="1"/><ellipse rx="8.8" ry="23" class="fp3" transform="rotate(270) translate(0,-26)" opacity="1"/><circle id="hdr-disk3" r="18" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f4" transform="translate(424,44)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp4" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp4" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f5" transform="translate(512,44)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp5" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp5" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <g id="hdr-f6" transform="translate(600,44)"><g opacity=".32"><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(45) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(135) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(225) translate(0,-19)" opacity=".55"/><ellipse rx="6.2" ry="15.8" class="fp6" transform="rotate(315) translate(0,-19)" opacity=".55"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(0) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(90) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(180) translate(0,-19)" opacity="1"/><ellipse rx="7" ry="18" class="fp6" transform="rotate(270) translate(0,-19)" opacity="1"/><circle r="8.8" fill="#f5e8c8"/></g></g>
+      <text id="hdr-daynum" x="320" y="44" onclick="openCalendar()" style="cursor:pointer" font-family="Lora,Georgia,serif" font-weight="600" font-size="19" text-anchor="middle" dominant-baseline="central" fill="#5a4a38">17</text>
     </svg>
   </div>
 
@@ -689,7 +693,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_jasmine_thorn_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_jasmine_root_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -756,7 +760,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1379,8 +1383,8 @@ function renderCatSection(){
       html+=`<div class="cbox${isMin?' minimized':''}" id="cbox-${cat.id}" data-catid="${cat.id}" style="background:color-mix(in srgb,${cat.color} 45%,#0d0a14 55%)"
         draggable="true" ondragstart="catDs(event,${cat.id})" ondragend="catDe(event)"
         ondragover="cboxOver(event,${cat.id})" ondrop="cboxDrop(event,${cat.id})" ondragleave="catDl(event)">
-        <div class="cork-float-l"><button class="cork-nail" style="position:absolute;top:6px;left:6px" onclick="event.stopPropagation();toggleCboxAdd(${cat.id})" title="Add"></button></div>
-        <div class="cork-float"><button class="cork-nail" onclick="event.stopPropagation();toggleCatMin(${cat.id})" title="${isMin?'Expand':'Minimize'}"></button></div>
+        <div class="cork-float-l"><button class="cork-nail" style="position:absolute;top:6px;left:6px" onclick="event.stopPropagation();toggleCatMin(${cat.id})" title="${isMin?'Expand':'Minimize'}"></button></div>
+        <div class="cork-float"><button class="cork-nail" onclick="event.stopPropagation();toggleCboxAdd(${cat.id})" title="Add"></button></div>
         <div class="cbox-body">${content}</div>
         <div class="cbox-add" id="${addId}">
           <input id="${addId}-i" placeholder="" onkeydown="cboxKey(event,${cat.id})">
@@ -2079,7 +2083,7 @@ Full history: Aster → Bellflower → Cornflower → Dahlia → Eglantine → F
 
 **Category box bg**: \`color-mix(in srgb, cat.color 45%, #0d0a14 55%)\`
 
-**Corner buttons**: every time box (today, tomorrow, upcoming, wait, casual) has exactly two \`.cork-nail\` buttons — small, faint, metallic dots styled to look like nails/tacks holding the box to the wall (24px tap target, but the visible dot is just 8px via \`::before\`, opacity .45, brightens on hover). No symbols/glyphs inside. Top-left (\`.cork-float-l\`) is Minimize (\`toggleMin(col)\`), top-right (\`.cork-float\`) is Add (\`toggleCorkAdd(col)\`). Do not confuse \`.cork-nail\` with \`.corkbtn\` — \`.corkbtn\` is the unrelated, separate glyph-button style still used by category box header buttons (＋ ✎ ▾/▸). There is no calendar button on Upcoming anymore — the calendar lives in the header flower row instead.
+**Corner buttons**: every time box (today, tomorrow, upcoming, wait, casual) AND every category box has exactly two \`.cork-nail\` buttons in the same arrangement — small, faint, metallic dots styled to look like nails/tacks holding the box to the wall (24px tap target, but the visible dot is just 8px via \`::before\`, opacity .45, brightens on hover). No symbols/glyphs inside. Top-left (\`.cork-float-l\`) is Minimize (\`toggleMin(col)\` for time boxes, \`toggleCatMin(catId)\` for category boxes), top-right (\`.cork-float\`) is Add (\`toggleCorkAdd(col)\` / \`toggleCboxAdd(catId)\`). This left=minimize/right=add arrangement must stay identical between time boxes and category boxes — they were briefly inconsistent (cbox had it backwards) and that was a bug, not a deliberate difference. \`.corkbtn\` is a different, unrelated glyph-button style (＋ ✎ ▾/▸) that is no longer used anywhere in the current UI — if you see it referenced, it's dead/legacy. There is no calendar button on Upcoming anymore — the calendar lives in the header flower row instead.
 
 **Empty time boxes**: when a time box has no tasks to show, the \`.cork-body\` renders with no placeholder text (no "—" dash). It's simply empty.
 
@@ -2290,7 +2294,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'jasmine-thorn',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'jasmine-root',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
