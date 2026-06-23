@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Jasmine Root</title>
+<title>Fleur · Kalmia</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -100,7 +100,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 /* highlighted stickies when hovering a ribbon */
 .sn.wait-highlight{transform:translateY(-3px) rotate(1.5deg)!important;box-shadow:4px 7px 18px rgba(0,0,0,.4)!important;z-index:10}
 /* Cork body — sticky note grid */
-.cork-body{padding:34px 3px 3px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cork-body{padding:34px 3px 14px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 /* Inline add */
 .cork-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
 .cork-add.open{display:block}
@@ -200,7 +200,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .cbox-title{display:none}
 .cbox-count{display:none}
 .cbox-btns{display:none}
-.cbox-body{padding:34px 3px 3px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
+.cbox-body{padding:34px 3px 14px;display:grid;grid-template-columns:repeat(auto-fill,140px);gap:8px;align-items:start;justify-content:center;flex:1}
 .cbox-body .sn{width:140px;flex-shrink:0;aspect-ratio:1/1;min-height:unset}
 .cbox-body .sn[data-haswait]{aspect-ratio:unset;min-height:140px}
 .cbox-add{padding:6px 9px 8px;background:rgba(0,0,0,.12);display:none}
@@ -693,7 +693,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_jasmine_root_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_kalmia_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -708,7 +708,7 @@ const DAYS=['Su','Mo','Tu','We','Th','Fr','Sa'];
 let _pi=0;function nxtP(){return PASTELS[_pi++%PASTELS.length];}
 
 let tasks=[],cats=[],colStyles={},colMin={},gTheme={},tid=100,cid=10,pid=1,presets=[],aiNotes='';
-let undos=[],uTimer=null,editTid=null,editCid=null,dragTid=null,catDragId=null,pendingDrop=null,_day='';
+let undos=[],uTimer=null,editTid=null,editCid=null,dragTid=null,catDragId=null,pendingDrop=null,pendingNewTask=null,_day='';
 let completedToday=[];  // {id,name,color} — tasks completed this session
 
 // ── Persist ──────────────────────────────────────────────────────
@@ -716,11 +716,33 @@ function sn(){return JSON.parse(JSON.stringify({tasks,cats,colStyles,colMin,gThe
 function ap(s){
   tasks=s.tasks||[];
   cats=(s.cats||s.categories||[]).map(c=>({showBox:1,minimized:false,colGroup:1,...c}));
-  colMin=s.colMin||{};if(colMin['wait']===undefined)colMin['wait']=1;if(colMin['casual']===undefined)colMin['casual']=1;gTheme=s.gTheme||{};tid=s.tid||100;cid=s.cid||10;
+  colMin=s.colMin||{};if(colMin['wait']===undefined)colMin['wait']=1;if(colMin['casual']===undefined)colMin['casual']=1;gTheme=s.gTheme||{};cid=s.cid||10;
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
   tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;if(t.fadedUntil===undefined)t.fadedUntil=null;});
+  // Safety net: if two tasks ever ended up sharing the same id (can happen if two
+  // devices created tasks offline before syncing and their local tid counters hadn't
+  // caught up to each other yet), reassign the later one(s) a fresh id so completing
+  // one task can never visually/logically affect an unrelated task that shares its id.
+  {
+    const seenIds=new Set();
+    let maxSeen=99;
+    tasks.forEach(t=>{
+      if(seenIds.has(t.id)){
+        // find a fresh id higher than anything seen so far
+        maxSeen=Math.max(maxSeen, ...tasks.map(x=>x.id||0));
+        maxSeen+=1;
+        t.id=maxSeen;
+      }
+      seenIds.add(t.id);
+      if(typeof t.id==='number'&&t.id>maxSeen)maxSeen=t.id;
+    });
+  }
+  // tid must always be ahead of every id actually in use — never trust a stale saved
+  // counter on its own, since a counter behind the real data is exactly how id collisions
+  // like the one above happen in the first place.
+  tid=Math.max(s.tid||100, ...tasks.map(t=>(t.id||0)+1), 100);
   presets=(s.presets||[]).filter(p=>!p.groupBreak);pid=s.pid||1;
   aiNotes=s.aiNotes||aiNotes||'';
   // If no presets in loaded state, try to recover from any other local key
@@ -760,7 +782,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -788,6 +810,33 @@ function d2col(date,rep){
   if(!date&&rep)return'today'; // repeating with no fixed date lives in today
   const t=today(),tm=tomorrow();
   if(date<=t)return'today';if(date===tm)return'tomorrow';return'upcoming';
+}
+// ── Single source of truth for the date<->column relationship ──────
+// Call this any time a task is created, dragged, dropped, or edited into a
+// new column. It enforces:
+//   today    -> deadlineDate forced to today
+//   tomorrow -> deadlineDate forced to tomorrow
+//   upcoming -> deadlineDate REQUIRED; caller must supply one or this throws
+//               a signal value so the UI can prompt instead of silently
+//               creating a dateless task that can never sort correctly
+//   casual   -> deadlineDate cleared to null (casual is explicitly dateless)
+//   wait     -> deadlineDate left untouched; wait status is independent of date
+// Returns the col the task should actually end up in (which may differ from
+// requestedCol if requestedCol was today/tomorrow/upcoming and the date
+// resolves elsewhere — e.g. typing a date that's actually further out).
+// Returns null if requestedCol==='upcoming' and no usable date was supplied —
+// callers MUST check for this and prompt for a date instead of proceeding.
+function routeTask(task,requestedCol){
+  if(requestedCol==='casual'){task.deadlineDate=null;task.deadlineTime=null;return'casual';}
+  if(requestedCol==='wait'){return'wait';} // date (if any) stays as-is; wait is orthogonal to date
+  if(requestedCol==='today'){task.deadlineDate=today();return d2col(task.deadlineDate,task.repeat);}
+  if(requestedCol==='tomorrow'){task.deadlineDate=tomorrow();return d2col(task.deadlineDate,task.repeat);}
+  if(requestedCol==='upcoming'){
+    if(!task.deadlineDate)return null; // signal: caller must prompt for a date
+    return d2col(task.deadlineDate,task.repeat);
+  }
+  // Fallback: derive purely from whatever date/repeat the task already has
+  return d2col(task.deadlineDate,task.repeat);
 }
 function dayTrans(loadedOk){
   const t=today(),last=localStorage.getItem(KDAY)||'';
@@ -909,11 +958,17 @@ function liberateDeps(id){
 const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const DAY_ABBR=['Su','M','Tu','W','Th','F','Sa'];
 // no ordinals needed
-function fmtDate(dateStr){
+function fmtDate(dateStr,renderCol){
   if(!dateStr)return'';
   const parts=dateStr.split('-');const d=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
   const now=new Date();const t=today(),tm=tomorrow();
-  if(dateStr===t||dateStr===tm)return''; // today/tomorrow — no date badge needed
+  // Only suppress the badge when the task is actually sitting in the box that
+  // matches its date (today's box showing today's date, tomorrow's box showing
+  // tomorrow's date) — never suppress based on the date value alone, since a
+  // task can carry a "tomorrow" date while sitting in Upcoming/Wait/a category
+  // box, where the badge is the only way to see when it's due.
+  if(renderCol==='today'&&dateStr===t)return'';
+  if(renderCol==='tomorrow'&&dateStr===tm)return'';
   // within a week: use day abbrev
   const diff=Math.round((d-now)/864e5);
   if(diff>=0&&diff<7)return DAY_ABBR[d.getDay()];
@@ -1018,7 +1073,7 @@ function snHTML(task,inCat){
   const streakBg=TBOX[task.col]?.bg||'rgba(0,0,0,.12)';
   const tackColor=task.urgent?'#ff4444':inCat?(TBOX[task.col]?.txt||tx):tx;
   // Date/repeat badges go on the TAB (header area)
-  const dateStr=fmtDate(task.deadlineDate);
+  const dateStr=fmtDate(task.deadlineDate,task.col);
   let dateCls='badge';
   if(task.col==='wait')dateCls+=' badge-wait';
   else if(task.col==='tomorrow')dateCls+=' badge-tmrw';
@@ -1474,12 +1529,21 @@ function corkAddKey(e,col){
   if(e.key!=='Enter')return;e.preventDefault();
   const val=e.target.value.trim();if(!val)return;
   const p=parseNL(val);const name=p?(p.name||val):val;
-  let date=p?p.date:null;
-  // If no NL date parsed, assign a date based on the target col so dayTrans can re-route later
-  if(!date&&col==='today')date=today();
-  else if(!date&&col==='tomorrow')date=tomorrow();
-  let fc=col;if(date&&col!=='wait'&&col!=='casual')fc=d2col(date,'');
-  pu('add');tasks.push({id:tid++,name,col:fc,deadlineDate:date,deadlineTime:null,waitingFor:'',waitTaskId:null,done:false,repeat:'',repeatDays:[],repeatStart:null,categoryId:null,stickyColor:'',paletteColor:nxtP()});
+  const newTask={id:tid++,name,col,deadlineDate:p?.date||null,deadlineTime:null,waitingFor:'',waitTaskId:null,waitUntil:null,done:false,urgent:false,repeat:'',repeatDays:[],repeatStart:null,repeatMonthDay:null,categoryId:null,stickyColor:'',link:null,casuPin:false,fadedUntil:null,paletteColor:nxtP()};
+  const finalCol=routeTask(newTask,col);
+  if(finalCol===null){
+    // Upcoming requires a date and none was typed/parsed — prompt instead of
+    // silently creating a task that can never sort itself correctly.
+    e.target.value='';e.target.closest('.cork-add').classList.remove('open');
+    pendingNewTask=newTask;
+    document.getElementById('dm-title').textContent='Set due date';
+    document.getElementById('dm-dg').style.display='flex';document.getElementById('dm-wg').style.display='none';
+    document.getElementById('dm-date').value='';
+    document.getElementById('dm').classList.remove('hidden');
+    return;
+  }
+  newTask.col=finalCol;
+  pu('add');tasks.push(newTask);
   e.target.value='';save();ra();showU('Added');
 }
 function cboxKey(e,catId){
@@ -1601,6 +1665,11 @@ function addManual(){
   if((wait||waitTaskId||waitUntil)&&!date)col='wait';
   else if(date)col=d2col(date,rep);
   else if(!chosenCol)col=rep?'today':'casual';
+  else if(chosenCol==='upcoming'&&!date){
+    // Upcoming requires a date — open its date sub-panel instead of silently
+    // creating a task that can never sort itself correctly.
+    aemToggle('date');showU('Upcoming needs a due date');return;
+  }
   const color=getDot('add-cr');
   pu('add');
   tasks.push({id:tid++,name,col,deadlineDate:date,deadlineTime:time,waitingFor:(col==='wait'&&!waitTaskId&&!waitUntil)?wait:'',waitTaskId:waitTaskId||null,waitUntil:waitUntil||null,done:false,urgent,repeat:rep,repeatDays:repDays,repeatStart:repStart,repeatMonthDay:repMonthDay,categoryId:catId?parseInt(catId):null,stickyColor:color,link,paletteColor:color?'':nxtP()});
@@ -1660,7 +1729,7 @@ function casuPinDrop(e){
   if(dragTid===null)return;
   const id=dragTid;dragTid=null;
   const task=tasks.find(t=>t.id==id);if(!task)return;
-  pu('pin');task.casuPin=true;task.col='casual';
+  pu('pin');task.casuPin=true;task.col=routeTask(task,'casual');
   save();ra();showU('Pinned ★');
 }
 function hlWait(ids){document.querySelectorAll('[data-tid]').forEach(el=>{el.classList.toggle('wait-highlight',ids.includes(parseInt(el.dataset.tid)));});}
@@ -1851,13 +1920,25 @@ function saveTask(){
   t.repeatMonthDay=t.repeat==='monthly-day'?parseInt(document.getElementById('emonthday')?.value||1):null;
   const cv=document.getElementById('ec').value;t.categoryId=cv?parseInt(cv):null;
   t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;
-  // Auto-route: if task has a deadline, keep it in its date col even with a wait
-  // (it'll show as blocked/faded below the divider in that col)
-  // Only pure wait (no deadline) routes to the Wait box
   const chosenCol=document.getElementById('eco').value;
+  // Casual is explicitly dateless — clear any date if that's the chosen box and
+  // there's no active wait keeping it elsewhere.
+  if(chosenCol==='casual'&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.deadlineDate=null;t.deadlineTime=null;}
+  // Upcoming requires a date — if the user picked Upcoming but cleared the date
+  // field, refuse to save into that state; fall back to asking for one rather
+  // than silently creating an undateable Upcoming task.
+  if(chosenCol==='upcoming'&&!t.deadlineDate&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){
+    showU('Upcoming needs a due date');
+    document.getElementById('ep-date')?.click?.();
+    return;
+  }
+  // A pure wait (no deadline at all) routes to the Wait box regardless of what
+  // box was selected. A task with BOTH a deadline and a wait stays in its date
+  // col, shown blocked/faded there, rather than moving to Wait.
   if((t.waitingFor||t.waitTaskId||t.waitUntil)&&!t.deadlineDate){t.col='wait';}
   else if(chosenCol==='wait'&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}
   else if(t.deadlineDate&&chosenCol!=='casual'){t.col=d2col(t.deadlineDate,t.repeat);}
+  else{t.col=chosenCol;}
   closeM('tm');save();ra();showU('Updated');
 }
 function delTask(){pu('del');tasks=tasks.filter(t=>t.id!==editTid);closeM('tm');save();ra();showU('Deleted');}
@@ -1877,14 +1958,34 @@ function drop(e,tc){
   const task=tasks.find(t=>t.id==id);if(!task||task.col===tc)return;
   if(tc==='upcoming'){pendingDrop={taskId:id,targetCol:tc};document.getElementById('dm-title').textContent='Set due date';document.getElementById('dm-dg').style.display='flex';document.getElementById('dm-wg').style.display='none';document.getElementById('dm-date').value=task.deadlineDate||'';document.getElementById('dm').classList.remove('hidden');}
   else if(tc==='wait'){pendingDrop={taskId:id,targetCol:tc};document.getElementById('dm-title').textContent='Waiting for?';document.getElementById('dm-dg').style.display='none';document.getElementById('dm-wg').style.display='flex';document.getElementById('dm-wait').value=task.waitingFor||'';document.getElementById('dm').classList.remove('hidden');}
-  else{pu('drag');task.col=tc;if(tc==='casual'){task.deadlineDate=null;task.deadlineTime=null;}else if(tc==='today')task.deadlineDate=today();else if(tc==='tomorrow')task.deadlineDate=tomorrow();save();ra();showU('Moved');}
+  else{pu('drag');task.col=routeTask(task,tc);save();ra();showU('Moved');}
 }
 function confirmDrop(){
+  if(pendingNewTask){
+    const dateVal=document.getElementById('dm-date').value;
+    if(!dateVal){showU('A date is required for Upcoming');return;}
+    pendingNewTask.deadlineDate=dateVal;
+    pendingNewTask.col=routeTask(pendingNewTask,'upcoming');
+    pu('add');tasks.push(pendingNewTask);
+    pendingNewTask=null;save();ra();showU('Added');closeM('dm');
+    return;
+  }
   if(!pendingDrop)return;const t=tasks.find(t=>t.id==pendingDrop.taskId);
-  if(t){pu('drag');t.col=pendingDrop.targetCol;
-    if(pendingDrop.targetCol==='upcoming')t.deadlineDate=document.getElementById('dm-date').value||null;
-    else if(pendingDrop.targetCol==='wait'){const wr=document.getElementById('dm-wait').value.trim();const wn=parseInt(wr);if(!isNaN(wn)&&tasks.find(x=>x.id===wn)){t.waitTaskId=wn;t.waitingFor='';}else{t.waitingFor=wr;t.waitTaskId=null;}}
-    save();ra();showU('Moved');}
+  if(t){
+    pu('drag');
+    if(pendingDrop.targetCol==='upcoming'){
+      const dateVal=document.getElementById('dm-date').value;
+      if(!dateVal){showU('A date is required for Upcoming');return;}
+      t.deadlineDate=dateVal;t.col=routeTask(t,'upcoming');
+    } else if(pendingDrop.targetCol==='wait'){
+      const wr=document.getElementById('dm-wait').value.trim();const wn=parseInt(wr);
+      if(!isNaN(wn)&&tasks.find(x=>x.id===wn)){t.waitTaskId=wn;t.waitingFor='';}else{t.waitingFor=wr;t.waitTaskId=null;}
+      t.col='wait';
+    } else {
+      t.col=routeTask(t,pendingDrop.targetCol);
+    }
+    save();ra();showU('Moved');
+  }
   pendingDrop=null;closeM('dm');
 }
 
@@ -1916,7 +2017,7 @@ function showMoveMenu(id){
     const sepEl=document.createElement('div');sepEl.style.cssText='height:1px;background:rgba(255,255,255,.08);margin:4px 0';btns.appendChild(sepEl);
     const bpin=document.createElement('button');bpin.className='dp-btn';
     bpin.textContent=task.casuPin?'Unpin from top':'Pin to Casual top';
-    bpin.onclick=()=>{pu('pin');task.casuPin=!task.casuPin;if(task.casuPin)task.col='casual';mo.classList.add('hidden');save();ra();showU(task.casuPin?'Pinned':'Unpinned');};
+    bpin.onclick=()=>{pu('pin');task.casuPin=!task.casuPin;if(task.casuPin)task.col=routeTask(task,'casual');mo.classList.add('hidden');save();ra();showU(task.casuPin?'Pinned':'Unpinned');};
     btns.appendChild(bpin);
   }
   // Category section
@@ -2145,6 +2246,27 @@ Mobile: the SVG scales proportionally via \`viewBox\` + \`width:100%\` — no se
 
 ---
 
+## Date <-> column routing (single source of truth)
+
+A task's \`col\` and \`deadlineDate\` must always agree with each other, and for a long stretch of versions they didn't — every add/drag/edit path had its own slightly-different logic for deciding both, which caused real bugs: tasks created in Upcoming with no date that could never sort themselves, date badges suppressed on stickies just because the date value happened to equal tomorrow's date even though the sticky wasn't actually sitting in the Tomorrow box, and tasks landing in the wrong column on a second device after sync.
+
+**The fix is \`routeTask(task, requestedCol)\`** (defined right next to \`d2col\`). Every single code path that creates, drags, drops, pins, or edits a task into a new column MUST call this instead of writing its own date/col logic inline. Rules it enforces:
+- \`today\` → forces \`deadlineDate\` to today
+- \`tomorrow\` → forces \`deadlineDate\` to tomorrow
+- \`upcoming\` → REQUIRES \`deadlineDate\` to already be set; returns \`null\` if it isn't, which the caller MUST check and respond to by prompting for a date (via the \`dm\` modal) rather than proceeding. Never let an Upcoming task be created or moved into existence without a date — it can't sort itself without one.
+- \`casual\` → clears \`deadlineDate\`/\`deadlineTime\` to \`null\`. Casual is explicitly dateless.
+- \`wait\` → leaves \`deadlineDate\` untouched. Wait status is orthogonal to date; a task can have both a deadline and an active wait (it shows blocked/faded in its date column rather than moving to the Wait box — only a PURE wait with no deadline at all lives in Wait).
+
+Current call sites: \`corkAddKey\`, \`confirmDrop\` (handles both new-task creation that got paused for a date prompt via \`pendingNewTask\`, and drag-and-drop moves via \`pendingDrop\`), \`drop()\` for the simple today/tomorrow/casual cases, \`casuPinDrop\`, the "Pin to Casual top" button in \`showMoveMenu\`. \`saveTask()\` (the edit modal) has its own extended version of the same rules inline because it has to handle the wait-with-date nuance above — if you touch it, keep that nuance, don't replace it with a bare \`routeTask\` call.
+
+\`addManual()\` and \`cboxKey()\` (quick-add inside a category box) still have their own inline logic rather than calling \`routeTask\` directly, but they independently enforce the same Upcoming-requires-a-date rule. If you're touching either of these, prefer migrating them to call \`routeTask\` for consistency rather than maintaining a third copy of the same rules.
+
+**\`fmtDate(dateStr, renderCol)\`** takes a second parameter: the column the sticky is actually being rendered in. It only suppresses the date badge when \`renderCol\` genuinely matches the date (today's box showing today's date, tomorrow's box showing tomorrow's date) — never based on the date value alone. A task can carry a "tomorrow" date while sitting in Upcoming, Wait, or a category box, where the badge is the only way to know when it's due — always pass \`task.col\` as the second argument when calling \`fmtDate\` from sticky-rendering code (\`snHTML\`).
+
+**Task ID collisions**: \`ap()\` now derives \`tid\` as \`Math.max(saved tid, every existing task id + 1, 100)\` rather than trusting the saved counter blindly, and runs a de-duplication pass that reassigns a fresh id to any task that shares an id with an earlier one in the array. This matters because two devices creating tasks offline before syncing can end up with the same locally-incremented id; without this, completing one of the colliding tasks would visually/logically affect the other (a real bug that shipped once — "completing task A also completes unrelated task B, and vice versa"). Don't remove this safety net even if it looks redundant in normal single-device use.
+
+---
+
 ## State shape
 
 \`\`\`js
@@ -2294,7 +2416,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'jasmine-root',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'kalmia',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
