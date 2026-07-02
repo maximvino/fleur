@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Kalmia Bud</title>
+<title>Fleur · Kalmia Leaf</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -693,7 +693,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_kalmia_bud_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_kalmia_leaf_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -782,7 +782,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1937,9 +1937,10 @@ function saveTask(){
   const cv=document.getElementById('ec').value;t.categoryId=cv?parseInt(cv):null;
   t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;
   const chosenCol=document.getElementById('eco').value;
-  // Casual is explicitly dateless — clear any date if that's the chosen box and
-  // there's no active wait keeping it elsewhere.
-  if(chosenCol==='casual'&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.deadlineDate=null;t.deadlineTime=null;}
+  // Casual is explicitly dateless — but only when the user hasn't supplied a date.
+  // If they're editing a Casual task AND entered a date, that's an explicit intent
+  // to give the task a deadline and move it out of Casual; honour it.
+  if(chosenCol==='casual'&&!t.deadlineDate&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.deadlineTime=null;}
   // Upcoming requires a date — if the user picked Upcoming but cleared the date
   // field, refuse to save into that state; fall back to asking for one rather
   // than silently creating an undateable Upcoming task.
@@ -1953,7 +1954,7 @@ function saveTask(){
   // col, shown blocked/faded there, rather than moving to Wait.
   if((t.waitingFor||t.waitTaskId||t.waitUntil)&&!t.deadlineDate){t.col='wait';}
   else if(chosenCol==='wait'&&!t.waitingFor&&!t.waitTaskId&&!t.waitUntil){t.col=t.deadlineDate?d2col(t.deadlineDate,t.repeat):'casual';}
-  else if(t.deadlineDate&&chosenCol!=='casual'){t.col=d2col(t.deadlineDate,t.repeat);}
+  else if(t.deadlineDate){t.col=d2col(t.deadlineDate,t.repeat);} // always route by date when one exists
   else{t.col=chosenCol;}
   closeM('tm');save();ra();showU('Updated');
 }
@@ -2432,7 +2433,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'kalmia-bud',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'kalmia-leaf',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
