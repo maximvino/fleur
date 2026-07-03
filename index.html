@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Kalmia Leaf</title>
+<title>Fleur · Kalmia Stem</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -405,13 +405,13 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <div style="overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:2px;margin-bottom:4px"><div class="em-grid" style="grid-template-columns:repeat(9,40px);gap:6px;width:max-content">
           <div class="em-pill ap-pill" id="ap-col" title="Time box" onclick="aemToggle('col')">📌</div>
           <div class="em-pill ap-pill" id="ap-cat" title="Category" onclick="aemToggle('cat')">🏷️</div>
-          <div class="em-pill ap-pill" id="ap-date" title="Due date" onclick="aemToggle('date')">📅</div>
-          <div class="em-pill ap-pill" id="ap-time" title="Due time" onclick="aemToggle('time')">🕐</div>
+          <div class="em-pill ap-pill" id="ap-date" title="Due date / time" onclick="aemToggle('date')">📅</div>
           <div class="em-pill ap-pill" id="ap-wait" title="Wait" onclick="aemToggle('wait')">⏳</div>
           <div class="em-pill ap-pill" id="ap-link" title="Link" onclick="aemToggle('link')">🔗</div>
           <div class="em-pill ap-pill" id="ap-rep" title="Repeat" onclick="aemToggle('rep')">🔁</div>
           <div class="em-pill ap-pill" id="ap-color" title="Color" onclick="aemToggle('color')">🎨</div>
           <div class="em-pill ap-pill" id="ap-urgent" title="Urgent" onclick="aemToggleUrgent()">🚨</div>
+          <div class="em-pill ap-pill" id="ap-pin" title="Pin to watch list" onclick="aemTogglePin()">📍</div>
         </div>
         </div><!-- /scroll-wrap -->
         <!-- Add sub-panels -->
@@ -419,9 +419,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <div class="em-sub" id="as-cat"><div class="em-cat-opts" id="as-cat-opts"></div></div>
         <div class="em-sub" id="as-date">
           <input class="fi" id="ad" type="date" style="font-size:15px" onchange="aemUpdateDatePill()">
-          <button onclick="document.getElementById('ad').value='';aemUpdateDatePill()" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear</button>
+          <input class="fi" id="at" type="time" style="font-size:15px">
+          <button onclick="document.getElementById('ad').value='';document.getElementById('at').value='';aemUpdateDatePill()" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear</button>
         </div>
-        <div class="em-sub" id="as-time"><input class="fi" id="at" type="time" style="font-size:15px"></div>
+        <div class="em-sub" id="as-time" style="display:none!important"></div>
         <div class="em-sub" id="as-wait">
           <input class="fi" id="aw" type="text" placeholder="Waiting for… (text)">
           <select class="fi" id="awt" style="font-size:13px"><option value="">(none)</option></select>
@@ -448,6 +449,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
         <!-- hidden compat -->
         <select id="ac" style="display:none"></select>
         <input type="checkbox" id="aurgent" style="display:none">
+        <input type="checkbox" id="apin" style="display:none">
         <select id="aco" style="display:none"><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option></select>
       </div>
       <div class="dock-pane" id="pane-cat">
@@ -580,10 +582,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       <div class="em-pill" id="ep-col" title="Time box" onclick="emToggle('col')">📌</div>
       <!-- 🏷️ Category -->
       <div class="em-pill" id="ep-cat" title="Category" onclick="emToggle('cat')">🏷️</div>
-      <!-- 📅 Date -->
-      <div class="em-pill" id="ep-date" title="Due date" onclick="emToggle('date')">📅</div>
-      <!-- 🕐 Time -->
-      <div class="em-pill" id="ep-time" title="Due time" onclick="emToggle('time')">🕐</div>
+      <!-- 📅 Date & time (merged) -->
+      <div class="em-pill" id="ep-date" title="Due date / time" onclick="emToggle('date')">📅</div>
       <!-- ⏳ Wait -->
       <div class="em-pill" id="ep-wait" title="Wait" onclick="emToggle('wait')">⏳</div>
       <!-- 🔗 Link -->
@@ -594,6 +594,8 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       <div class="em-pill" id="ep-color" title="Color" onclick="emToggle('color')">🎨</div>
       <!-- 🚨 Urgent toggle -->
       <div class="em-pill" id="ep-urgent" title="Urgent" onclick="emToggleUrgent()">🚨</div>
+      <!-- 📍 Pin to watch list -->
+      <div class="em-pill" id="ep-pin" title="Pin to watch list" onclick="emTogglePin()">📍</div>
     </div>
 
     <!-- Sub-panels (one open at a time) -->
@@ -608,16 +610,15 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
       <div class="em-cat-opts" id="es-cat-opts"></div>
     </div>
 
-    <!-- Date sub -->
+    <!-- Date & time sub (merged) -->
     <div class="em-sub" id="es-date">
       <input class="fi" id="ed" type="date" style="font-size:15px">
-      <button onclick="document.getElementById('ed').value='';document.getElementById('ep-date').classList.remove('has-val');document.getElementById('ep-date').style.background='';document.getElementById('ep-date').style.borderColor='';" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear date</button>
+      <input class="fi" id="etime" type="time" style="font-size:15px">
+      <button onclick="document.getElementById('ed').value='';document.getElementById('etime').value='';document.getElementById('ep-date').classList.remove('has-val');document.getElementById('ep-date').style.background='';document.getElementById('ep-date').style.borderColor='';" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear date & time</button>
     </div>
 
-    <!-- Time sub -->
-    <div class="em-sub" id="es-time">
-      <input class="fi" id="etime" type="time" style="font-size:15px">
-    </div>
+    <!-- Time sub kept as hidden stub so saveTask() can still read #etime -->
+    <div class="em-sub" id="es-time" style="display:none!important"></div>
 
     <!-- Wait sub -->
     <div class="em-sub" id="es-wait">
@@ -652,6 +653,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     </div>
 
     <!-- hidden inputs kept for saveTask compat -->
+    <input type="checkbox" id="epin" style="display:none">
     <select id="eco" style="display:none"><option value="today">Today</option><option value="tomorrow">Tomorrow</option><option value="upcoming">Upcoming</option><option value="wait">Wait</option><option value="casual">Casual</option></select>
     <select id="ec" style="display:none"></select>
     <input type="checkbox" id="eurgent" style="display:none">
@@ -693,7 +695,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_kalmia_leaf_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_kalmia_stem_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -782,7 +784,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1156,13 +1158,17 @@ function corkHTML(col){
   const isCasu=col==='casual';
   let bodyHTML='';
   if(isCasu){
-    const pinned=sortTasks(ct.filter(t=>t.casuPin&&!isBlocked(t)));
+    // Pinned = ALL tasks across every col with casuPin=true (watch list), not just casual tasks
+    const allPinned=sortTasks(tasks.filter(t=>t.casuPin&&!t.done));
+    const pinned=allPinned.filter(t=>!isBlocked(t));
+    const pinnedBlocked=allPinned.filter(t=>isBlocked(t));
+    // Unpinned = tasks actually assigned to casual col (not pinned ones — they'd duplicate)
     const unpinned=sortTasks(ct.filter(t=>!t.casuPin&&!isBlocked(t)));
-    const bBlocked=sortTasks([...ct.filter(t=>isBlocked(t)),...blockedHere]);
+    const bBlocked=sortTasks([...ct.filter(t=>!t.casuPin&&isBlocked(t)),...blockedHere]);
     const pinnedItems=pinned.map(t=>snHTML(t,false));
     const unpinnedItems=unpinned.map(t=>snHTML(t,false));
     const blockedItems2=bBlocked.map(t=>snHTML(t,false));
-    const hasPins=pinned.length>0;
+    const hasPins=pinned.length>0||pinnedBlocked.length>0;
     const pinZone=`<div class="casu-pin-zone${hasPins?' has-pins':''}" id="casu-pin-zone"
       ondragover="event.preventDefault();this.classList.add('drag-over')"
       ondragleave="this.classList.remove('drag-over')"
@@ -1171,8 +1177,11 @@ function corkHTML(col){
     const pinnedGrid=hasPins?`<div class="casu-pin-label">★ pinned</div>${pinnedItems.join('')}`:'';
     const pinDiv=hasPins&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'';
     const blockDiv=blockedItems2.length?`<div class="cork-blocked-divider"></div>`:'';
-    if(minLevel===0)bodyHTML=pinZone+(hasPins?pinnedItems.join(''):'')+(hasPins&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'')+unpinnedItems.join('')+blockDiv+blockedItems2.join('');
-    else bodyHTML=pinnedItems.join('');
+    // pinnedBlocked tasks (pinned but currently waiting): show after active pins, before divider
+    const pinnedBlockedItems=pinnedBlocked.map(t=>snHTML(t,false));
+    const hasPinnedBlocked=pinnedBlockedItems.length>0;
+    if(minLevel===0)bodyHTML=pinZone+(hasPins?pinnedItems.join(''):'')+(hasPinnedBlocked?pinnedBlockedItems.join(''):'')+(( hasPins||hasPinnedBlocked)&&unpinnedItems.length?`<div class="casu-pin-divider"></div>`:'')+unpinnedItems.join('')+blockDiv+blockedItems2.join('');
+    else bodyHTML=(pinnedItems.join('')+pinnedBlockedItems.join(''))||'';
   } else {
     bodyHTML=content;
   }
@@ -1580,6 +1589,12 @@ function aemToggleUrgent(){
   document.getElementById('ap-urgent').classList.toggle('lit',_aurgent);
   document.getElementById('aurgent').checked=_aurgent;
 }
+let _apin=false;
+function aemTogglePin(){
+  _apin=!_apin;
+  document.getElementById('ap-pin').classList.toggle('lit',_apin);
+  document.getElementById('apin').checked=_apin;
+}
 function aemBuildCol(){
   const cur=document.getElementById('aco').value||'today';
   document.getElementById('as-col-opts').innerHTML=Object.entries(TBOX_UI).map(([k,v])=>
@@ -1639,10 +1654,13 @@ function aemUpdateDatePill(){
 }
 function aemReset(){
   _aurgent=false;_aemOpen=null;
-  ['ap-col','ap-cat','ap-date','ap-time','ap-wait','ap-link','ap-rep','ap-color'].forEach(id=>{
+  ['ap-col','ap-cat','ap-date','ap-wait','ap-link','ap-rep','ap-color'].forEach(id=>{
     const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';el.classList.remove('has-val','active');}
   });
   document.getElementById('ap-urgent').classList.remove('lit');
+  document.getElementById('ap-pin').classList.remove('lit');
+  document.getElementById('apin').checked=false;
+  _apin=false;
   document.getElementById('aurgent').checked=false;
   document.getElementById('aco').value='today';
   document.getElementById('ac').value='';
@@ -1666,6 +1684,7 @@ function addManual(){
   const chosenCol=document.getElementById('aco').value||'';
   const link=document.getElementById('alink')?.value.trim()||null;
   const urgent=document.getElementById('aurgent')?.checked||false;
+  const casuPin=document.getElementById('apin')?.checked||false;
   let col=chosenCol||'today';
   // Route: if wait with no date, go to wait col; if date given, route by date
   if((wait||waitTaskId||waitUntil)&&!date)col='wait';
@@ -1678,7 +1697,7 @@ function addManual(){
   }
   const color=getDot('add-cr');
   pu('add');
-  tasks.push({id:tid++,name,col,deadlineDate:date,deadlineTime:time,waitingFor:(col==='wait'&&!waitTaskId&&!waitUntil)?wait:'',waitTaskId:waitTaskId||null,waitUntil:waitUntil||null,done:false,urgent,repeat:rep,repeatDays:repDays,repeatStart:repStart,repeatMonthDay:repMonthDay,categoryId:catId?parseInt(catId):null,stickyColor:color,link,paletteColor:color?'':nxtP()});
+  tasks.push({id:tid++,name,col,deadlineDate:date,deadlineTime:time,waitingFor:(col==='wait'&&!waitTaskId&&!waitUntil)?wait:'',waitTaskId:waitTaskId||null,waitUntil:waitUntil||null,done:false,urgent,casuPin,repeat:rep,repeatDays:repDays,repeatStart:repStart,repeatMonthDay:repMonthDay,categoryId:catId?parseInt(catId):null,stickyColor:color,link,paletteColor:color?'':nxtP()});
   // Reset
   document.getElementById('an').value='';document.getElementById('ad').value='';document.getElementById('at').value='';document.getElementById('aw').value='';if(document.getElementById('awt'))document.getElementById('awt').value='';if(document.getElementById('awu'))document.getElementById('awu').value='';if(document.getElementById('awu-date'))document.getElementById('awu-date').value='';if(document.getElementById('awu-time'))document.getElementById('awu-time').value='';if(document.getElementById('alink'))document.getElementById('alink').value='';
   mkDots('add-cr','');aemReset();aemClose();save();ra();showU('Added');
@@ -1735,7 +1754,7 @@ function casuPinDrop(e){
   if(dragTid===null)return;
   const id=dragTid;dragTid=null;
   const task=tasks.find(t=>t.id==id);if(!task)return;
-  pu('pin');task.casuPin=true;task.col=routeTask(task,'casual');
+  pu('pin');task.casuPin=true; // col stays unchanged — watch list pin, not a move
   save();ra();showU('Pinned ★');
 }
 function hlWait(ids){document.querySelectorAll('[data-tid]').forEach(el=>{el.classList.toggle('wait-highlight',ids.includes(parseInt(el.dataset.tid)));});}
@@ -1777,6 +1796,11 @@ function emToggleUrgent(){
   const cb=document.getElementById('eurgent');
   cb.checked=!cb.checked;
   document.getElementById('ep-urgent').classList.toggle('lit',cb.checked);
+}
+function emTogglePin(){
+  const cb=document.getElementById('epin');
+  cb.checked=!cb.checked;
+  document.getElementById('ep-pin').classList.toggle('lit',cb.checked);
 }
 
 function buildEmCol(){
@@ -1857,11 +1881,9 @@ function emSyncPills(t){
   else{kp.style.background='';kp.style.borderColor='';}
   // Date pill
   const dp=document.getElementById('ep-date');
-  dp.classList.toggle('has-val',!!t.deadlineDate);
-  if(!t.deadlineDate){dp.style.background='';dp.style.borderColor='';}
-  const tp=document.getElementById('ep-time');
-  tp.classList.toggle('has-val',!!t.deadlineTime);
-  if(!t.deadlineTime){tp.style.background='';tp.style.borderColor='';}
+  const hasDateOrTime=!!t.deadlineDate||!!t.deadlineTime;
+  dp.classList.toggle('has-val',hasDateOrTime);
+  if(!hasDateOrTime){dp.style.background='';dp.style.borderColor='';}
   const wp=document.getElementById('ep-wait');
   wp.classList.toggle('has-val',!!(t.waitingFor||t.waitTaskId||t.waitUntil));
   if(!(t.waitingFor||t.waitTaskId||t.waitUntil)){wp.style.background='';wp.style.borderColor='';}
@@ -1877,6 +1899,9 @@ function emSyncPills(t){
   // Urgent pill
   document.getElementById('ep-urgent').classList.toggle('lit',!!t.urgent);
   document.getElementById('eurgent').checked=!!t.urgent;
+  // Pin pill
+  document.getElementById('ep-pin').classList.toggle('lit',!!t.casuPin);
+  document.getElementById('epin').checked=!!t.casuPin;
 }
 
 // Wire color dots change → update pill live
@@ -1903,7 +1928,7 @@ function openTask(id){
   mkDots('edit-cr',t.stickyColor||'');
   emClose();
   // Reset pill styles before sync
-  ['ep-col','ep-cat','ep-date','ep-time','ep-wait','ep-link','ep-rep','ep-color'].forEach(id=>{
+  ['ep-col','ep-cat','ep-date','ep-wait','ep-link','ep-rep','ep-color'].forEach(id=>{
     const el=document.getElementById(id);if(el){el.style.background='';el.style.borderColor='';el.style.color='';}
   });
   emSyncPills(t);
@@ -1935,7 +1960,7 @@ function saveTask(){
   t.repeatDays=t.repeat==='custom'?getDays('edit-days'):[];
   t.repeatMonthDay=t.repeat==='monthly-day'?parseInt(document.getElementById('emonthday')?.value||1):null;
   const cv=document.getElementById('ec').value;t.categoryId=cv?parseInt(cv):null;
-  t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;
+  t.stickyColor=getDot('edit-cr');t.urgent=document.getElementById('eurgent').checked;t.casuPin=document.getElementById('epin').checked;
   const chosenCol=document.getElementById('eco').value;
   // Casual is explicitly dateless — but only when the user hasn't supplied a date.
   // If they're editing a Casual task AND entered a date, that's an explicit intent
@@ -2034,7 +2059,7 @@ function showMoveMenu(id){
     const sepEl=document.createElement('div');sepEl.style.cssText='height:1px;background:rgba(255,255,255,.08);margin:4px 0';btns.appendChild(sepEl);
     const bpin=document.createElement('button');bpin.className='dp-btn';
     bpin.textContent=task.casuPin?'Unpin from top':'Pin to Casual top';
-    bpin.onclick=()=>{pu('pin');task.casuPin=!task.casuPin;if(task.casuPin)task.col=routeTask(task,'casual');mo.classList.add('hidden');save();ra();showU(task.casuPin?'Pinned':'Unpinned');};
+    bpin.onclick=()=>{pu('pin');task.casuPin=!task.casuPin;mo.classList.add('hidden');save();ra();showU(task.casuPin?'Pinned ★':'Unpinned');};
     btns.appendChild(bpin);
   }
   // Category section
@@ -2433,7 +2458,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'kalmia-leaf',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'kalmia-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
