@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Kalmia Stem</title>
+<title>Fleur · Kalmia Bloom</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -318,12 +318,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .pile-trigger:hover{background:rgba(220,190,255,.1);color:var(--ink)}
 .pile-trigger .pile-count{display:none}
 /* Pile drawer */
-.pile-drawer{position:fixed;bottom:0;left:0;right:0;background:rgba(18,13,26,.97);border-top:1px solid rgba(220,190,255,.13);backdrop-filter:blur(14px);z-index:500;transform:translateY(100%);transition:transform .35s cubic-bezier(.22,1,.36,1);padding:16px 20px 24px;max-height:60vh;overflow-y:auto}
-.pile-drawer.open{transform:translateY(0)}
-.pile-drawer-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.pile-drawer-title{font-family:var(--font-h);font-size:.95rem;color:var(--ink);}
-.pile-close{background:none;border:none;color:var(--ink3);font-size:22px;cursor:pointer;line-height:1;padding:0}
-.pile-fan{display:flex;flex-wrap:wrap;gap:10px}
+
 .pile-note{width:120px;min-height:80px;border-radius:3px;padding:10px;
   box-shadow:2px 3px 10px rgba(0,0,0,.35);cursor:pointer;display:flex;flex-direction:column;
   font-family:var(--font-b);font-size:14px;line-height:1.35;
@@ -560,13 +555,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 
 
 <!-- Completed pile drawer -->
-<div class="pile-drawer" id="pile-drawer">
-  <div class="pile-drawer-hdr">
-    <span class="pile-drawer-title">Completed today</span>
-    <button class="pile-close" onclick="togglePile()">×</button>
-  </div>
-  <div class="pile-fan" id="pile-fan"></div>
-</div>
+
 
 
 
@@ -695,7 +684,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_kalmia_stem_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_kalmia_bloom_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -784,7 +773,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1483,11 +1472,6 @@ function renderPile(){
   if(iconEl)iconEl.title=`Completed today (${completedToday.length})`;
   // Update inline pane fan
   renderPilePane();
-  // Update old drawer fan if it exists
-  const fan=document.getElementById('pile-fan');
-  if(fan)fan.innerHTML=completedToday.length
-    ?completedToday.map((c,i)=>`<div class="pile-note" style="background:${c.color};color:${con(c.color)}" onclick="uncomplete(${c.id})">${esc(c.name)}</div>`).join('')
-    :`<div class="pile-empty">Nothing completed yet today.</div>`;
 }
 function renderPilePane(){
   const fan=document.getElementById('pile-fan-inline');
@@ -2458,7 +2442,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'kalmia-stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'kalmia-bloom',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
