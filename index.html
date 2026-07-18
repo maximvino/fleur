@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Kalmia Bloom</title>
+<title>Fleur · Kalmia Vine</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -684,7 +684,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_kalmia_bloom_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_kalmia_vine_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -773,7 +773,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1891,7 +1891,13 @@ function emSyncPills(t){
 // Wire color dots change → update pill live
 const _origMkDots=mkDots;
 // ── Task edit modal ───────────────────────────────────────────────
+let _returnToCalendar=false;
 function openTask(id){
+  // If the calendar is open, close it first so the edit modal isn't buried under it.
+  // Track this so we can re-open the calendar after the edit is done.
+  const calMo=document.getElementById('cal-mo');
+  _returnToCalendar=calMo&&!calMo.classList.contains('hidden');
+  if(_returnToCalendar)calMo.classList.add('hidden');
   const t=tasks.find(t=>t.id==id);if(!t)return;editTid=id;
   document.getElementById('en').value=t.name;
   document.getElementById('eco').value=t.col;
@@ -1966,8 +1972,9 @@ function saveTask(){
   else if(t.deadlineDate){t.col=d2col(t.deadlineDate,t.repeat);} // always route by date when one exists
   else{t.col=chosenCol;}
   closeM('tm');save();ra();showU('Updated');
+  if(_returnToCalendar){_returnToCalendar=false;openCalendar();}
 }
-function delTask(){pu('del');tasks=tasks.filter(t=>t.id!==editTid);closeM('tm');save();ra();showU('Deleted');}
+function delTask(){pu('del');tasks=tasks.filter(t=>t.id!==editTid);closeM('tm');save();ra();showU('Deleted');if(_returnToCalendar){_returnToCalendar=false;openCalendar();}}
 
 // ── Drag tasks ────────────────────────────────────────────────────
 function dstart(e,id){
@@ -2442,11 +2449,16 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'kalmia-bloom',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'kalmia-vine',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
-function closeM(id){const mo=document.getElementById(id);mo.classList.add('hidden');mo.querySelector('.dp-btns')?.remove();}
+function closeM(id){
+  const mo=document.getElementById(id);
+  mo.classList.add('hidden');
+  mo.querySelector('.dp-btns')?.remove();
+  if(id==='tm'&&_returnToCalendar){_returnToCalendar=false;openCalendar();}
+}
 document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeM(o.id);}));
 
 // ── AI ────────────────────────────────────────────────────────────
