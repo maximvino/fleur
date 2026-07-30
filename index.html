@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Lavender</title>
+<title>Fleur · Lavender Stem</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -618,7 +618,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     <div class="em-sub" id="es-wait">
       <input class="fi" id="ew" type="text" placeholder="Waiting for… (text)">
       <select class="fi" id="ewt" style="font-size:13px"><option value="">After task: (none)</option></select>
-      <input class="fi" id="ewu" type="datetime-local" style="font-size:13px">
+      <div style="display:flex;gap:6px">
+        <input class="fi" id="ewu-date" type="date" style="flex:1;font-size:13px" oninput="syncWaitUntilEdit()">
+        <input class="fi" id="ewu-time" type="time" style="flex:1;font-size:13px" oninput="syncWaitUntilEdit()">
+      </div>
+      <input type="hidden" id="ewu">
     </div>
 
     <!-- Link sub -->
@@ -689,7 +693,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_lavender_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_lavender_stem_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -751,12 +755,52 @@ function ap(s){
     }
   }
 }
+// ── Sync robustness ──────────────────────────────────────────────
+// PENDING marks "this device has a save that hasn't been confirmed to reach
+// Supabase yet." It's set BEFORE the network call and only cleared once the
+// call actually succeeds. This closes the main real-world sync gap: a task
+// gets completed, then the tab/app is closed or backgrounded (very common —
+// finishing a task is often the last thing someone does before putting the
+// phone away), and the in-flight fetch gets killed mid-request. localStorage
+// on that device still looks right, but Supabase never got it — so the next
+// device to load() silently pulls the stale cloud copy and the change looks
+// like it "didn't save." PENDING lets load() detect that situation and push
+// the local copy up before trusting whatever the cloud returns.
+const PKEY=KEY+'_pending';
+async function syncPush(d,attempt){
+  attempt=attempt||0;
+  try{
+    const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',state:d})});
+    if(r.ok){localStorage.removeItem(PKEY);return true;}
+  }catch(e){}
+  if(attempt<3){await new Promise(res=>setTimeout(res,600*(attempt+1)));return syncPush(d,attempt+1);}
+  return false; // stays marked pending; load() will retry it next launch
+}
 function save(){
   const d=sn();localStorage.setItem(KEY,JSON.stringify(d));
-  fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',state:d})}).catch(()=>{});
+  localStorage.setItem(PKEY,'1');
+  syncPush(d);
 }
+// Last-ditch flush if the tab is hidden/closed while a save is still pending.
+// sendBeacon is built for exactly this moment — unlike fetch, the browser
+// guarantees it a chance to go out even as the page is unloading.
+document.addEventListener('visibilitychange',()=>{
+  if(document.visibilityState==='hidden'&&localStorage.getItem(PKEY)==='1'){
+    try{
+      const raw=localStorage.getItem(KEY);
+      if(raw)navigator.sendBeacon('https://fleurplanner.netlify.app/api/sync',new Blob([JSON.stringify({action:'save',state:JSON.parse(raw)})],{type:'application/json'}));
+    }catch(e){}
+  }
+});
 async function load(){
   let ok=false;
+  // If a previous save on this device never got confirmed, push it now
+  // BEFORE pulling — otherwise we'd overwrite our own newer local state
+  // with Supabase's stale one and the unsynced change would look lost.
+  if(localStorage.getItem(PKEY)==='1'){
+    const raw=localStorage.getItem(KEY);
+    if(raw){try{await syncPush(JSON.parse(raw));}catch(e){}}
+  }
   // Try Supabase first — shared across all devices
   try{
     const r=await fetch('https://fleurplanner.netlify.app/api/sync',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'load'})});
@@ -778,7 +822,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_lavender_v1','fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1037,6 +1081,19 @@ function syncWaitUntil(){
   const t=document.getElementById('awu-time')?.value;
   const awu=document.getElementById('awu');
   if(awu)awu.value=(d&&t)?`${d}T${t}`:(d?`${d}T00:00`:'');
+}
+// Edit-modal counterpart. A native single <input type="datetime-local"> only
+// ever reports a value once BOTH its date and time sub-fields are filled —
+// picking just a date (very natural: "must be done Sunday", no specific hour
+// in mind) leaves the browser reporting an empty string, so the wait silently
+// never saves. Splitting into separate date+time inputs (as the add-task
+// modal already did) avoids that trap: a date with no time defaults to
+// midnight instead of vanishing.
+function syncWaitUntilEdit(){
+  const d=document.getElementById('ewu-date')?.value;
+  const t=document.getElementById('ewu-time')?.value;
+  const ewu=document.getElementById('ewu');
+  if(ewu)ewu.value=(d&&t)?`${d}T${t}`:(d?`${d}T00:00`:'');
 }
 
 const DOW_CLR=['#abc9e6','#abe6d4','#b2e6ab','#e1e6ab','#e6bcab','#e6abcb','#d3abe6'];
@@ -1994,6 +2051,9 @@ function openTask(id){
   syncSelects();
   const ewtEl=document.getElementById('ewt');if(ewtEl)ewtEl.value=t.waitTaskId||'';
   const ewuEl=document.getElementById('ewu');if(ewuEl)ewuEl.value=t.waitUntil?t.waitUntil.slice(0,16):'';
+  const ewuDateEl=document.getElementById('ewu-date'),ewuTimeEl=document.getElementById('ewu-time');
+  if(ewuDateEl)ewuDateEl.value=t.waitUntil?t.waitUntil.slice(0,10):'';
+  if(ewuTimeEl)ewuTimeEl.value=(t.waitUntil&&t.waitUntil.length>11)?t.waitUntil.slice(11,16):'';
   // ewg always visible
   document.getElementById('elink').value=t.link||'';
   document.getElementById('erep').value=t.repeat||'';
@@ -2536,7 +2596,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'lavender',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'lavender_stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
