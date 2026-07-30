@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Kalmia Vine</title>
+<title>Fleur · Lavender</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -120,6 +120,11 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 .sn-blocked{opacity:.38;filter:saturate(.5)}
 .sn-blocked:hover{opacity:.55}
 .sn-curl{position:absolute;bottom:0;right:0;width:26px;height:26px;cursor:pointer;z-index:6}
+.sn-note-btn{position:absolute;bottom:0;left:0;width:26px;height:26px;cursor:pointer;z-index:6}
+.sn-note-btn.has-note::before{content:'';position:absolute;bottom:5px;left:5px;width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.4}
+.sn-popover{position:fixed;z-index:700;background:#1c1528;border:1px solid rgba(220,190,255,.2);border-radius:10px;padding:10px;box-shadow:0 8px 24px rgba(0,0,0,.5);width:220px}
+.sn-popover textarea{width:100%;background:rgba(255,255,255,.06);border:1px solid rgba(220,190,255,.15);border-radius:6px;padding:6px 8px;font-size:14px;font-family:var(--font-note);color:var(--ink);resize:none;outline:none;min-height:80px;line-height:1.5}
+.sn-popover textarea::placeholder{color:var(--ink3)}
 .sn.sn-faded{opacity:.4;filter:saturate(.4)}
 /* divider line between active and blocked stickies */
 .cork-blocked-divider,.casu-pin-divider{width:100%;height:1px;background:rgba(255,255,255,.12);
@@ -684,7 +689,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_kalmia_vine_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_lavender_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -711,7 +716,7 @@ function ap(s){
   completedToday=s.completedToday||[];
   colStyles={};for(const k of Object.keys(TBOX))colStyles[k]=Object.assign({},TBOX[k],(s.colStyles||{})[k]||{});
   // Ensure new fields exist on all tasks
-  tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;if(t.fadedUntil===undefined)t.fadedUntil=null;});
+  tasks.forEach(t=>{if(t.waitUntil===undefined)t.waitUntil=null;if(t.link===undefined)t.link=null;if(t.repeatMonthDay===undefined)t.repeatMonthDay=null;if(t.casuPin===undefined)t.casuPin=false;if(t.urgent===undefined)t.urgent=false;if(t.fadedUntil===undefined)t.fadedUntil=null;if(t.notes===undefined)t.notes='';if(t.sortOrder===undefined)t.sortOrder=null;});
   // Safety net: if two tasks ever ended up sharing the same id (can happen if two
   // devices created tasks offline before syncing and their local tid counters hadn't
   // caught up to each other yet), reassign the later one(s) a fresh id so completing
@@ -773,7 +778,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1090,7 +1095,7 @@ function snHTML(task,inCat){
   const isFaded=task.fadedUntil&&new Date(task.fadedUntil)>new Date();
   return`<div class="sn${inCat?' cat-sn':''}${blocked?' sn-blocked':''}${isFaded?' sn-faded':''}" draggable="true"
     style="background:${bg};color:${tx}" data-tid="${task.id}" ${wn?'data-haswait':''} ${blocked?'data-blocked':''}
-    onclick="openTask(${task.id})" ondragstart="dstart(event,${task.id})" ondragend="dend()">
+    onclick="openTask(${task.id})" ondragstart="dstart(event,${task.id})" ondragend="dend()" ondragover="snDragOver(event,${task.id})" ondrop="snDrop(event,${task.id})">
     <div class="sn-tab" style="${tabStyle}">
       <div class="sn-tab-badges" style="justify-content:flex-start">${tabLeft}</div>
       <button class="cbtn${task.done?' ck':''}" style="color:${tackColor}" onclick="event.stopPropagation();chk(${task.id})" title="${task.done?'Unpin':'Pin as done'}"><svg class="pin" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="5" fill="currentColor" opacity=".9"/><circle cx="12" cy="8" r="2.5" fill="rgba(0,0,0,.3)"/><line x1="12" y1="13" x2="12" y2="22" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" opacity=".7"/></svg></button>
@@ -1101,6 +1106,7 @@ function snHTML(task,inCat){
       ${wn?`<div class="sn-wait-reveal">${esc(wn)}</div>`:''}
     </div>
     ${inCat?'<div class="sn-streak" style="background:'+streakBg+'"></div>':''}
+    <div class="sn-note-btn${task.notes?' has-note':''}" onclick="event.stopPropagation();openNotePopover(${task.id},this)" title="${task.notes?'Edit note':'Add note'}"></div>
     <div class="sn-curl" onclick="event.stopPropagation();toggleFade(${task.id})" title="Fade for today"></div>
   </div>`;
 }
@@ -1119,7 +1125,17 @@ function corkHTML(col){
   // Also include tasks blocked by waitTaskId/waitUntil that belong to this col by date
   const blockedHere=tasks.filter(t=>t.col!==col&&t.deadlineDate&&d2col(t.deadlineDate,t.repeat)===col&&isBlocked(t)&&t.col!=='wait'||
     (t.col!==col&&!t.deadlineDate&&col==='today'&&isBlocked(t)&&t.col!=='wait'));
-  function sortTasks(arr){return arr.slice().sort((a,b)=>{const da=a.deadlineDate||'',db=b.deadlineDate||'';if(da&&db)return da<db?-1:da>db?1:0;if(da)return -1;if(db)return 1;return a.name.localeCompare(b.name);});}
+  function sortTasks(arr){return arr.slice().sort((a,b)=>{
+  // Manual order takes precedence when both tasks have sortOrder set
+  const ao=a.sortOrder,bo=b.sortOrder;
+  if(ao!=null&&bo!=null)return ao-bo;
+  if(ao!=null)return -1; // ordered tasks float before unordered
+  if(bo!=null)return 1;
+  const da=a.deadlineDate||'',db=b.deadlineDate||'';
+  if(da&&db)return da<db?-1:da>db?1:0;
+  if(da)return -1;if(db)return 1;
+  return a.name.localeCompare(b.name);
+});}
   const oneWeekOut=(()=>{const d=new Date();d.setDate(d.getDate()+7);return d.toISOString().slice(0,10);})();
   const withinWeek=t=>col!=='upcoming'||!t.deadlineDate||t.deadlineDate<=oneWeekOut;
   const activeItems=sortTasks(ct.filter(t=>!isBlocked(t)&&withinWeek(t))).map(t=>snHTML(t,false));
@@ -1507,6 +1523,77 @@ function toggleFade(id){
   else{const d=new Date();d.setHours(23,59,59,999);t.fadedUntil=d.toISOString();}
   save();ra();
 }
+// ── Note popover ─────────────────────────────────────────────────
+let _notePopover=null,_noteTid=null;
+function openNotePopover(id,triggerEl){
+  // Close any existing popover first
+  closeNotePopover();
+  const task=tasks.find(t=>t.id==id);if(!task)return;
+  _noteTid=id;
+  const pop=document.createElement('div');
+  pop.className='sn-popover';
+  pop.innerHTML=`<textarea placeholder="Add a note…" maxlength="500">${task.notes||''}</textarea>`;
+  document.body.appendChild(pop);
+  _notePopover=pop;
+  // Position near the trigger (bottom-left of sticky)
+  const r=triggerEl.getBoundingClientRect();
+  const popW=220,popH=120;
+  let left=r.left,top=r.top-popH-6;
+  if(top<8)top=r.bottom+6;
+  if(left+popW>window.innerWidth-8)left=window.innerWidth-popW-8;
+  if(left<8)left=8;
+  pop.style.left=left+'px';pop.style.top=top+'px';
+  const ta=pop.querySelector('textarea');
+  ta.focus();
+  ta.addEventListener('blur',()=>setTimeout(closeNotePopover,120));
+  ta.addEventListener('input',()=>{
+    const t2=tasks.find(t=>t.id==_noteTid);
+    if(t2){t2.notes=ta.value;save();}
+  });
+  // Close on Escape
+  ta.addEventListener('keydown',e=>{if(e.key==='Escape')closeNotePopover();});
+}
+function closeNotePopover(){
+  if(_notePopover){
+    // Final save and re-render to update the indicator dot
+    const t=tasks.find(t=>t.id==_noteTid);
+    if(t){t.notes=_notePopover.querySelector('textarea').value;save();ra();}
+    _notePopover.remove();_notePopover=null;_noteTid=null;
+  }
+}
+// Close popover if user taps outside
+document.addEventListener('pointerdown',e=>{
+  if(_notePopover&&!_notePopover.contains(e.target))closeNotePopover();
+},{passive:true});
+
+// ── Drag-to-reorder within same col ──────────────────────────────
+function snDragOver(e,targetId){
+  if(dragTid===null||dragTid===targetId)return;
+  const dragTask=tasks.find(t=>t.id==dragTid);
+  const targetTask=tasks.find(t=>t.id==targetId);
+  // Only handle same-col reordering here; cross-col is handled by the cork ondragover
+  if(!dragTask||!targetTask||dragTask.col!==targetTask.col)return;
+  e.preventDefault();e.stopPropagation();
+}
+function snDrop(e,targetId){
+  if(dragTid===null||dragTid===targetId)return;
+  const dragTask=tasks.find(t=>t.id==dragTid);
+  const targetTask=tasks.find(t=>t.id==targetId);
+  if(!dragTask||!targetTask||dragTask.col!==targetTask.col)return;
+  e.preventDefault();e.stopPropagation();
+  pu('reorder');
+  // Get all tasks in this col in current display order
+  const colTasks=sortTasks(tasks.filter(t=>t.col===dragTask.col&&!t.done));
+  // Remove the dragged task and insert before the target
+  const withoutDrag=colTasks.filter(t=>t.id!==dragTask.id);
+  const targetIdx=withoutDrag.findIndex(t=>t.id===targetId);
+  withoutDrag.splice(targetIdx,0,dragTask);
+  // Assign sequential sortOrder values
+  withoutDrag.forEach((t,i)=>t.sortOrder=i);
+  // Zero out sort order for any tasks in other cols so they don't get stale values
+  save();ra();showU('Reordered');
+}
+
 function toggleMin(col){
   colMin[col]=colMin[col]?0:1;
   save();ra();
@@ -2449,7 +2536,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'kalmia-vine',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'lavender',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 
 // ── Modal helpers ─────────────────────────────────────────────────
