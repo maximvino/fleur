@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Lavender Stem</title>
+<title>Fleur · Lavender Vine</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -552,7 +552,10 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     <div class="md" style="max-width:280px">
       <h2 style="text-align:center">🌱</h2>
       <button class="add-submit" style="width:100%;margin-bottom:8px" onclick="exportData();closeM('transfer-mo')">Export tasks</button>
-      <label class="add-submit" style="width:100%;text-align:center;cursor:pointer;display:block">Import tasks<input type="file" accept=".json" onchange="importData(event);closeM('transfer-mo')" style="display:none"></label>
+      <label class="add-submit" style="width:100%;text-align:center;cursor:pointer;display:block;margin-bottom:2px">➕ Add tasks (merge)<input type="file" accept=".json" onchange="mergeImportData(event);closeM('transfer-mo')" style="display:none"></label>
+      <div style="font-size:10px;color:var(--ink3);text-align:center;margin-bottom:8px">Adds new tasks/categories to what you already have</div>
+      <label class="add-submit" style="width:100%;text-align:center;cursor:pointer;display:block;margin-bottom:2px">Import tasks (replace all)<input type="file" accept=".json" onchange="importData(event);closeM('transfer-mo')" style="display:none"></label>
+      <div style="font-size:10px;color:var(--ink3);text-align:center;margin-bottom:8px">⚠️ Wipes everything currently in Fleur first</div>
       <button class="mcan" style="width:100%;margin-top:4px" onclick="closeM('transfer-mo')">Cancel</button>
     </div>
   </div>
@@ -608,7 +611,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
     <div class="em-sub" id="es-date">
       <input class="fi" id="ed" type="date" style="font-size:15px">
       <input class="fi" id="etime" type="time" style="font-size:15px">
-      <button onclick="document.getElementById('ed').value='';document.getElementById('etime').value='';document.getElementById('ep-date').classList.remove('has-val');document.getElementById('ep-date').style.background='';document.getElementById('ep-date').style.borderColor='';" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear date & time</button>
+      <button onclick="emClearDate()" style="background:none;border:none;color:var(--ink3);font-size:11px;cursor:pointer;align-self:flex-start;padding:2px 0">✕ Clear date & time</button>
     </div>
 
     <!-- Time sub kept as hidden stub so saveTask() can still read #etime -->
@@ -693,7 +696,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_lavender_stem_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_lavender_vine_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -822,7 +825,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_lavender_v1','fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_lavender_petal_v1','fleur_lavender_stem_v1','fleur_lavender_v1','fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -1955,6 +1958,22 @@ function emSetCol(col){
   }
   buildEmCol();
 }
+// Clearing the date is only meaningful on its own for boxes that don't
+// require one. Upcoming REQUIRES a date (saveTask() refuses to save an
+// Upcoming task without one) — so clearing the date while still sitting in
+// Upcoming used to be a dead end: save would bounce you right back to this
+// same panel asking for the date you just deleted, over and over. If the
+// box is currently Upcoming, dropping the date is treated as an implicit
+// "take this out of Upcoming" and it falls back to Casual, same as picking
+// Casual from the box picker directly.
+function emClearDate(){
+  document.getElementById('ed').value='';
+  document.getElementById('etime').value='';
+  document.getElementById('ep-date').classList.remove('has-val');
+  document.getElementById('ep-date').style.background='';
+  document.getElementById('ep-date').style.borderColor='';
+  if(document.getElementById('eco').value==='upcoming')emSetCol('casual');
+}
 
 function buildEmCat(){
   const cur=document.getElementById('ec').value;
@@ -2596,8 +2615,75 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'lavender_stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'lavender_vine',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
+// Merge import — for files built to ADD to what's already in Fleur rather than
+// replace it (e.g. a batch of tasks converted from a plain-English paragraph by
+// an AI). Same .json wrapper as a normal export, but:
+//   - "categories": [{name, color}] — matched to an existing category by
+//     case-insensitive name; if none matches, a new one is created with the
+//     given color (or the next palette color if none given). Never overwrites
+//     an existing category's color.
+//   - "tasks": [{name, deadlineDate, deadlineTime, category, repeat,
+//     repeatDays, repeatStart, repeatMonthDay, waitingFor, waitUntil, urgent,
+//     link, notes}] — "category" is a plain name string (resolved against the
+//     categories above / existing categories), not a numeric id, since the
+//     source paragraph has no way of knowing Fleur's internal ids. col is
+//     derived the same way normal task creation derives it: dated tasks route
+//     by date, pure waits go to Wait, everything else lands in Casual.
+// Every incoming task gets a fresh id off the live tid counter, so it can
+// never collide with a task already on the board.
+function mergeImportData(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    try{
+      const d=JSON.parse(ev.target.result);
+      pu('import');
+      const catByName={};
+      cats.forEach(c=>{catByName[(c.name||'').toLowerCase()]=c;});
+      (d.categories||d.cats||[]).forEach(c=>{
+        const key=(c.name||'').trim().toLowerCase();if(!key)return;
+        if(!catByName[key]){
+          const nc={id:cid++,name:c.name.trim(),color:c.color||nxtP(),showBox:1,minimized:false,colGroup:1};
+          cats.push(nc);catByName[key]=nc;
+        }
+      });
+      let added=0;
+      (d.tasks||[]).forEach(rawT=>{
+        if(!rawT||!rawT.name)return;
+        const catKey=(rawT.category||'').trim().toLowerCase();
+        let cat=catKey?catByName[catKey]:null;
+        // A task can reference a category that wasn't in the categories[] list
+        // at all — create it on the fly too, so nothing silently drops.
+        if(catKey&&!cat){
+          const nc={id:cid++,name:rawT.category.trim(),color:nxtP(),showBox:1,minimized:false,colGroup:1};
+          cats.push(nc);catByName[catKey]=nc;cat=nc;
+        }
+        const date=rawT.deadlineDate||null;
+        const wait=rawT.waitingFor||'';
+        const waitUntil=rawT.waitUntil||null;
+        const rep=rawT.repeat||'';
+        let col=rawT.col;
+        if(!col){
+          if((wait||waitUntil)&&!date)col='wait';
+          else if(date)col=d2col(date,rep);
+          else col='casual';
+        }
+        tasks.push({
+          id:tid++,name:rawT.name,col,deadlineDate:date,deadlineTime:rawT.deadlineTime||null,
+          waitingFor:wait,waitTaskId:null,waitUntil,done:false,urgent:!!rawT.urgent,casuPin:false,
+          repeat:rep,repeatDays:rawT.repeatDays||[],repeatStart:rawT.repeatStart||null,
+          repeatMonthDay:rawT.repeatMonthDay||null,categoryId:cat?cat.id:null,stickyColor:'',
+          link:rawT.link||null,paletteColor:nxtP(),notes:rawT.notes||'',sortOrder:null,fadedUntil:null
+        });
+        added++;
+      });
+      save();ra();applyTheme();showU(`Added ${added} task${added===1?'':'s'}`);
+    }catch(err){alert('Could not read file.');console.error(err);}
+  };
+  r.readAsText(f);e.target.value='';
+}
 
 // ── Modal helpers ─────────────────────────────────────────────────
 function closeM(id){
