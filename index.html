@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Fleur · Marigold</title>
+<title>Fleur · Marigold Stem</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&family=Lora:ital,wght@0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -696,7 +696,7 @@ body{background:var(--page);color:var(--ink);font-family:var(--font-b);font-weig
 <div class="ub hidden" id="ub"><span id="ul">Done</span><button class="ubtn" onclick="undo()">Undo</button></div>
 
 <script>
-const KEY='fleur_marigold_v1',KDAY='fleur_marigold_day';
+const KEY='fleur_marigold_stem_v1',KDAY='fleur_marigold_day';
 
 const TBOX={
   today:   {label:'Today',    bg:'#1e3d2a',txt:'#c8e6d0',shape:'sticky'},
@@ -825,7 +825,7 @@ async function load(){
     if(raw)try{ap(JSON.parse(raw));ok=true;}catch(e){}
   }
   if(!ok){
-    const oldKeys=['fleur_lavender_vine_v1','fleur_lavender_petal_v1','fleur_lavender_stem_v1','fleur_lavender_v1','fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
+    const oldKeys=['fleur_marigold_v1','fleur_lavender_vine_v1','fleur_lavender_petal_v1','fleur_lavender_stem_v1','fleur_lavender_v1','fleur_kalmia_vine_v1','fleur_kalmia_bloom_v1','fleur_kalmia_stem_v1','fleur_kalmia_leaf_v1','fleur_kalmia_bud_v1','fleur_kalmia_v1','fleur_jasmine_root_v1','fleur_jasmine_leaf_v1','fleur_jasmine_thorn_v1','fleur_jasmine_vine_v1','fleur_jasmine_bloom_v1','fleur_jasmine_bud_v1','fleur_jasmine_petal_v1','fleur_jasmine_stem_v1','fleur_jasmine_v1','fleur_iris_v1','fleur_hyacinth_v1','fleur_gentian_v1','fleur_foxglove_v1','fleur_wisteria_v1','fleur_xeranthemum_v1','fleur_verbena_v1','fleur_tulip_v1','fleur_sunflower_v1','fleur_rose_v1','fleur_quince_v1','fleur_peony_v1'];
     for(const k of oldKeys){
       const raw=localStorage.getItem(k);
       if(raw)try{ap(JSON.parse(raw));ok=true;break;}catch(e){}
@@ -2274,8 +2274,15 @@ function cboxDrop(e,targetId){
 // ── Export / Import ───────────────────────────────────────────────
 
 function dlContextDoc(){
-  const vkey=KEY.split('_')[1];
-  const vname=vkey.charAt(0).toUpperCase()+vkey.slice(1);
+  // KEY can be a plain letter-name ('fleur_marigold_v1') or a sub-version
+  // ('fleur_marigold_stem_v1'). Splitting on '_' and taking index 1 only ever
+  // grabbed the first word, silently dropping the sub-name — the downloaded
+  // doc would show "Current version: Marigold" and the wrong storage key even
+  // when the live KEY was actually Marigold Stem. Strip the fixed 'fleur_'
+  // prefix and '_v<digits>' suffix instead, so whatever's left (one word or
+  // several) survives intact.
+  const vkey=KEY.replace(/^fleur_/,'').replace(/_v\d+$/,'');
+  const vname=vkey.split('_').map(w=>w.charAt(0).toUpperCase()+w.slice(1)).join(' ');
   const md=`# Fleur — Full Project Context
 ## Current version: ${vname}
 
@@ -2299,15 +2306,21 @@ Paste this at the start of a new Claude conversation, then upload the current HT
 
 ## Naming convention
 
-Every update is named after the next letter of the alphabet using a flower/plant name.
+Every update is named after a flower/plant name. Names loosely follow alphabetical order but the priority is **never reusing a name**, not strict letter sequence.
 
-Full history: Aster → Bellflower → Cornflower → Dahlia → Eglantine → Foxglove → Gentian → Hyacinth → Iris → Jasmine → Lavender → Marigold → Narcissus → Orchid → Peony → Quince → Rose → Sunflower → Tulip → Verbena → Wisteria → Xeranthemum → Yarrow → Zinnia → Amaranth → Bellflower
+**Known-used log** (append-only — the single source of truth for what NOT to pick again):
+Kalmia (+ sub-versions: Vine) → Lavender → Lavender Stem → Lavender Petal → Lavender Vine → Marigold → Marigold Stem
 
-**On every new version sent**, update: \`<title>Fleur · [Name]</title>\`, \`const KEY='fleur_[name]_v1'\`, the \`version:\` string in \`exportData()\`, and add the new key to the \`oldKeys\` fallback array in \`load()\`.
+**This log is known to be incomplete.** The project went through a full alphabet cycle or more before Kalmia — Bellflower was confirmed used early on (and would've been reused a second time under the old fixed A→Z→A plan, which is exactly the bug this section now fixes), but the exact names between Bellflower and Kalmia were never logged and can't be reliably reconstructed. Do not assume any name is "safe" just because it isn't in this log — if there's any doubt whether a name was used in that untracked stretch, skip it and use a name from the suggested-unused list below instead, since those are confirmed never to have appeared in any part of this project.
 
-**Sub-version naming (critical)**: When making smaller updates within the same letter (e.g. multiple iterations of Jasmine), append a word to the name: \`Jasmine Stem\`, \`Jasmine Petal\`, \`Jasmine Bud\`, etc. Update the \`<title>\`, \`KEY\` (e.g. \`fleur_jasmine_stem_v1\`), and \`version:\` string accordingly. This is essential for distinguishing which build is being tested — using the same name for multiple different versions makes debugging impossible. Never send two different files with the same version name.
+**On every new version sent**: 
+1. Pick a name — next letter alphabetically from the log's last entry if that letter is safe, otherwise pull from the suggested-unused list below.
+2. Append the name actually used to the **Known-used log** above, in this same edit.
+3. Update \`<title>Fleur · [Name]</title>\`, \`const KEY='fleur_[name]_v1'\`, the \`version:\` string in \`exportData()\`, and add the new key to the \`oldKeys\` fallback array in \`load()\`.
 
-**On every new version sent**, update: \`<title>Fleur · [Name]</title>\`, \`const KEY='fleur_[name]_v1'\`, \`version:'[name]'\` in exportData, and add the new key to the \`oldKeys\` fallback array in \`load()\`.
+**Suggested unused names** (pull from here whenever the next alphabetical letter is uncertain or already logged): Begonia, Lily, Camellia, Freesia, Heather, Larkspur, Magnolia, Poppy, Saffron, Thistle, Willow, Zephyranthes.
+
+**Sub-version naming (critical)**: When making smaller updates within the same letter (e.g. multiple iterations of Marigold), append a word to the name: \`Marigold Stem\`, \`Marigold Petal\`, \`Marigold Bud\`, etc. Update the \`<title>\`, \`KEY\` (e.g. \`fleur_marigold_stem_v1\`), and \`version:\` string accordingly, and still append the sub-version's exact full name to the log above. This is essential for distinguishing which build is being tested — using the same name for multiple different versions makes debugging impossible. Never send two different files with the same version name.
 
 ---
 
@@ -2635,7 +2648,7 @@ function openCalendar(){
   document.getElementById('cal-mo').classList.remove('hidden');
 }
 
-function exportData(){const d={version:'marigold',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
+function exportData(){const d={version:'marigold_stem',exported:new Date().toISOString(),...sn()};const b=new Blob([JSON.stringify(d,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=`fleur-${today()}.json`;a.click();}
 function importData(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{try{const d=JSON.parse(ev.target.result);pu('import');ap(d);save();ra();applyTheme();showU('Imported');}catch(err){alert('Could not read file.');}};r.readAsText(f);e.target.value='';}
 // Merge import — for files built to ADD to what's already in Fleur rather than
 // replace it (e.g. a batch of tasks converted from a plain-English paragraph by
