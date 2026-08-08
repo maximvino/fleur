@@ -2512,8 +2512,15 @@ Current call sites: \`corkAddKey\`, \`confirmDrop\` (handles both new-task creat
 ### State / persistence
 - \`sn()\` — serializes full state
 - \`ap(s)\` — loads state; migrates missing fields including \`urgent\`
-- \`save()\` — localStorage + Supabase
+- \`save()\` — localStorage + Supabase, via \`syncPush()\` (see Sync robustness below)
 - \`load()\` — Supabase → current key → old keys → any \`fleur_*\` key
+
+### Sync robustness (added in Lavender Stem)
+\`save()\` used to be pure fire-and-forget (\`fetch(...).catch(()=>{})\`) — no retry, no confirmation. The real-world failure mode: a task gets completed, then the tab/app is closed or backgrounded right after (extremely common — finishing a task is often the last thing someone does before putting the phone away), and the in-flight \`fetch\` gets killed mid-request. localStorage on that device still looks right, but Supabase never got it, so the next device to \`load()\` silently pulls the stale cloud copy and the change looks lost.
+- \`PKEY\` (\`KEY+'_pending'\`) is set in localStorage BEFORE every network save and only cleared once the save actually confirms (\`r.ok\`).
+- \`syncPush(d, attempt)\` retries up to 3 times with backoff (600ms × attempt) before giving up and leaving \`PKEY\` set for next launch to retry.
+- A \`visibilitychange\` listener fires a best-effort \`navigator.sendBeacon\` flush when the tab is hidden while \`PKEY\` is still set — \`sendBeacon\` is built specifically to survive page unload, unlike \`fetch\`.
+- \`load()\` checks \`PKEY\` first: if the last session's save never confirmed, it pushes that local copy up BEFORE pulling from Supabase, so a genuinely newer local state can't get silently overwritten by a stale cloud one.
 
 ### Rendering
 - \`ra()\` — re-renders everything
@@ -2540,12 +2547,24 @@ A task is **blocked** when:
 
 **⏳ icon tooltip**: shows the actual wait text (\`task.waitingFor\`) on hover, not a generic label.
 
+**Edit-modal wait datetime input (fixed in Lavender Petal)**: \`#ewu\` is a *hidden* field now, kept in sync by \`syncWaitUntilEdit()\` from two visible inputs, \`#ewu-date\` (date) and \`#ewu-time\` (time) — same pattern the Add-task modal already used for its \`#awu\`. A bare single \`<input type="datetime-local">\` only ever reports a value once BOTH sub-fields are filled; picking just a date (very natural — "must be done Sunday", no specific hour in mind) left the browser reporting an empty string and the wait silently never saved. \`syncWaitUntilEdit()\` defaults to midnight (\`\${d}T00:00\`) when only a date is given, so a date-only pick still saves. \`openTask()\` populates \`#ewu-date\`/\`#ewu-time\` (split from \`task.waitUntil\`) instead of writing directly into a single field.
+
+**Clearing a date out of Upcoming (fixed in Lavender Vine)**: \`saveTask()\` refuses to save a task into the \`upcoming\` box without a \`deadlineDate\` (see Date↔column routing). The "✕ Clear date & time" button in the edit modal used to only blank the date/time inputs — it never touched \`#eco\` (the hidden box selector), so a task left sitting on "upcoming" after its date was cleared would bounce forever: save → validation fails → date panel reopens → clear again → same result. The button now calls \`emClearDate()\`, which blanks the date fields AND, if \`#eco\` is currently \`'upcoming'\`, calls \`emSetCol('casual')\` — same fallback \`routeTask\`/\`saveTask\` already use elsewhere when Upcoming has no date to route by.
+
 ---
 
 ## Export / Import
 
 \`exportData()\` → JSON with \`sn()\` + \`{version:'${vkey}', exported: ISO string}\`
-\`importData(event)\` → parses JSON, calls \`ap()\`
+\`importData(event)\` → **replaces everything**: parses JSON, calls \`ap()\` which overwrites \`tasks\`/\`cats\`/etc. wholesale. This is the original import path — destructive by design, used for restoring a full backup.
+
+\`mergeImportData(event)\` → **adds without replacing** (introduced in Marigold). Built for the workflow where the user hands a plain-English paragraph to an AI (e.g. Claude in a separate chat) and gets back a small \`.json\` file of new tasks to drop onto their existing board — the whole point is the user's current agenda must survive the import untouched.
+- Reads \`{ categories: [{name, color}], tasks: [{name, deadlineDate, deadlineTime, category, repeat, repeatDays, repeatStart, repeatMonthDay, waitingFor, waitUntil, urgent, link, notes}] }\`.
+- \`category\` is a **plain name string**, not a numeric id — the source paragraph has no way of knowing Fleur's internal category ids. Matched case-insensitively against existing categories first; if no match, a new category is created (using the given \`color\`, or the next palette color if omitted). A task can reference a category name that was never declared in the top-level \`categories[]\` array at all — it still gets created on the fly rather than silently dropping the task's category.
+- Every incoming task gets a **fresh id off the live \`tid\` counter** — this is what makes the merge safe; nothing can collide with a task already on the board.
+- \`col\` is derived the same way normal task creation derives it if not explicitly given: dated tasks route by date via \`d2col\`, a pure wait (waitingFor/waitUntil with no date) goes to Wait, everything else lands in Casual.
+- Existing categories' colors are never overwritten by an incoming file — only brand-new categories get the imported color.
+- UI: the 🌱 transfer modal now has two distinct, clearly-labeled buttons — "➕ Add tasks (merge)" (calls \`mergeImportData\`) and "Import tasks (replace all)" (calls \`importData\`, with a warning line underneath since it wipes everything first).
 
 **Context doc download** (in AI pane): generates and downloads \`fleur-context.md\`. The version name/storage key in this doc are interpolated from the live \`KEY\` constant at download time (\`vkey=KEY.split('_')[1]\`), so they can never go stale — but the rest of this doc (header/UI/layout description) is still a hand-maintained snapshot and MUST be re-synced whenever the UI changes.
 
@@ -2583,6 +2602,7 @@ tasks.forEach(t => {
 - **Never send test files** — final output only, named \`[VersionName].html\`
 - **Always rename** to the next flower/plant letter on every version sent — update \`<title>\`, \`KEY\`, \`version:\`, and add new key to \`oldKeys\` in \`load()\`
 - **Keep this doc in sync, every version**: this entire file is generated by \`dlContextDoc()\` in the HTML. Version/storage-key fields are auto-derived from \`KEY\` and can't drift, but every other section (Header, Cork boards, Sticky notes, Dock panes, etc.) is hand-written prose that WILL go stale if a UI change isn't mirrored here in the same edit pass. Before sending a new version, diff what changed against this doc's relevant section and update it in the same response — this has drifted multiple versions behind before and should not happen again.
+- **Update this in-app template, not a separate file**: the context doc is downloaded from the AI pane in the app itself (this function). Don't send \`fleur-context.md\` as a separate chat attachment each version — just make sure this template (\`dlContextDoc()\`) reflects every change, so the in-app download button stays accurate.
 - **Never add busy UI text** — no counts, no labels, no extra tooltips unless explicitly requested
 - **Preserve \`CORK_GFX\`** — it is a pre-computed constant object; never regenerate unless asked
 - The user has **limited 5-hour message credits** — no test files, no unnecessary clarifying questions
